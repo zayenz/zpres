@@ -1,0 +1,19 @@
+.zpres-theme-wedding.zpres-print-body { color: {{param.text}}; background: {{param.background}}; }
+.zpres-theme-wedding .zpres-print-slide { background: var(--wedding-stage); }
+.zpres-theme-wedding .zpres-print-slide:not([data-background-split]):not(.zpres-background-splash-slide)::before { translate: calc(-50% - 5px) calc(-50% + 1px); rotate: -0.32deg; box-shadow: 0 2px 3px rgb(56 44 33 / 0.12); }
+.zpres-theme-wedding .zpres-print-slide:not([data-background-split]):not(.zpres-background-splash-slide)::after { translate: calc(-50% + 6px) calc(-50% - 1px); rotate: 0.28deg; box-shadow: 0 2px 3px rgb(56 44 33 / 0.1); }
+.zpres-theme-wedding .zpres-print-slide .zpres-slide-frame { color: {{param.text}}; background: var(--wedding-stock-active) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 5px 10px rgb(56 44 33 / 0.12), inset 0 1px 0 var(--wedding-edge-light), inset 0 -1px 0 var(--wedding-edge-dark); transform: none; animation: none; }
+.zpres-theme-wedding .zpres-print-slide :where(.zpres-slide-header, .zpres-slide-footer, .zpres-slide-sources) { border-color: {{param.rule}}; }
+.zpres-theme-wedding .zpres-print-slide :where(.zpres-slide-title, .zpres-slide-body, .zpres-slide-primary) { color: {{param.text}}; }
+.zpres-theme-wedding .zpres-print-slide :where(.zpres-slide-footer, .zpres-slide-sources) { color: {{param.muted}}; }
+.zpres-theme-wedding .zpres-print-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role] { box-shadow: 0 1px 2px rgb(56 44 33 / 0.12), inset 0 1px 0 var(--wedding-edge-light); }
+.zpres-theme-wedding .zpres-print-slide figcaption { color: color-mix(in srgb, {{param.muted}} 62%, {{param.text}}); }
+.zpres-theme-wedding .zpres-print-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="primary"] { border-block-start-color: {{param.accent}}; }
+.zpres-theme-wedding .zpres-print-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] { border-block-start-color: {{param.accent_alt}}; }
+.zpres-theme-wedding .zpres-print-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] { border-color: {{param.accent}}; }
+.zpres-theme-wedding .zpres-print-slide[data-slide-variant="section-title"] .zpres-slide-ornament::after { background: color-mix(in srgb, {{param.accent}} 58%, {{param.rule}}); }
+.zpres-theme-wedding .zpres-print-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-fit-text p { color: color-mix(in srgb, {{param.accent}} 55%, {{param.text}}); }
+.zpres-theme-wedding .zpres-print-slide[data-slide-variant="dense"] .zpres-slide-body { padding-block-start: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-print-slide[data-slide-variant="dense"] .zpres-block-code pre { line-height: 1.01; }
+.zpres-theme-wedding .zpres-print-slide.zpres-slide-class-botanical-list .zpres-block-list li::before { background: url("assets/botanical.svg") 12% 50% / 92px 69px no-repeat !important; opacity: 0.46; mask: none !important; }
+.zpres-theme-wedding .zpres-print-slide.zpres-background-splash-slide { background: #05070a; }

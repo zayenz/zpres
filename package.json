@@ -1,0 +1,11 @@
+{
+  "name": "zpres-css-build",
+  "private": true,
+  "scripts": {
+    "build:theme-api-v1-css": "tailwindcss -i styles/theme-api-v1.css -o src/generated/theme-api-v1.css"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.2",
+    "tailwindcss": "4.3.2"
+  }
+}

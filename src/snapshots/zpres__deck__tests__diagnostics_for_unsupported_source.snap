@@ -1,0 +1,52 @@
+---
+source: src/deck.rs
+assertion_line: 7866
+expression: deck
+---
+source_path: talk.zp.md
+metadata:
+  title: ~
+  author: ~
+  theme: ~
+  aspect: ~
+  extra: {}
+sections:
+  - index: 1
+    main_slide:
+      id: section-1-main
+      role: main
+      variant: ~
+      title: Diagnostics
+      blocks:
+        - type: heading
+          level: 1
+          text: Diagnostics
+        - type: layout
+          kind: columns
+          values:
+            widths: ~
+            gap: ~
+            align: ~
+          regions:
+            - name: ~
+              source_span:
+                source_path: talk.zp.md
+                line: 4
+                column: 1
+              blocks:
+                - type: paragraph
+                  markdown: Left
+                  inline_math: []
+        - type: paragraph
+          markdown: "<div>raw</div>"
+          inline_math: []
+        - type: html_only
+          html: "<div>explicit</div>"
+    detail_slides: []
+diagnostics:
+  - severity: error
+    span:
+      source_path: talk.zp.md
+      line: 7
+      column: 1
+    message: "raw HTML must be wrapped in an explicit ::: html content block"

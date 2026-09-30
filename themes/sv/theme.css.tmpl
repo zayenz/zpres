@@ -1,0 +1,1249 @@
+.zpres-theme-sv {
+  --sv-background: {{param.background}};
+  --sv-surface: {{param.surface}};
+  --sv-text: {{param.text}};
+  --sv-muted: {{param.muted}};
+  --sv-accent: {{param.accent}};
+  --sv-accent-alt: {{param.accent_alt}};
+  --sv-rule: {{param.rule}};
+  --sv-current: var(--sv-accent);
+  --sv-outcome: var(--sv-accent-alt);
+  --sv-plot: color-mix(in srgb, var(--sv-surface) 92%, var(--sv-background));
+  --sv-panel: color-mix(in srgb, var(--sv-rule) 12%, var(--sv-surface));
+  --sv-code-background: #11161b;
+  --sv-code-text: #f1f5f2;
+  --sv-grid: color-mix(in srgb, var(--sv-rule) 42%, transparent);
+  --sv-state-rail-block-start: 218px;
+  --sv-state-rail-inline-start: 28px;
+  --sv-state-rail-width: 240px;
+  --sv-state-row: 52px;
+  --sv-evidence-transition: 7rem;
+  --sv-evidence-paper: #ffffff;
+  --zpres-data-primary-measure: none;
+  --zpres-data-claim-measure: 64rem;
+  --zpres-data-claim-inset: var(--spacing-slide-8);
+  --zpres-data-dense-measure: none;
+  --zpres-data-figure-max-block: 456px;
+  color: var(--sv-text);
+  background: var(--sv-background);
+  font-family: {{param.font_body}};
+}
+
+/*
+ * Shared Theme API v1 components inherit their generic accent role. Inside an
+ * SV Slide that role is neutral: violet and gold are available only through
+ * the authored current/outcome hooks below. The muted role keeps the shared
+ * 3px focus outline visible in both palettes without spending state colour.
+ */
+.zpres-theme-sv .zpres-slide {
+  --zpres-color-accent: var(--sv-muted);
+  --zpres-color-accent-alt: var(--sv-rule);
+}
+
+.zpres-theme-sv :where(a, .zpres-footnote-ref) {
+  color: var(--sv-text);
+}
+
+.zpres-theme-sv .zpres-diagram-surface,
+.zpres-theme-sv .zpres-diagram-node rect,
+.zpres-theme-sv .zpres-diagram-edge {
+  stroke: var(--sv-muted);
+}
+
+.zpres-theme-sv .zpres-diagram-arrow {
+  fill: var(--sv-muted);
+}
+
+.zpres-theme-sv :where(.zpres-chart-mark, .zpres-chart-line, .zpres-chart-point) {
+  color: var(--sv-muted);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-causal-trace :where(.zpres-diagram-surface, .zpres-diagram-node rect, .zpres-diagram-edge) {
+  stroke: var(--sv-current);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-causal-trace .zpres-diagram-arrow {
+  fill: var(--sv-current);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-causal-trace :where(.zpres-chart-mark, .zpres-chart-line, .zpres-chart-point) {
+  color: var(--sv-current);
+}
+
+.zpres-theme-sv .zpres-slide-frame {
+  position: relative;
+  color: var(--sv-text);
+  background:
+    linear-gradient(90deg, var(--sv-grid) 1px, transparent 1px),
+    linear-gradient(0deg, var(--sv-grid) 1px, transparent 1px),
+    var(--sv-surface);
+  background-size: 112px 112px;
+  box-shadow:
+    0 20px 54px rgb(17 22 27 / 0.14),
+    inset 0 0 0 1px var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide-frame::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 2px;
+  pointer-events: none;
+  background: var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide-frame::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 28px;
+  inset-inline-end: 32px;
+  width: 30px;
+  height: 18px;
+  pointer-events: none;
+  border-block-start: 2px solid var(--sv-rule);
+  border-inline-end: 2px solid var(--sv-rule);
+}
+
+/*
+ * Authored propagation state. The four rows never move: marker shape,
+ * fill/outline, line style, label, and position all remain available without
+ * colour. Two full mono spaces separate marker, line, and label.
+ */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-queued,
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace {
+  --sv-state-current-offset: 0px;
+  --sv-state-current-label: "◇  - -  QUEUED";
+  --sv-state-current-ink: var(--sv-text);
+  --sv-state-current-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-active {
+  --sv-state-current-offset: var(--sv-state-row);
+  --sv-state-current-label: "▶  ━━  ACTIVE";
+  --sv-state-current-ink: var(--sv-current);
+  --sv-state-current-shadow: 0 0 14px color-mix(in srgb, var(--sv-current) 42%, transparent);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-fixed {
+  --sv-state-current-offset: calc(var(--sv-state-row) * 2);
+  --sv-state-current-label: "■  ==  FIXED";
+  --sv-state-current-ink: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+  --sv-state-current-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-failed {
+  --sv-state-current-offset: calc(var(--sv-state-row) * 3);
+  --sv-state-current-label: "×  · ·  FAILED";
+  --sv-state-current-ink: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+  --sv-state-current-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace:has(.zpres-layout-region[data-derivation-role="stage"][data-step-index="1"][data-step-state="active"]) {
+  --sv-state-current-offset: var(--sv-state-row);
+  --sv-state-current-label: "▶  ━━  ACTIVE";
+  --sv-state-current-ink: var(--sv-current);
+  --sv-state-current-shadow: 0 0 14px color-mix(in srgb, var(--sv-current) 42%, transparent);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace:has(.zpres-layout-region[data-derivation-role="stage"][data-step-index="2"]:is([data-step-state="active"], [data-step-state="complete"])) {
+  --sv-state-current-offset: calc(var(--sv-state-row) * 2);
+  --sv-state-current-label: "■  ==  FIXED";
+  --sv-state-current-ink: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+  --sv-state-current-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-state-queued,
+  .zpres-slide-class-sv-state-active,
+  .zpres-slide-class-sv-state-fixed,
+  .zpres-slide-class-sv-state-failed,
+  .zpres-slide-class-sv-state-trace
+) .zpres-slide-frame {
+  padding-inline-start: 304px;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-state-queued,
+  .zpres-slide-class-sv-state-active,
+  .zpres-slide-class-sv-state-fixed,
+  .zpres-slide-class-sv-state-failed,
+  .zpres-slide-class-sv-state-trace
+) .zpres-slide-frame::before {
+  content: "◇  - -  QUEUED\A▶  ━━  ACTIVE\A■  ==  FIXED\A×  · ·  FAILED";
+  position: absolute;
+  inset: auto;
+  inset-block-start: var(--sv-state-rail-block-start);
+  inset-inline-start: var(--sv-state-rail-inline-start);
+  width: var(--sv-state-rail-width);
+  height: calc((var(--sv-state-row) * 4) + 36px);
+  padding: 18px 16px;
+  border-block: 1px solid var(--sv-rule);
+  border-inline-end: 1px solid var(--sv-rule);
+  color: var(--sv-muted);
+  background: color-mix(in srgb, var(--sv-rule) 8%, var(--sv-surface));
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  font-weight: 720;
+  letter-spacing: 0;
+  line-height: var(--sv-state-row);
+  white-space: pre;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-state-queued,
+  .zpres-slide-class-sv-state-active,
+  .zpres-slide-class-sv-state-fixed,
+  .zpres-slide-class-sv-state-failed,
+  .zpres-slide-class-sv-state-trace
+) .zpres-slide-frame::after {
+  content: var(--sv-state-current-label);
+  position: absolute;
+  inset: auto;
+  inset-block-start: calc(var(--sv-state-rail-block-start) + 18px + var(--sv-state-current-offset));
+  inset-inline-start: calc(var(--sv-state-rail-inline-start) + 16px);
+  width: calc(var(--sv-state-rail-width) - 32px);
+  height: var(--sv-state-row);
+  border: 0;
+  color: var(--sv-state-current-ink);
+  background: transparent;
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  font-weight: 860;
+  letter-spacing: 0;
+  line-height: var(--sv-state-row);
+  text-shadow: var(--sv-state-current-shadow);
+  white-space: pre;
+}
+
+.zpres-theme-sv .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-4);
+  border-block-end: 2px solid var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide-title {
+  max-width: 28ch;
+  color: var(--sv-text);
+  font-family: {{param.font_heading}};
+  font-size: 2.75rem;
+  font-weight: 760;
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.zpres-theme-sv :where(.zpres-slide-body, .zpres-slide-primary) {
+  color: var(--sv-text);
+  font-family: {{param.font_body}};
+}
+
+.zpres-theme-sv :where(.zpres-block-code, .zpres-block-math, .zpres-block-table),
+.zpres-theme-sv :where(.zpres-layout-region-title, figcaption, .zpres-slide-sources, .zpres-slide-footer) {
+  font-family: {{param.font_mono}};
+}
+
+.zpres-theme-sv .zpres-slide-sources,
+.zpres-theme-sv .zpres-slide-footer {
+  color: var(--sv-muted);
+  border-color: var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide-footer-number {
+  color: var(--sv-muted);
+  font-weight: 800;
+}
+
+.zpres-theme-sv .debug-diagnostics {
+  display: none !important;
+}
+
+.zpres-theme-sv .zpres-block-code pre {
+  color: var(--sv-code-text);
+  background: var(--sv-code-background);
+  box-shadow: inset 0 5px 0 var(--sv-rule);
+}
+
+/* Stable capture is part of the Theme contract; reveal pacing must not flash
+ * a compositor-sized code background between authored Steps. */
+.zpres-theme-sv :where(
+  .zpres-code-line.fragment,
+  .zpres-slide-class-sv-state-trace .zpres-layout-region.fragment
+) {
+  transition: none;
+}
+
+.zpres-theme-sv .zpres-block-math {
+  border-color: var(--sv-rule);
+  border-radius: 3px;
+  background: var(--sv-panel);
+  box-shadow: inset 5px 0 0 var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-block-table {
+  border-radius: 3px;
+  background: var(--sv-plot);
+}
+
+.zpres-theme-sv .zpres-block-table thead th {
+  color: var(--sv-text);
+  border-color: var(--sv-rule);
+  font-size: var(--text-slide-technical);
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.zpres-theme-sv .zpres-block-table tbody tr:has(strong) {
+  background: color-mix(in srgb, var(--sv-rule) 24%, transparent);
+  box-shadow: inset 5px 0 0 var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-block-table tbody tr:has(strong) strong {
+  color: var(--sv-text);
+}
+
+.zpres-theme-sv .zpres-block-table tbody tr:nth-child(even):not(:has(strong)) {
+  background: color-mix(in srgb, var(--sv-rule) 20%, transparent);
+}
+
+.zpres-theme-sv :where(.zpres-block-figure, .zpres-block-chart, .zpres-block-diagram, .zpres-block-gallery, .zpres-block-media) {
+  position: relative;
+}
+
+.zpres-theme-sv :where(.zpres-block-figure img, .zpres-chart-svg, .zpres-diagram-svg, .zpres-gallery-item img, .zpres-block-media :where(img, video)) {
+  border: 1px solid var(--sv-rule);
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, var(--sv-grid) 1px, transparent 1px),
+    linear-gradient(0deg, var(--sv-grid) 1px, transparent 1px),
+    var(--sv-plot);
+  background-size: 48px 48px;
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--sv-rule) 36%, transparent);
+}
+
+.zpres-theme-sv :where(.zpres-block-figure figcaption, .zpres-block-gallery figcaption, .zpres-block-media figcaption) {
+  color: var(--sv-muted);
+  font-size: var(--text-slide-technical);
+  letter-spacing: 0.015em;
+}
+
+.zpres-theme-sv :where(.zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation) {
+  color: var(--sv-text);
+  font-family: {{param.font_mono}};
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="section-title"] .zpres-slide-content {
+  align-content: center;
+  grid-template-rows: max-content max-content max-content;
+  gap: var(--spacing-slide-8);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="section-title"] .zpres-slide-header {
+  max-width: 68rem;
+  padding-block-end: var(--spacing-slide-8);
+  border-block-end: 7px solid var(--sv-text);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="section-title"] .zpres-slide-title {
+  max-width: 22ch;
+  font-size: 3.5rem;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="section-title"] .zpres-slide-body {
+  align-items: start;
+  margin-block-start: var(--spacing-slide-8);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="section-title"] .zpres-slide-primary {
+  align-content: start;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  column-gap: var(--spacing-slide-8);
+  row-gap: var(--spacing-slide-4);
+  padding-block: var(--spacing-slide-4);
+  border-block: 2px solid var(--sv-rule);
+  border-inline-start: 8px solid var(--sv-text);
+  background: color-mix(in srgb, var(--sv-rule) 12%, transparent);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) > .zpres-block-fit-text {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) > .zpres-block-math {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) > .zpres-block-layout {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) .zpres-layout-region :where(p, li) {
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:not(:has(> .zpres-block-layout)) > .zpres-block-fit-text {
+  grid-column: 1 / -1;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:not(:has(> .zpres-block-layout)) :where(.zpres-block-list, .zpres-block-quote) {
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text p,
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-block-paragraph:first-child {
+  color: var(--sv-text);
+  font-family: {{param.font_heading}};
+  font-weight: 760;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text {
+  min-height: 0;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text p {
+  max-width: 36ch;
+  font-size: 2.75rem;
+  line-height: 1.04;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) .zpres-block-fit-text p {
+  font-size: 2.6rem;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role] {
+  padding: var(--spacing-slide-4);
+  border-color: var(--sv-rule);
+  border-radius: 3px;
+  background: var(--sv-plot);
+  box-shadow: inset 0 5px 0 var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] {
+  box-shadow: inset 0 5px 0 var(--sv-muted);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title {
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region :where(p, li) {
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="comparison"] .zpres-block-quote blockquote {
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="comparison"] .zpres-block-quote p {
+  max-width: none;
+  font-size: var(--text-slide-technical);
+  line-height: 1.22;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title,
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region-title {
+  color: var(--sv-text);
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+/*
+ * Propagation-native evidence is explicit Source intent. These hooks compose
+ * stable renderer roles; they do not infer semantics from block order. Domain
+ * and schedule Comparisons share one baseline instead of becoming two cards.
+ */
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-slide-header {
+  max-width: none;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-slide-title {
+  max-width: 34ch;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] :where(.zpres-slide-body, .zpres-slide-primary, .zpres-block-layout) {
+  min-height: 0;
+  height: 100%;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-slide-primary {
+  grid-template-rows: minmax(0, 1fr) max-content;
+  align-content: stretch;
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-layout-regions {
+  position: relative;
+  height: 100%;
+  gap: calc(var(--sv-evidence-transition) + var(--spacing-slide-4)) !important;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-layout-regions::after {
+  content: "→";
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  box-sizing: border-box;
+  width: var(--sv-evidence-transition);
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+  transform: translate(-50%, -50%);
+  border-block: 2px solid var(--sv-rule);
+  color: var(--sv-muted);
+  background: var(--sv-surface);
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  font-weight: 820;
+  letter-spacing: 0.035em;
+  line-height: var(--text-slide-micro--line-height);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+).zpres-slide-class-sv-causal-trace[data-slide-variant="comparison"] .zpres-layout-regions::after {
+  border-color: var(--sv-current);
+  color: var(--sv-current);
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role] {
+  padding: var(--spacing-slide-6);
+  border: 0;
+  border-block: 2px solid var(--sv-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] {
+  box-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-layout-region-content {
+  align-content: center;
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-block-quote blockquote {
+  padding: var(--spacing-slide-2) var(--spacing-slide-6);
+  border-inline-start-width: 6px;
+  border-inline-start-color: var(--sv-rule);
+  background: color-mix(in srgb, var(--sv-rule) 8%, transparent);
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+).zpres-slide-class-sv-causal-trace[data-slide-variant="comparison"] .zpres-block-quote blockquote {
+  border-inline-start-color: var(--sv-current);
+}
+
+.zpres-theme-sv .zpres-slide:is(
+  .zpres-slide-class-sv-evidence-domain-update,
+  .zpres-slide-class-sv-evidence-causal-schedule
+)[data-slide-variant="comparison"] .zpres-block-quote p {
+  max-width: none;
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+/* The same domain rail appears on both sides; ticks have a full spacing step. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text {
+  position: relative;
+  width: 100%;
+  min-height: 7.25rem;
+  padding: var(--spacing-slide-4) var(--spacing-slide-6) var(--spacing-slide-8);
+  border-block-end: 5px solid var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text::before,
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -5px;
+  width: 4px;
+  height: var(--spacing-slide-6);
+  background: var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text::before {
+  inset-inline-start: var(--spacing-slide-6);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text::after {
+  inset-inline-end: var(--spacing-slide-6);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text p {
+  font-family: {{param.font_mono}};
+  font-size: 2.25rem;
+  line-height: 1.08;
+  text-align: center;
+  white-space: pre;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] .zpres-block-fit-text {
+  border-block-end-style: double;
+  border-block-end-color: var(--sv-outcome);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--sv-outcome) 9%, transparent) 0 8px,
+      transparent 8px 16px
+    );
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] .zpres-block-fit-text::before,
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] .zpres-block-fit-text::after {
+  background: var(--sv-outcome);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] .zpres-block-paragraph {
+  color: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+  font-family: {{param.font_mono}};
+  font-weight: 820;
+  text-decoration-line: underline;
+  text-decoration-style: double;
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.2em;
+}
+
+/* Schedule rows remain on one ruled field; the selected relation needs the
+ * separate authored causal hook before it may spend violet. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-schedule[data-slide-variant="comparison"] .zpres-block-table {
+  min-height: max-content;
+  height: auto;
+  align-self: start;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-schedule[data-slide-variant="comparison"] .zpres-block-table :where(th, td) {
+  padding: 4px var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-schedule[data-slide-variant="comparison"] .zpres-layout-region-content {
+  align-content: start;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-schedule.zpres-slide-class-sv-causal-trace[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] strong {
+  color: var(--sv-current);
+  text-decoration: underline 0.12em;
+  text-underline-offset: 0.18em;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-schedule.zpres-slide-class-sv-evidence-resolved-outcome[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] .zpres-block-fit-text p {
+  color: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+  font-family: {{param.font_mono}};
+  font-size: 2rem;
+  font-weight: 860;
+  line-height: 1.08;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"]:not(.zpres-slide-class-sv-state-trace) .zpres-block-layout[data-derivation="true"] {
+  --spacing-slide-3: var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"]:not(.zpres-slide-class-sv-state-trace) .zpres-layout-region[data-derivation-role] {
+  grid-template-columns: minmax(17rem, 0.35fr) minmax(0, 1fr);
+  gap: var(--spacing-slide-6);
+  padding: var(--spacing-slide-4) var(--spacing-slide-6);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"]:not(.zpres-slide-class-sv-state-trace) .zpres-layout-region[data-derivation-role="stage"] .zpres-layout-region-title {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"]:not(.zpres-slide-class-sv-state-trace) .zpres-layout-region[data-derivation-role="stage"] .zpres-layout-region-title::before {
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] {
+  border-inline-start-color: var(--sv-muted);
+  background: var(--sv-plot);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] {
+  border-radius: 3px;
+  background: var(--sv-plot);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] {
+  border-color: var(--sv-text);
+  box-shadow: inset 0 0 0 2px var(--sv-text);
+}
+
+/* The expanded form uses the same state grammar as the compact rail. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-slide-body {
+  align-items: stretch;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-slide-primary {
+  height: 100%;
+  align-content: stretch;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-block-layout[data-derivation="true"],
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-block-layout[data-derivation="true"] .zpres-layout-regions {
+  height: 100%;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-block-layout[data-derivation="true"] .zpres-layout-regions {
+  justify-content: center;
+  gap: var(--spacing-slide-2) !important;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role] {
+  grid-template-columns: minmax(17rem, 0.4fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-slide-4);
+  min-height: 0;
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+  border: 1px solid var(--sv-rule);
+  border-radius: 0;
+  background: var(--sv-plot);
+  box-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"] .zpres-block-table {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"] .zpres-block-table :where(th, td) {
+  padding: 2px var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region-title {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-slide-4);
+  color: var(--sv-text);
+  letter-spacing: 0.035em;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region-title::before {
+  display: inline-grid;
+  width: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  min-height: 2rem;
+  margin: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  color: currentColor;
+  background: transparent;
+  box-shadow: none;
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  line-height: 1;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] {
+  border-inline-start: 6px dashed var(--sv-text);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] .zpres-layout-region-title::before {
+  content: "◇";
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="1"] {
+  border-inline-start: 7px solid var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="1"] .zpres-layout-region-title::before {
+  content: "▶";
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="1"][data-step-state="active"] {
+  border-color: var(--sv-current);
+  border-inline-start-color: var(--sv-current);
+  background: color-mix(in srgb, var(--sv-current) 8%, var(--sv-surface));
+  box-shadow: inset 7px 0 0 var(--sv-current);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="1"][data-step-state="active"] .zpres-layout-region-title {
+  color: var(--sv-current);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="1"][data-step-state="complete"] {
+  border-color: var(--sv-rule);
+  color: var(--sv-muted);
+  opacity: 0.72;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"] {
+  border-inline-start: 7px double var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"] .zpres-layout-region-title::before {
+  content: "■";
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"]:is([data-step-state="active"], [data-step-state="complete"]) {
+  border-color: var(--sv-outcome);
+  border-inline-start-color: var(--sv-outcome);
+  background: color-mix(in srgb, var(--sv-outcome) 9%, var(--sv-surface));
+  box-shadow: inset 7px 0 0 var(--sv-outcome);
+  opacity: 1;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"]:is([data-step-state="active"], [data-step-state="complete"]) .zpres-layout-region-title {
+  color: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"] .zpres-block-table tbody tr:has(strong) {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--sv-outcome) 12%, transparent) 0 6px,
+      transparent 6px 12px
+    );
+  box-shadow: inset 6px 0 0 var(--sv-outcome);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"] .zpres-block-table tbody tr:has(strong) strong {
+  color: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"] .zpres-block-table tbody tr:has(strong) td:nth-child(2) strong {
+  text-decoration-line: line-through;
+  text-decoration-style: double;
+  text-decoration-thickness: 0.1em;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-queued .zpres-slide-primary {
+  border-inline-start-color: var(--sv-text);
+  border-inline-start-style: dashed;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-active .zpres-slide-primary {
+  border-inline-start-color: var(--sv-current);
+  border-inline-start-style: solid;
+  background: color-mix(in srgb, var(--sv-current) 8%, transparent);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-fixed .zpres-slide-primary {
+  border-inline-start-color: var(--sv-outcome);
+  border-inline-start-style: double;
+  background: color-mix(in srgb, var(--sv-outcome) 9%, transparent);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-failed .zpres-slide-primary {
+  gap: var(--spacing-slide-4);
+  padding: var(--spacing-slide-6);
+  border: 3px dotted var(--sv-outcome);
+  background: color-mix(in srgb, var(--sv-outcome) 9%, var(--sv-surface));
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-state-failed .zpres-slide-primary > .zpres-block-paragraph:first-child {
+  padding-block-end: var(--spacing-slide-4);
+  border-block-end: 5px double var(--sv-outcome);
+  color: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  font-weight: 820;
+  letter-spacing: 0.035em;
+  line-height: var(--text-slide-technical--line-height);
+}
+
+/* A propagation-native Derivation retains one premise while the authored
+ * state trace advances. Once ACTIVE is complete, its diagram returns to
+ * neutral so violet still means current rather than merely historical. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] .zpres-layout-region-content {
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] .zpres-block-diagram {
+  height: 100%;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] .zpres-diagram-svg {
+  width: 100%;
+  max-height: 10rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] .zpres-diagram-surface {
+  fill: transparent;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] .zpres-diagram-node rect {
+  fill: var(--sv-panel);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] :where(.zpres-diagram-node text, .zpres-diagram-edge-label) {
+  fill: var(--sv-text);
+  font-family: {{param.font_mono}};
+  font-weight: 720;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] .zpres-diagram-node text {
+  font-size: 2.125rem;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] .zpres-diagram-edge-label {
+  font-size: 2rem;
+  transform: translateY(-42px);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-step-index="1"]:not([data-step-state="active"]) :where(.zpres-diagram-surface, .zpres-diagram-node rect, .zpres-diagram-edge) {
+  stroke: var(--sv-muted);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-causal-trace.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-step-index="1"]:not([data-step-state="active"]) .zpres-diagram-arrow {
+  fill: var(--sv-muted);
+}
+
+/* Assertion-evidence Claim: the title owns the assertion and the primary
+ * region owns exactly one typed diagram or metric. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-slide-header {
+  max-width: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-slide-title {
+  max-width: 32ch;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] :where(.zpres-slide-body, .zpres-slide-primary) {
+  min-height: 0;
+  height: 100%;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-slide-primary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: stretch;
+  padding: var(--spacing-slide-6);
+  border: 0;
+  background: transparent;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-block-fit-text {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  height: 100%;
+  place-items: center;
+  padding: var(--spacing-slide-12) var(--spacing-slide-8);
+  border-block: 2px solid var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-block-fit-text p {
+  max-width: none;
+  font-family: {{param.font_heading}};
+  font-size: 5.5rem;
+  font-weight: 820;
+  line-height: 0.96;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* One resolved search metric is SV's controlled signature result moment. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-search-consequence.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-block-fit-text {
+  background:
+    radial-gradient(
+      circle at center,
+      color-mix(in srgb, var(--sv-outcome) 16%, transparent) 0 16%,
+      transparent 58%
+    );
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-search-consequence.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-block-fit-text p {
+  color: color-mix(in srgb, var(--sv-outcome) 88%, var(--sv-text));
+  text-shadow: 0 0 24px color-mix(in srgb, var(--sv-outcome) 24%, transparent);
+}
+
+/* Native Diagram/Chart evidence stays on the workbench surface and inherits
+ * Theme roles. This is the transparent alternative to an imported paper Figure. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] .zpres-slide-header {
+  max-width: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] .zpres-slide-primary {
+  grid-template-rows: minmax(0, 1fr) max-content;
+  align-content: stretch;
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] :where(.zpres-slide-body, .zpres-slide-primary, .zpres-block-figure, .zpres-block-diagram, .zpres-block-chart) {
+  min-height: 0;
+  height: 100%;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] :where(.zpres-block-figure img, .zpres-diagram-svg, .zpres-chart-svg) {
+  width: 100%;
+  max-height: none;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] .zpres-diagram-surface {
+  fill: transparent;
+  stroke: var(--sv-muted);
+  stroke-width: 2;
+  stroke-dasharray: 10 8;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] .zpres-diagram-node rect {
+  fill: var(--sv-panel);
+  stroke-width: 3;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] :where(.zpres-diagram-edge-label, .zpres-diagram-node text) {
+  fill: var(--sv-text);
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  font-weight: 720;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] .zpres-diagram-edge-label {
+  fill: var(--sv-muted);
+  font-size: var(--text-slide-micro);
+  transform: translateY(-42px);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] .zpres-slide-primary > .zpres-block-paragraph {
+  width: 100%;
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+  border-inline-start: 5px double var(--sv-muted);
+  color: var(--sv-text);
+  background: var(--sv-panel);
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+/* Imported paper evidence keeps its white field when that field carries
+ * meaning, but the frame and adjacent authored caption make the surface
+ * deliberate in Dark rather than an unexplained island. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-imported[data-slide-variant="figure"] .zpres-slide-header {
+  max-width: none;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-imported[data-slide-variant="figure"] .zpres-block-figure {
+  grid-template-rows: minmax(0, 1fr) max-content;
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-imported[data-slide-variant="figure"] .zpres-block-figure img {
+  box-sizing: border-box;
+  min-height: 0;
+  padding: var(--spacing-slide-2);
+  border: 2px solid var(--sv-muted);
+  border-radius: 0;
+  background: var(--sv-evidence-paper);
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--sv-rule) 46%, transparent);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-imported[data-slide-variant="figure"] .zpres-block-figure figcaption {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+  border-inline-start: 5px double var(--sv-muted);
+  color: var(--sv-text);
+  background: color-mix(in srgb, var(--sv-rule) 10%, var(--sv-surface));
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="figure"] .zpres-slide-header {
+  max-width: 52rem;
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="dense"] .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-2);
+  border-block-end-color: var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-code, .zpres-block-math, .zpres-block-table) {
+  padding: 4px var(--spacing-slide-2);
+  border-color: var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="dense"] .zpres-slide-primary {
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="dense"] .zpres-block-table :where(th, td) {
+  padding: 4px var(--spacing-slide-2);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-paragraph, .zpres-block-list) {
+  font-size: var(--text-slide-technical);
+  line-height: 1.2;
+}
+
+/* A short authored advisor trace is a distinct Detail evidence job, not a
+ * generic Dense layout or another solver state. The code field owns the body;
+ * the authored pacing explanation stays in its own lower band. */
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-inspectable-trace[data-slide-role="detail"] .zpres-slide-body {
+  align-items: stretch;
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-inspectable-trace[data-slide-role="detail"] .zpres-slide-primary {
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) max-content;
+  align-content: stretch;
+  gap: var(--spacing-slide-6);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-inspectable-trace[data-slide-role="detail"] .zpres-block-code {
+  display: grid;
+  min-height: 0;
+  height: 100%;
+  align-content: stretch;
+  padding: var(--spacing-slide-6) var(--spacing-slide-8);
+  border: 2px solid var(--sv-rule);
+  border-radius: 0;
+  font-size: var(--text-slide-body);
+  line-height: 1.35;
+  box-shadow: inset 0 7px 0 var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-inspectable-trace[data-slide-role="detail"] .zpres-block-code pre {
+  display: grid;
+  min-height: 0;
+  height: 100%;
+  align-content: center;
+  padding-block: var(--spacing-slide-6);
+}
+
+.zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-inspectable-trace[data-slide-role="detail"] .zpres-slide-primary > .zpres-block-paragraph {
+  padding: var(--spacing-slide-4) var(--spacing-slide-6);
+  border-block: 2px solid var(--sv-rule);
+  border-inline-start: 6px double var(--sv-muted);
+  background: var(--sv-panel);
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-role="detail"]:not(:is(
+  .zpres-slide-class-sv-state-queued,
+  .zpres-slide-class-sv-state-active,
+  .zpres-slide-class-sv-state-fixed,
+  .zpres-slide-class-sv-state-failed,
+  .zpres-slide-class-sv-state-trace
+)) .zpres-slide-frame::before {
+  background: var(--sv-rule);
+}
+
+.zpres-theme-sv .zpres-slide[data-slide-role="detail"] .zpres-slide-title {
+  font-size: var(--text-slide-title);
+}
+
+@media (prefers-contrast: more) {
+  .zpres-theme-sv .zpres-slide-frame {
+    background: var(--sv-surface);
+  }
+}
+
+@media (forced-colors: active) {
+  .zpres-theme-sv .zpres-slide:is(
+    .zpres-slide-class-sv-evidence-domain-update,
+    .zpres-slide-class-sv-evidence-causal-schedule
+  )[data-slide-variant="comparison"] .zpres-layout-regions::after {
+    border-color: CanvasText;
+    color: CanvasText;
+    background: Canvas;
+    forced-color-adjust: auto;
+  }
+
+  .zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text::before,
+  .zpres-theme-sv .zpres-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-block-fit-text::after {
+    background: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .zpres-theme-sv .zpres-slide-frame::before,
+  .zpres-theme-sv .zpres-slide-frame::after {
+    border-color: CanvasText;
+    background: CanvasText;
+  }
+
+  .zpres-theme-sv .zpres-slide:is(
+    .zpres-slide-class-sv-state-queued,
+    .zpres-slide-class-sv-state-active,
+    .zpres-slide-class-sv-state-fixed,
+    .zpres-slide-class-sv-state-failed,
+    .zpres-slide-class-sv-state-trace
+  ) .zpres-slide-frame::before {
+    color: CanvasText;
+    border-color: CanvasText;
+    background: Canvas;
+    forced-color-adjust: auto;
+  }
+
+  .zpres-theme-sv .zpres-slide:is(
+    .zpres-slide-class-sv-state-queued,
+    .zpres-slide-class-sv-state-active,
+    .zpres-slide-class-sv-state-fixed,
+    .zpres-slide-class-sv-state-failed,
+    .zpres-slide-class-sv-state-trace
+  ) .zpres-slide-frame::after {
+    color: Highlight;
+    border: 0;
+    background: transparent;
+    text-shadow: none;
+    forced-color-adjust: auto;
+  }
+}

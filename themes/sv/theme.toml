@@ -1,0 +1,90 @@
+[theme]
+name = "sv"
+version = "0.1.0"
+api_version = 1
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+modules = ["scientific-data"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+palette_parameter = "mode"
+feature_hooks = ["code-reveal", "fit-text", "footer", "speaker-notes"]
+
+[presets.spotlight]
+variant = "claim"
+classes = ["lead"]
+transition = "fade"
+
+[parameters.mode]
+type = "enum"
+default = "light"
+values = ["light", "dark"]
+
+[parameters.background]
+type = "color"
+default = "#eef0ec"
+
+[parameters.surface]
+type = "color"
+default = "#fcfdf9"
+
+[parameters.text]
+type = "color"
+default = "#171a18"
+
+[parameters.muted]
+type = "color"
+default = "#59615c"
+
+[parameters.accent]
+type = "color"
+default = "#713f8f"
+
+[parameters.accent_alt]
+type = "color"
+default = "#a36b00"
+
+[parameters.rule]
+type = "color"
+default = "#cfd5ce"
+
+[parameters.footer]
+type = "enum"
+default = "slide-number"
+values = ["none", "slide-number", "section-title", "section-progress"]
+
+[parameters.font_heading]
+type = "font"
+default = '"Avenir Next Condensed", "Arial Narrow", "Aptos Display", ui-sans-serif, sans-serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Avenir Next", Aptos, "Segoe UI", ui-sans-serif, sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = '"SFMono-Regular", Menlo, Consolas, ui-monospace, monospace'
+
+[color_variants.light]
+background = "#eef0ec"
+surface = "#fcfdf9"
+text = "#171a18"
+muted = "#59615c"
+accent = "#713f8f"
+accent_alt = "#a36b00"
+rule = "#cfd5ce"
+
+[color_variants.dark]
+background = "#111419"
+surface = "#1a1e24"
+text = "#f0f2ec"
+muted = "#aeb6ae"
+accent = "#d0a7e8"
+accent_alt = "#f2c45b"
+rule = "#3b4248"
+
+[style]
+family = "propagation-workbench"
+inspiration = []

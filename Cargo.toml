@@ -1,0 +1,64 @@
+[package]
+name = "zpres"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+description = "A presentation builder for Markdown-based talks."
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/zayenz/zpres"
+keywords = ["presentation", "markdown", "slides"]
+categories = ["command-line-utilities"]
+include = [
+    "/src/**",
+    "/themes/*/theme.toml",
+    "/themes/*/theme.css.tmpl",
+    "/themes/*/print.css.tmpl",
+    "/themes/*/specimen.zp.md",
+    "/themes/*/evidence.svg",
+    "/themes/*/runtime.csv",
+    "/themes/debug/comparison-field.svg",
+    "/themes/debug/specimen.zp.md",
+    "/themes/science/specimen.zp.md",
+    "/themes/science/assets/science-orbit-trace-dark.svg",
+    "/themes/science/assets/science-orbit.svg",
+    "/themes/reference/contract-field.svg",
+    "/themes/reference/specimen.zp.md",
+    "/themes/wedding/assets/*.svg",
+    "/fixtures/theme-api-v1/assets/dark-splash-orbit.png",
+    "/fixtures/theme-api-v1/assets/science-orbit.svg",
+    "/fixtures/theme-api-v1/data/columns-runtime.csv",
+    "/fixtures/theme-api-v1/{dark-splash,paper-chalk,sv,wedding}-reference.zp.md",
+    "/room-profiles/projected-room-default.toml",
+    "/examples/*/talk.zp.md",
+    "/examples/README.md",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/LICENSE-APACHE",
+    "/LICENSE-MIT",
+]
+
+[dependencies]
+base64 = "0.22"
+clap = { version = "4.5.40", features = ["derive"] }
+csv = "1.3"
+dirs = "6.0.0"
+image = { version = "0.25.6", default-features = false, features = ["jpeg", "png"] }
+katex = "0.4.6"
+libc = "0.2"
+lopdf = { version = "0.42", default-features = false }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+serde_yaml = "0.9.34"
+sha2 = "0.10"
+thiserror = "2.0.12"
+toml = "0.8.23"
+tungstenite = { version = "0.29", default-features = false, features = ["handshake"] }
+unicode-casefold = "0.2.0"
+unicode-normalization = "0.1.25"
+
+[dev-dependencies]
+assert_cmd = "2.0.17"
+insta = { version = "1.43.1", features = ["yaml"] }
+predicates = "3.1.3"
+tempfile = "3.20.0"

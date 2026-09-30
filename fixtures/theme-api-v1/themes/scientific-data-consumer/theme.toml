@@ -1,0 +1,39 @@
+[theme]
+name = "scientific-data-consumer"
+version = "0.1.0"
+api_version = 1
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+modules = ["scientific-data"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "dense"]
+
+[parameters.background]
+type = "color"
+default = "#eef3f5"
+
+[parameters.surface]
+type = "color"
+default = "#ffffff"
+
+[parameters.text]
+type = "color"
+default = "#172126"
+
+[parameters.muted]
+type = "color"
+default = "#52636b"
+
+[parameters.accent]
+type = "color"
+default = "#075985"
+
+[parameters.accent_alt]
+type = "color"
+default = "#9f1239"
+
+[parameters.rule]
+type = "color"
+default = "#b8c7cd"

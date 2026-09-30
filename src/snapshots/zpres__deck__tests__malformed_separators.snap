@@ -1,0 +1,54 @@
+---
+source: src/deck.rs
+assertion_line: 1494
+expression: deck
+---
+source_path: talk.zp.md
+metadata:
+  title: ~
+  author: ~
+  theme: ~
+  aspect: ~
+  extra: {}
+sections:
+  - index: 1
+    main_slide:
+      id: section-1-main
+      role: main
+      variant: ~
+      title: ~
+      blocks: []
+    detail_slides:
+      - id: section-1-detail-1
+        role: detail
+        variant: ~
+        title: Detail without a main slide
+        blocks:
+          - type: heading
+            level: 3
+            text: Detail without a main slide
+          - type: paragraph
+            markdown: "----"
+            inline_math: []
+          - type: heading
+            level: 1
+            text: Main
+diagnostics:
+  - severity: error
+    span:
+      source_path: talk.zp.md
+      line: 1
+      column: 1
+    message: detail separator must follow main slide content within a section
+  - severity: error
+    span:
+      source_path: talk.zp.md
+      line: 5
+      column: 1
+    message: separator must be exactly --- for a section or -- for a detail slide
+  - severity: error
+    span:
+      source_path: talk.zp.md
+      line: 1
+      column: 1
+    message: section is missing a main slide

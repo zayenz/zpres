@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Media poster</title>
+  <desc id="desc">A local poster image used for media fallback checks.</desc>
+  <rect width="640" height="360" fill="#101820"/>
+  <rect x="56" y="46" width="528" height="268" rx="28" fill="#172033" stroke="#22d3ee" stroke-width="4"/>
+  <circle cx="220" cy="180" r="72" fill="#0f766e"/>
+  <path d="M196 138 L282 180 L196 222 Z" fill="#f8fafc"/>
+  <path d="M360 118 H520 M360 180 H486 M360 242 H548" stroke="#a78bfa" stroke-width="18" stroke-linecap="round"/>
+  <text x="76" y="288" font-family="Arial, sans-serif" font-size="28" fill="#e5f3ff">static media fallback</text>
+</svg>

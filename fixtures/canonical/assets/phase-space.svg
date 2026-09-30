@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic phase-space sketch</title>
+  <desc id="desc">A compact fixture illustration with regions, a search path, and highlighted feasible area.</desc>
+  <rect width="640" height="360" fill="#f8fafc"/>
+  <rect x="72" y="48" width="496" height="264" fill="#ffffff" stroke="#334155" stroke-width="3"/>
+  <path d="M108 274 C176 202 196 100 282 116 C366 132 370 244 510 86" fill="none" stroke="#0f766e" stroke-width="8" stroke-linecap="round"/>
+  <path d="M122 250 L218 188 L304 208 L410 148 L532 112" fill="none" stroke="#2563eb" stroke-width="4" stroke-dasharray="12 10" stroke-linecap="round"/>
+  <circle cx="304" cy="208" r="18" fill="#facc15" stroke="#a16207" stroke-width="4"/>
+  <circle cx="410" cy="148" r="14" fill="#fb7185" stroke="#be123c" stroke-width="4"/>
+  <text x="94" y="92" font-family="Arial, sans-serif" font-size="24" fill="#0f172a">feasible band</text>
+  <text x="392" y="290" font-family="Arial, sans-serif" font-size="22" fill="#0f172a">search path</text>
+</svg>

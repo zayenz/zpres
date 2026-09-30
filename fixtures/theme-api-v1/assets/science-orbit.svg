@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc">
+  <title id="title">Nested feasible regions and a search trajectory</title>
+  <desc id="desc">Three translucent ellipses narrow toward a highlighted feasible point, connected by a stepped search path.</desc>
+  <rect width="960" height="480" rx="20" fill="#f7faf9"/>
+  <g fill="none" stroke="#0f766e">
+    <ellipse cx="480" cy="240" rx="380" ry="174" fill="#0f766e" fill-opacity=".06" stroke-width="3"/>
+    <ellipse cx="520" cy="244" rx="260" ry="122" fill="#0f766e" fill-opacity=".09" stroke-width="3"/>
+    <ellipse cx="548" cy="248" rx="108" ry="68" fill="#0f766e" fill-opacity=".14" stroke-width="3"/>
+  </g>
+  <path d="M142 354 L268 302 L390 332 L484 270 L548 248" fill="none" stroke="#9a3412" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#9a3412">
+    <circle cx="142" cy="354" r="10"/><circle cx="268" cy="302" r="10"/><circle cx="390" cy="332" r="10"/><circle cx="484" cy="270" r="10"/>
+  </g>
+  <circle cx="548" cy="248" r="17" fill="#0f766e" stroke="#fff" stroke-width="6"/>
+  <g fill="#f7faf9" fill-opacity=".97">
+    <rect x="88" y="6" width="270" height="54" rx="8"/>
+    <rect x="464" y="6" width="390" height="54" rx="8"/>
+    <rect x="646" y="242" width="270" height="62" rx="8"/>
+  </g>
+  <path d="M646 273 L620 260" fill="none" stroke="#34434a" stroke-width="3" stroke-linecap="round"/>
+  <g font-family="Aptos, Segoe UI, sans-serif" font-size="40" font-weight="600" fill="#34434a">
+    <text x="104" y="48">initial domain</text><text x="480" y="48">propagated domain</text><text x="680" y="286">feasible core</text>
+  </g>
+</svg>

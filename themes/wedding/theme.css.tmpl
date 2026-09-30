@@ -1,0 +1,444 @@
+.zpres-theme-wedding {
+  --wedding-background: {{param.background}};
+  --wedding-surface: {{param.surface}};
+  --wedding-ink: {{param.text}};
+  --wedding-muted: {{param.muted}};
+  --wedding-accent: {{param.accent}};
+  --wedding-leaf: {{param.accent_alt}};
+  --wedding-rule: {{param.rule}};
+  --wedding-ornament: url("assets/botanical.svg");
+  --wedding-gap: var(--spacing-slide-4);
+  --wedding-pile-scale: {{param.pile_scale}};
+  --wedding-pile-width: calc(1280px * var(--wedding-pile-scale));
+  --wedding-pile-height: calc(720px * var(--wedding-pile-scale));
+  --wedding-insert-rule: color-mix(in srgb, var(--wedding-accent) 58%, var(--wedding-rule));
+  --wedding-insert-surface: color-mix(in srgb, var(--wedding-surface) 78%, transparent);
+  --wedding-evidence-label: color-mix(in srgb, var(--wedding-accent) 82%, var(--wedding-ink));
+  --wedding-stage: color-mix(in srgb, var(--wedding-background) 78%, #b8ad9c);
+  --wedding-stage-thread: color-mix(in srgb, var(--wedding-ink) 8%, transparent);
+  --wedding-stock-active: var(--wedding-surface);
+  --wedding-stock-back-a: color-mix(in srgb, var(--wedding-accent) 24%, var(--wedding-surface));
+  --wedding-stock-back-b: color-mix(in srgb, var(--wedding-leaf) 22%, var(--wedding-surface));
+  --wedding-paper-tooth: radial-gradient(circle at 18% 22%, rgb(76 59 42 / 0.045) 0 0.65px, transparent 0.9px), radial-gradient(circle at 72% 64%, rgb(76 59 42 / 0.035) 0 0.7px, transparent 1px), repeating-linear-gradient(104deg, transparent 0 13px, rgb(94 72 49 / 0.018) 13px 14px);
+  --wedding-edge-light: rgb(255 255 255 / 0.78);
+  --wedding-edge-dark: color-mix(in srgb, var(--wedding-ink) 17%, transparent);
+  --wedding-ink-pressed: 0 0.45px 0 rgb(255 255 255 / 0.3), 0 0 0.35px color-mix(in srgb, var(--wedding-ink) 20%, transparent);
+  --wedding-rule-hairline: 1px solid var(--wedding-rule);
+  --wedding-rule-formal: 3px double var(--wedding-insert-rule);
+  --wedding-elevation-contact: 0 2px 3px rgb(56 44 33 / 0.16);
+  --wedding-elevation-resting: 0 10px 20px rgb(56 44 33 / 0.16), 0 2px 4px rgb(56 44 33 / 0.13);
+  --wedding-elevation-lifted: -18px 26px 42px rgb(56 44 33 / 0.22), -4px 8px 12px rgb(56 44 33 / 0.14);
+  --zpres-retain-leaving-slide: 1;
+  --zpres-data-primary-measure: none;
+  --zpres-data-claim-measure: none;
+  --zpres-data-claim-inset: var(--spacing-slide-8);
+  --zpres-data-dense-measure: none;
+  --zpres-data-figure-max-block: 466px;
+  color: var(--wedding-ink);
+  background: var(--wedding-background);
+  font-family: {{param.font_body}};
+  text-shadow: var(--wedding-ink-pressed);
+}
+
+.zpres-theme-wedding[data-zpres-palette="ivory"] {
+  --wedding-stage: #c8b9a7;
+  --wedding-stock-back-a: #d7b9ae;
+  --wedding-stock-back-b: #b9a477;
+}
+.zpres-theme-wedding[data-zpres-palette="slate-rose"] {
+  --wedding-stage: #a7aaa6;
+  --wedding-stock-back-a: #b98996;
+  --wedding-stock-back-b: #7f9c9c;
+}
+
+.zpres-theme-wedding .zpres-slide {
+  background:
+    repeating-linear-gradient(7deg, transparent 0 5px, var(--wedding-stage-thread) 5px 6px),
+    repeating-linear-gradient(97deg, transparent 0 8px, color-mix(in srgb, var(--wedding-stage-thread) 62%, transparent) 8px 9px),
+    radial-gradient(circle at 28% 18%, color-mix(in srgb, white 26%, transparent), transparent 42%),
+    var(--wedding-stage);
+}
+.zpres-theme-wedding .zpres-slide:not([data-background-split]):not(.zpres-background-splash-slide)::before,
+.zpres-theme-wedding .zpres-slide:not([data-background-split]):not(.zpres-background-splash-slide)::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  width: var(--wedding-pile-width);
+  height: var(--wedding-pile-height);
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--wedding-edge-dark) 72%, white);
+  background: var(--wedding-paper-tooth), var(--wedding-stock-back-a);
+  box-shadow: var(--wedding-elevation-contact);
+  transform-origin: center;
+}
+.zpres-theme-wedding .zpres-slide:not([data-background-split]):not(.zpres-background-splash-slide)::before { translate: calc(-50% - 8px) calc(-50% + 2px); rotate: -0.62deg; }
+.zpres-theme-wedding .zpres-slide:not([data-background-split]):not(.zpres-background-splash-slide)::after { translate: calc(-50% + 10px) calc(-50% - 2px); rotate: 0.52deg; background: var(--wedding-paper-tooth), var(--wedding-stock-back-b); }
+
+.zpres-theme-wedding .zpres-step[data-step-state="active"] {
+  border-inline-start-color: var(--wedding-leaf);
+}
+
+.zpres-theme-wedding .zpres-diagram-surface,
+.zpres-theme-wedding .zpres-diagram-node rect,
+.zpres-theme-wedding .zpres-diagram-edge {
+  stroke: var(--wedding-accent);
+}
+
+.zpres-theme-wedding .zpres-diagram-arrow {
+  fill: var(--wedding-accent);
+}
+
+.zpres-theme-wedding .zpres-slide-frame {
+  position: relative;
+  isolation: isolate;
+  color: var(--wedding-ink);
+  width: var(--wedding-pile-width);
+  height: var(--wedding-pile-height);
+  place-self: center;
+  padding: 46px 62px 36px;
+  background:
+    var(--wedding-paper-tooth),
+    linear-gradient(90deg, var(--wedding-edge-dark), transparent 1.1%, transparent 98.9%, color-mix(in srgb, var(--wedding-edge-dark) 72%, transparent)),
+    linear-gradient(180deg, var(--wedding-edge-light), transparent 9%, transparent 93%, color-mix(in srgb, var(--wedding-edge-dark) 58%, transparent)),
+    radial-gradient(circle at 12% 16%, color-mix(in srgb, var(--wedding-accent) 7%, transparent), transparent 27%),
+    var(--wedding-stock-active);
+  border: 1px solid color-mix(in srgb, var(--wedding-rule) 72%, white);
+  box-shadow: var(--wedding-elevation-resting), inset 0 1px 0 var(--wedding-edge-light), inset 0 -1px 0 var(--wedding-edge-dark);
+  transform: none;
+}
+
+.zpres-theme-wedding .zpres-slide-frame::before,
+.zpres-theme-wedding .zpres-slide-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+.zpres-theme-wedding .zpres-slide-frame::before {
+  inset: 18px;
+  background:
+    linear-gradient(var(--wedding-insert-rule), var(--wedding-insert-rule)) top right / 92px 1px no-repeat,
+    linear-gradient(var(--wedding-insert-rule), var(--wedding-insert-rule)) top right / 1px 74px no-repeat,
+    linear-gradient(var(--wedding-accent), var(--wedding-accent)) top 9px right 9px / 46px 1px no-repeat,
+    linear-gradient(var(--wedding-accent), var(--wedding-accent)) top 9px right 9px / 1px 38px no-repeat,
+    linear-gradient(var(--wedding-insert-rule), var(--wedding-insert-rule)) bottom left / 92px 1px no-repeat,
+    linear-gradient(var(--wedding-insert-rule), var(--wedding-insert-rule)) bottom left / 1px 74px no-repeat,
+    linear-gradient(var(--wedding-leaf), var(--wedding-leaf)) bottom 9px left 9px / 46px 1px no-repeat,
+    linear-gradient(var(--wedding-leaf), var(--wedding-leaf)) bottom 9px left 9px / 1px 38px no-repeat;
+  opacity: 0.72;
+}
+.zpres-theme-wedding .zpres-slide-frame::after {
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.34), inset 0 0 18px rgb(82 61 39 / 0.025);
+}
+.zpres-theme-wedding :where(.zpres-slide-content, .zpres-slide-footer) { position: relative; z-index: 1; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"]:not([data-background-split]) .zpres-slide-frame { padding: 42px 56px 30px; }
+.zpres-theme-wedding .zpres-slide[data-background-split] .zpres-slide-frame { height: 674px; align-self: center; justify-self: stretch; }
+.zpres-theme-wedding .zpres-slide[data-background-split="left"] .zpres-slide-frame {
+  width: calc(100% - var(--zpres-background-split-size, 50%));
+  margin-left: var(--zpres-background-split-size, 50%);
+}
+.zpres-theme-wedding .zpres-slide[data-background-split="right"] .zpres-slide-frame {
+  width: calc(100% - var(--zpres-background-split-size, 50%));
+  margin-right: var(--zpres-background-split-size, 50%);
+}
+
+.zpres-theme-wedding .zpres-slide-ornament::before,
+.zpres-theme-wedding .zpres-slide-ornament::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 156px;
+  height: 116px;
+  pointer-events: none;
+  background: linear-gradient(135deg, var(--wedding-accent) 0 42%, var(--wedding-leaf) 43% 78%, color-mix(in srgb, var(--wedding-ink) 72%, var(--wedding-leaf)) 79%);
+  display: none;
+  opacity: 0.56;
+  mask: var(--wedding-ornament) center / contain no-repeat;
+}
+
+.zpres-theme-wedding .zpres-slide-ornament::before { inset: 8px 10px auto auto; }
+.zpres-theme-wedding .zpres-slide-ornament::after { display: none; }
+
+.zpres-theme-wedding .zpres-slide[data-theme-param-ornament-style="wildflower"] { --wedding-ornament: url("assets/wildflower.svg"); }
+.zpres-theme-wedding .zpres-slide[data-theme-param-ornament-style="vine"] { --wedding-ornament: url("assets/vine.svg"); }
+.zpres-theme-wedding .zpres-slide[data-theme-param-ornament-style="bow"] { --wedding-ornament: url("assets/bow.svg"); }
+.zpres-theme-wedding .zpres-slide[data-theme-param-ornament-style="minimal"] { --wedding-ornament: url("assets/minimal.svg"); }
+
+/* Ornament jobs are explicit semantic classes: frame, join, point, boundary, celebrate. */
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-frame .zpres-slide-ornament::before,
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-frame .zpres-slide-ornament::after {
+  display: block;
+  width: 190px;
+  height: 142px;
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-frame .zpres-slide-ornament::after {
+  inset: auto auto calc(var(--spacing-slide-16) + var(--spacing-slide-4)) 12px;
+  rotate: 180deg;
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-join .zpres-slide-ornament::before {
+  display: none;
+  inset: auto 50% 5.1rem auto;
+  width: 108px;
+  height: 81px;
+  translate: 50% 0;
+  opacity: 0.72;
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-point .zpres-slide-ornament::before {
+  display: block;
+  inset: calc(var(--spacing-slide-16) * 3) calc(var(--spacing-slide-16) + var(--spacing-slide-4)) auto auto;
+  width: 104px;
+  height: 78px;
+  opacity: 0.66;
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-boundary .zpres-slide-ornament::before {
+  display: block;
+  inset: 5.25rem 2.5rem auto auto;
+  width: 74px;
+  height: 56px;
+  opacity: 0.68;
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-celebrate .zpres-slide-ornament::before {
+  display: block;
+  inset: auto var(--spacing-slide-4) calc(var(--spacing-slide-16) * 2 + var(--spacing-slide-2)) auto;
+  width: 132px;
+  height: 99px;
+  opacity: 0.76;
+}
+
+.zpres-theme-wedding :where(.zpres-slide-title, h1, h2, h3) { font-family: {{param.font_heading}}; }
+.zpres-theme-wedding .zpres-slide-title {
+  max-width: 25ch;
+  color: var(--wedding-ink);
+  font-size: 3rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+.zpres-theme-wedding :where(.zpres-slide-body, .zpres-slide-primary) { color: var(--wedding-ink); font-family: {{param.font_body}}; }
+.zpres-theme-wedding :where(.zpres-block-code, .zpres-block-math, .zpres-block-table, .zpres-layout-region-title, figcaption) { font-family: {{param.font_mono}}; }
+.zpres-theme-wedding :where(.zpres-slide-footer, .zpres-slide-sources) { color: var(--wedding-muted); border-color: var(--wedding-rule); }
+.zpres-theme-wedding .zpres-slide-footer-number { color: var(--wedding-accent); font-weight: 700; }
+.zpres-theme-wedding .debug-diagnostics { display: none !important; }
+
+.zpres-theme-wedding .zpres-slide-header { padding-block-end: var(--wedding-gap); border-block-end: 1px solid var(--wedding-rule); }
+.zpres-theme-wedding .zpres-slide-header::after {
+  content: "celebrating ideas";
+  color: var(--wedding-accent);
+  font-family: {{param.font_script}};
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.zpres-theme-wedding .zpres-slide:not([data-slide-variant="section-title"]) .zpres-slide-header::after { display: none; }
+
+.zpres-theme-wedding :where(.zpres-block-code pre, .zpres-block-math, .zpres-block-table, .zpres-block-callout, .zpres-block-quote blockquote, .zpres-layout-region[data-comparison-role], .zpres-layout-region[data-derivation-role]) {
+  border-color: var(--wedding-rule);
+  background: color-mix(in srgb, var(--wedding-surface) 91%, var(--wedding-background));
+}
+.zpres-theme-wedding .zpres-block-code pre { padding-inline-start: var(--spacing-slide-6); border: 0; border-block: 1px solid var(--wedding-rule); box-shadow: inset 4px 0 0 var(--wedding-accent); }
+.zpres-theme-wedding .zpres-block-math { padding: var(--spacing-slide-4) var(--spacing-slide-6); border: 0; border-block: 1px solid var(--wedding-rule); box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--wedding-leaf) 55%, transparent); }
+.zpres-theme-wedding .zpres-block-table { border: 0; border-block: 3px double var(--wedding-insert-rule); }
+.zpres-theme-wedding .zpres-block-table thead th { color: var(--wedding-ink); border-color: var(--wedding-accent); font-size: var(--text-slide-technical); }
+.zpres-theme-wedding .zpres-block-table tbody tr:nth-child(even) { background: color-mix(in srgb, var(--wedding-rule) 24%, transparent); }
+.zpres-theme-wedding :where(.zpres-block-callout, .zpres-block-quote blockquote) { margin: 0; padding: var(--spacing-slide-4) var(--spacing-slide-6) var(--spacing-slide-4) var(--spacing-slide-8); border: 0; border-inline-start: 3px double var(--wedding-accent); box-shadow: inset 0 1px 0 var(--wedding-rule), inset 0 -1px 0 var(--wedding-rule); }
+.zpres-theme-wedding .zpres-callout-title { display: inline-block; margin: 0 0 var(--spacing-slide-2); padding: 0 var(--spacing-slide-2); color: var(--wedding-evidence-label); border-block-end: 2px solid var(--wedding-accent); font-family: {{param.font_mono}}; font-size: var(--text-slide-body); line-height: var(--text-slide-body--line-height); text-transform: uppercase; }
+.zpres-theme-wedding .zpres-block-callout p { margin: 0; }
+.zpres-theme-wedding .zpres-block-chart { position: relative; box-sizing: border-box; border-block-start: 3px double var(--wedding-insert-rule); }
+.zpres-theme-wedding .zpres-block-chart .zpres-chart-svg { block-size: calc(100% - 12px); max-block-size: calc(100% - 12px); }
+.zpres-theme-wedding .zpres-block-chart::before { content: "EVIDENCE"; position: absolute; z-index: 1; inset: var(--spacing-slide-2) auto auto var(--spacing-slide-6); padding: 0 var(--spacing-slide-2); color: var(--wedding-evidence-label); background: var(--wedding-surface); border-block-end: 2px solid var(--wedding-accent); font-family: {{param.font_mono}}; font-size: var(--text-slide-micro); font-weight: 700; letter-spacing: 0.04em; line-height: 1.2; }
+.zpres-theme-wedding :where(figcaption, .zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation, .zpres-layout-region-title) { color: color-mix(in srgb, var(--wedding-muted) 62%, var(--wedding-ink)); font-size: var(--text-slide-technical); }
+.zpres-theme-wedding .zpres-slide[data-slide-role="main"] :where(figcaption, .zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation, .zpres-layout-region-title) { font-size: 26px; }
+.zpres-theme-wedding .zpres-block-figure { padding: var(--spacing-slide-2); background: var(--wedding-stock-active); box-shadow: var(--wedding-elevation-resting), 9px 10px 0 color-mix(in srgb, var(--wedding-accent) 14%, transparent); }
+.zpres-theme-wedding :where(.zpres-block-figure img, .zpres-chart-svg, .zpres-diagram-svg) { box-sizing: border-box; border: 1px solid var(--wedding-rule); background: var(--wedding-surface); box-shadow: var(--wedding-elevation-contact); }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-figure-unmounted .zpres-block-figure { padding: 0; background: transparent; box-shadow: none; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-figure-unmounted .zpres-block-figure img { border: 0; background: transparent; box-shadow: none; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-title-wide .zpres-slide-title { max-width: none; text-wrap: nowrap; }
+
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-slide-content { display: grid; grid-template-rows: minmax(5.5rem, auto) minmax(0, 1fr); gap: var(--spacing-slide-8); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-slide-header { position: relative; z-index: 2; max-width: 48rem; padding-block-end: var(--spacing-slide-4); border-block-end: 1px solid var(--wedding-insert-rule); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-slide-title { max-width: 24ch; font-size: var(--text-slide-display); line-height: var(--text-slide-display--line-height); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-slide-body { display: grid; align-items: center; padding-block: var(--spacing-slide-8) var(--spacing-slide-12); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-slide-primary { max-width: 48rem; gap: var(--spacing-slide-6); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-block-fit-text { min-height: 0; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-block-fit-text p { max-width: 19ch; font-family: {{param.font_heading}}; font-size: 4rem; font-weight: 500; line-height: 0.98; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-slide-ornament::before { display: block; inset: 7.5rem 2.5rem auto auto; width: 232px; height: 174px; opacity: 0.64; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="section-title"] .zpres-slide-ornament::after {
+  display: block;
+  inset: auto auto -18px -9px;
+  width: 38px;
+  height: 135px;
+  opacity: 0.5;
+  clip-path: inset(0 0 0 9px);
+  mask: var(--wedding-ornament) right center / 180px 135px no-repeat;
+}
+
+/* The checked lead/result classes are a valid class-only Claim accent. Keep
+   their stacked evidence clear of the formal header rule without flattening
+   the invitation-sheet composition or reducing the type ramp. */
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-slide-primary {
+  align-content: start;
+  gap: var(--spacing-slide-2);
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-slide-body {
+  align-items: stretch;
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-block-list :where(ul, ol) {
+  gap: var(--spacing-slide-2);
+}
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-block-steps :where(ul, ol) {
+  margin-block: 0;
+}
+
+.zpres-theme-wedding .zpres-slide[data-slide-variant="claim"] .zpres-slide-title { font-size: 2.5rem; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="claim"] .zpres-slide-body { padding-block-start: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary { max-width: none; gap: var(--spacing-slide-2); padding: var(--spacing-slide-2) var(--spacing-slide-8); border-inline-start: 3px solid var(--wedding-accent); background: color-mix(in srgb, var(--wedding-surface) 88%, transparent); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text { min-height: 0; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text p { max-width: 36ch; color: var(--wedding-ink); font-family: {{param.font_heading}}; font-size: 2.5rem; font-weight: 500; line-height: 1.07; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-claim-short[data-slide-variant="claim"] .zpres-block-fit-text p { font-size: 3.5rem; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-claim-medium[data-slide-variant="claim"] .zpres-block-fit-text p { font-size: 3rem; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-claim-long[data-slide-variant="claim"] .zpres-block-fit-text p { font-size: 2.75rem; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(.zpres-block-layout) .zpres-block-fit-text p { font-size: 2.5rem; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="claim"] :where(.zpres-layout-region p, .zpres-layout-region li) { font-size: var(--text-slide-technical); line-height: var(--text-slide-technical--line-height); }
+
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-slide-body { display: grid; align-items: center; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-slide-primary { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.75fr); grid-template-rows: auto auto; align-items: center; column-gap: var(--spacing-slide-12); row-gap: var(--spacing-slide-4); padding: var(--spacing-slide-8) var(--spacing-slide-12); border: 0; border-block: 1px solid var(--wedding-insert-rule); background: var(--wedding-insert-surface); }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-fit-text { grid-row: 1 / span 2; min-height: 0; align-content: center; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-fit-text p { max-width: 10ch; color: color-mix(in srgb, var(--wedding-accent) 55%, var(--wedding-ink)); font-size: 6.5rem; font-variant-numeric: lining-nums tabular-nums; line-height: 0.9; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-paragraph p { max-width: 22ch; font-size: var(--text-slide-heading); font-weight: 600; line-height: 1.12; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-quote { margin: 0; padding: var(--spacing-slide-4) var(--spacing-slide-6); border: 1px solid var(--wedding-rule); background: var(--wedding-stock-active); box-shadow: var(--wedding-elevation-contact); transform: translateY(6px); }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-quote p { font-size: var(--text-slide-technical); line-height: var(--text-slide-technical--line-height); }
+
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-botanical-list[data-slide-variant="claim"] .zpres-slide-body { align-items: center; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-botanical-list[data-slide-variant="claim"] .zpres-slide-primary { padding: var(--spacing-slide-6) var(--spacing-slide-8); border: 0; background: transparent; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-botanical-list .zpres-block-list ul { display: grid; gap: var(--spacing-slide-6); margin: 0; padding: 0; list-style: none; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-botanical-list .zpres-block-list li { position: relative; min-height: 54px; padding-inline-start: 76px; font-size: 30px; line-height: 1.22; }
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-botanical-list .zpres-block-list li::before { content: ""; position: absolute; inset: 2px auto auto 0; width: 48px; height: 42px; background: linear-gradient(135deg, var(--wedding-accent), var(--wedding-leaf)); opacity: 0.78; mask: url("assets/botanical.svg") 12% 50% / 92px 69px no-repeat; }
+
+.zpres-theme-wedding .zpres-slide.zpres-slide-class-ornament-point .zpres-block-chart { padding-inline-end: 7rem; }
+
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-block-layout { position: relative; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-layout-regions { column-gap: 104px !important; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-block-layout::before { content: ""; position: absolute; z-index: 1; inset: var(--spacing-slide-6) 50% var(--spacing-slide-6) auto; width: 2px; translate: 1px 0; background: linear-gradient(to bottom, transparent 0 8%, var(--wedding-accent) 22% calc(50% - 29px), transparent calc(50% - 29px) calc(50% + 29px), var(--wedding-leaf) calc(50% + 29px) 78%, transparent 92%); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-block-layout::after { content: ""; position: absolute; z-index: 3; top: 50%; left: 50%; width: 56px; height: 42px; translate: -50% -50%; background: linear-gradient(135deg, var(--wedding-accent), var(--wedding-leaf)); mask: url("assets/bow.svg") center / contain no-repeat; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role] { padding: var(--spacing-slide-6) var(--spacing-slide-6) var(--spacing-slide-8); border: 0; border-radius: 0; background: linear-gradient(90deg, var(--wedding-insert-rule), var(--wedding-insert-rule)) top left / min(11rem, 42%) 2px no-repeat, var(--wedding-paper-tooth), color-mix(in srgb, var(--wedding-insert-surface) 92%, var(--wedding-surface)); box-shadow: var(--wedding-elevation-contact), inset 0 1px 0 var(--wedding-edge-light); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="primary"] { transform: translateY(-3px); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] { background: linear-gradient(90deg, color-mix(in srgb, var(--wedding-leaf) 62%, var(--wedding-rule)), color-mix(in srgb, var(--wedding-leaf) 62%, var(--wedding-rule))) top left / min(11rem, 42%) 2px no-repeat, var(--wedding-paper-tooth), color-mix(in srgb, var(--wedding-insert-surface) 82%, var(--wedding-surface)); transform: translateY(3px); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title { display: flex; align-items: center; column-gap: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title::before { flex: 0 0 auto; margin-inline-end: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region :where(p, li) { font-size: 25px; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-block-layout[data-layout-kind="stack"] { position: relative; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-block-layout[data-layout-kind="stack"]::before { content: ""; position: absolute; inset-block: var(--spacing-slide-4); inset-inline-start: 0; width: 2px; background: linear-gradient(var(--wedding-accent), var(--wedding-leaf)); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role] { grid-template-columns: minmax(10rem, 0.3fr) minmax(0, 1fr); align-items: center; gap: var(--spacing-slide-6); margin-inline-start: var(--spacing-slide-6); padding: var(--spacing-slide-1) var(--spacing-slide-6); border: 1px solid var(--wedding-rule); border-radius: 0; background: var(--wedding-paper-tooth), color-mix(in srgb, var(--wedding-surface) 94%, var(--wedding-background)); box-shadow: var(--wedding-elevation-contact); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] { border-block-start: 1px solid var(--wedding-insert-rule); border-inline-start: 0; background: var(--wedding-insert-surface); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] { margin-block-start: -5px; margin-inline-start: calc(var(--spacing-slide-6) + 8px); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"]:nth-child(3n) { margin-inline-start: calc(var(--spacing-slide-6) + 16px); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] { border-color: var(--wedding-accent); background: var(--wedding-paper-tooth), color-mix(in srgb, var(--wedding-accent) 9%, var(--wedding-surface)); box-shadow: var(--wedding-elevation-resting); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region-title { display: flex; align-items: center; gap: var(--spacing-slide-4); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region-title::before { flex: 0 0 auto; margin-inline-end: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-slide-primary:has(> .zpres-block-figure) { padding-block-start: var(--spacing-slide-4); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-block-figure img { max-block-size: 18rem !important; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-block-figure { gap: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="derivation"] .zpres-block-quote { margin-block-start: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-paragraph, .zpres-block-list, .zpres-block-table, .zpres-block-code, .zpres-block-math) { font-size: var(--text-slide-technical); line-height: 1.15; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] :where(.zpres-slide-content, .zpres-slide-primary) { gap: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-code, .zpres-block-math, .zpres-block-table) { padding: 3px var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] .zpres-block-code pre { width: 100%; min-width: 0; padding: 3px var(--spacing-slide-2) 3px var(--spacing-slide-6); line-height: 1.08; letter-spacing: -0.02em; white-space: pre-wrap; box-sizing: border-box; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] .zpres-code-line-text { display: block; width: 100%; min-width: 0; max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; box-sizing: border-box; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] .zpres-slide-header { padding-block-end: 0; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] .zpres-slide-title,
+.zpres-theme-wedding .zpres-slide[data-slide-role="detail"] .zpres-slide-title { font-size: 2.25rem; line-height: 0.98; }
+.zpres-theme-wedding .zpres-slide[data-slide-variant="dense"] .zpres-slide-ornament::before,
+.zpres-theme-wedding .zpres-slide[data-slide-role="detail"] .zpres-slide-ornament::before {
+  inset-block-start: calc(var(--spacing-slide-16) - var(--spacing-slide-2));
+  width: 68px;
+  height: 51px;
+  opacity: 0.62;
+}
+
+.zpres-theme-wedding .zpres-slide[data-theme-param-density="compact"] { --wedding-gap: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-theme-param-density="compact"] :where(.zpres-slide-content, .zpres-slide-primary) { gap: var(--spacing-slide-2); }
+.zpres-theme-wedding .zpres-slide[data-theme-param-density="spacious"] { --wedding-gap: var(--spacing-slide-8); }
+.zpres-theme-wedding .zpres-slide[data-theme-param-density="spacious"] :where(.zpres-slide-content, .zpres-slide-primary) { gap: var(--spacing-slide-8); }
+
+/* Renderer-owned backgrounds remain visible. Split images reserve their lane; full images receive a quiet surface scrim. */
+.zpres-theme-wedding .zpres-slide:has(> .zpres-slide-background):not([data-background-split]) .zpres-slide-frame { background: color-mix(in srgb, var(--wedding-surface) 88%, transparent); backdrop-filter: blur(1px); }
+.zpres-theme-wedding .zpres-slide[data-background-split] .zpres-slide-frame { background: var(--wedding-surface); }
+
+/* The stage stays still while the invitation sheet changes. Steps on one sheet never use these states. */
+.zpres-theme-wedding .zpres-slide.is-entering,
+.zpres-theme-wedding .zpres-slide.is-leaving { background: transparent; }
+.zpres-theme-wedding .zpres-slide:is(.is-entering, .is-leaving) > .zpres-slide-frame {
+  background-color: var(--wedding-stock-active) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.zpres-theme-wedding .zpres-slide.is-leaving:not([data-zpres-transition-direction="backward"]):not(.zpres-background-splash-slide) > .zpres-slide-background,
+.zpres-theme-wedding .zpres-slide.is-entering[data-zpres-transition-direction="backward"]:not(.zpres-background-splash-slide) > .zpres-slide-background { opacity: 0; }
+.zpres-theme-wedding .zpres-slide.is-leaving { z-index: 4; }
+.zpres-theme-wedding .zpres-slide.is-entering { z-index: 3; }
+.zpres-theme-wedding .zpres-slide.is-leaving > .zpres-slide-frame { animation: wedding-sheet-leave-forward 500ms cubic-bezier(.4,0,.2,1) both; }
+.zpres-theme-wedding .zpres-slide.is-leaving::before,
+.zpres-theme-wedding .zpres-slide.is-leaving::after { display: none; }
+.zpres-theme-wedding .zpres-slide.is-entering > .zpres-slide-frame { animation: none; }
+.zpres-theme-wedding .zpres-slide.is-leaving[data-zpres-transition-direction="backward"] { z-index: 3; }
+.zpres-theme-wedding .zpres-slide.is-entering[data-zpres-transition-direction="backward"] { z-index: 5; }
+.zpres-theme-wedding .zpres-slide.is-leaving[data-zpres-transition-direction="backward"] > .zpres-slide-frame { animation: wedding-sheet-stay-backward 500ms linear both; }
+.zpres-theme-wedding .zpres-slide.is-leaving[data-zpres-transition-direction="backward"]::before,
+.zpres-theme-wedding .zpres-slide.is-leaving[data-zpres-transition-direction="backward"]::after { display: block; animation: wedding-sheet-stay-backward 500ms linear both; }
+.zpres-theme-wedding .zpres-slide.is-entering[data-zpres-transition-direction="backward"] > .zpres-slide-frame { animation: wedding-sheet-enter-backward 500ms cubic-bezier(.4,0,.2,1) both; }
+.zpres-theme-wedding .zpres-slide.is-entering[data-zpres-transition-direction="backward"]::before,
+.zpres-theme-wedding .zpres-slide.is-entering[data-zpres-transition-direction="backward"]::after { display: none; }
+
+/* The generated opening beat reveals the untreated room, then returns the complete folio. */
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-entering) .zpres-slide.is-leaving > .zpres-slide-background { opacity: 0; }
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-entering) .zpres-slide.is-leaving > .zpres-slide-frame,
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-entering) .zpres-slide.is-leaving::before,
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-entering) .zpres-slide.is-leaving::after { animation: wedding-sheet-leave-forward 500ms cubic-bezier(.4,0,.2,1) both; }
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-entering) .zpres-slide.is-leaving::before,
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-entering) .zpres-slide.is-leaving::after { display: block; }
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-leaving) .zpres-background-splash-slide.is-leaving { z-index: 2; }
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-leaving) .zpres-slide.is-entering { z-index: 5; }
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-leaving) .zpres-slide.is-entering > .zpres-slide-frame,
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-leaving) .zpres-slide.is-entering::before,
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-leaving) .zpres-slide.is-entering::after { animation: wedding-pile-enter 500ms cubic-bezier(.4,0,.2,1) both; }
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-leaving) .zpres-slide.is-entering::before,
+.zpres-theme-wedding:has(.zpres-background-splash-slide.is-leaving) .zpres-slide.is-entering::after { display: block; }
+@keyframes wedding-sheet-leave-forward {
+  from { transform: translate(0, 0) rotate(0); box-shadow: var(--wedding-elevation-resting); }
+  to { transform: translate(-1320px, -96px) rotate(-5deg); box-shadow: var(--wedding-elevation-lifted); }
+}
+@keyframes wedding-sheet-stay-backward {
+  from, to { transform: translate(0, 0) rotate(0); box-shadow: var(--wedding-elevation-resting); }
+}
+@keyframes wedding-sheet-enter-backward {
+  from { transform: translate(-1320px, -96px) rotate(-5deg); box-shadow: var(--wedding-elevation-lifted); }
+  to { transform: translate(0, 0) rotate(0); box-shadow: var(--wedding-elevation-resting); }
+}
+@keyframes wedding-pile-enter {
+  from { transform: translate(-1320px, -96px) rotate(-5deg); box-shadow: var(--wedding-elevation-lifted); }
+  to { transform: translate(0, 0) rotate(0); box-shadow: var(--wedding-elevation-resting); }
+}
+
+/* The visible stock counts down with the final three Sections: three, two, one. */
+.zpres-theme-wedding .zpres-section-stack:nth-last-child(2) .zpres-slide::after,
+.zpres-theme-wedding .zpres-print-slide:nth-last-child(2)::after { display: none; }
+.zpres-theme-wedding .zpres-section-stack:last-child .zpres-slide::before,
+.zpres-theme-wedding .zpres-section-stack:last-child .zpres-slide::after,
+.zpres-theme-wedding .zpres-print-slide:last-child::before,
+.zpres-theme-wedding .zpres-print-slide:last-child::after { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .zpres-theme-wedding .zpres-slide:is(.is-entering, .is-leaving) > .zpres-slide-frame {
+    animation: none !important;
+    transform: none !important;
+    box-shadow: var(--wedding-elevation-resting);
+  }
+  .zpres-theme-wedding .zpres-slide:is(.is-entering, .is-leaving)::before,
+  .zpres-theme-wedding .zpres-slide:is(.is-entering, .is-leaving)::after { animation: none !important; transform: none !important; }
+}
+
+@media (forced-colors: active) { .zpres-theme-wedding .zpres-slide-ornament::before, .zpres-theme-wedding .zpres-slide-ornament::after { background: CanvasText; } }

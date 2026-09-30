@@ -1,0 +1,1243 @@
+.zpres-theme-paper-chalk {
+  --paper-background: {{param.background}};
+  --paper-surface: {{param.surface}};
+  --paper-ink: {{param.text}};
+  --paper-pencil: {{param.muted}};
+  --paper-blue: {{param.accent}};
+  --paper-rose: {{param.accent_alt}};
+  --paper-rule: {{param.rule}};
+  --paper-wash: color-mix(in srgb, var(--paper-blue) 5%, var(--paper-surface));
+  --paper-grid: color-mix(in srgb, var(--paper-rule) 42%, transparent);
+  --paper-label-background: color-mix(in srgb, var(--paper-surface) 94%, transparent);
+  --paper-evidence-surface: color-mix(in srgb, var(--paper-surface) 96%, var(--paper-background));
+  --paper-evidence-mat: color-mix(in srgb, var(--paper-surface) 84%, var(--paper-background));
+  --paper-pad: var(--spacing-slide-4);
+  --paper-annotation-gap: var(--spacing-slide-4);
+  --paper-annotation-stroke: 3px;
+  --paper-annotation-shadow: 0 1px 0 color-mix(in srgb, var(--paper-ink) 18%, transparent);
+  --paper-depth-1: 4px 5px 0 color-mix(in srgb, var(--paper-blue) 9%, transparent);
+  --zpres-data-primary-measure: none;
+  --zpres-data-claim-measure: none;
+  --zpres-data-claim-inset: var(--spacing-slide-8);
+  --zpres-data-dense-measure: none;
+  --zpres-data-figure-max-block: 460px;
+  color: var(--paper-ink);
+  background: var(--paper-background);
+  font-family: {{param.font_body}};
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-slide {
+  --paper-grid: color-mix(in srgb, var(--paper-rule) 38%, transparent);
+  --paper-label-background: color-mix(in srgb, var(--paper-surface) 96%, transparent);
+  --paper-evidence-surface: color-mix(in srgb, var(--paper-surface) 92%, var(--paper-background));
+  --paper-evidence-mat: color-mix(in srgb, var(--paper-ink) 88%, var(--paper-pencil));
+}
+
+/*
+ * Semantic annotation vocabulary. These marks are opt-in Source hooks:
+ * result-bracket = a stated conclusion; focal-circle = the chart's direct-labelled
+ * point; margin-observation = authored text beside Figure evidence; checkpoint =
+ * the terminal Derivation stage. No annotation class means no analytical mark.
+ */
+.zpres-theme-paper-chalk .zpres-slide[class*="zpres-slide-class-annotation-"] {
+  --paper-annotation-ink: var(--paper-rose);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-section-index[data-slide-variant="section-title"] .zpres-slide-content {
+  grid-template-rows: max-content minmax(0, 1fr) max-content;
+  align-content: stretch;
+  gap: var(--spacing-slide-8);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-section-index[data-slide-variant="section-title"] .zpres-slide-header {
+  align-self: start;
+  max-width: 58rem;
+  margin-block-start: var(--spacing-slide-12);
+  padding-block-end: var(--spacing-slide-4);
+  border-block-end: var(--paper-annotation-stroke) double var(--paper-blue);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-section-index[data-slide-variant="section-title"] .zpres-slide-title {
+  max-width: 15ch;
+  font-size: 4.5rem;
+  line-height: 0.9;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-section-index[data-slide-variant="section-title"] .zpres-slide-body {
+  justify-self: end;
+  align-self: end;
+  width: 42rem;
+  max-width: 60%;
+  margin-block-end: calc(var(--spacing-slide-16) + var(--spacing-slide-4));
+  padding-block-start: var(--spacing-slide-4);
+  border-inline-start: var(--paper-annotation-stroke) solid var(--paper-rose);
+  padding-inline-start: var(--spacing-slide-6);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-section-index[data-slide-variant="section-title"] .zpres-slide-primary {
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-section-index[data-slide-variant="section-title"] .zpres-block-fit-text p {
+  max-width: 16ch;
+  font-size: var(--text-slide-heading);
+  line-height: var(--text-slide-heading--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-section-index[data-slide-variant="section-title"] .zpres-block-paragraph {
+  font-size: var(--text-slide-body);
+  line-height: var(--text-slide-body--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-claim-short[data-slide-variant="claim"] .zpres-slide-content {
+  grid-template-rows: max-content minmax(0, 1fr) max-content;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-claim-short[data-slide-variant="claim"] .zpres-slide-header {
+  max-width: 54rem;
+  border-block-end: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-claim-short[data-slide-variant="claim"] .zpres-slide-body {
+  align-items: center;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-claim-short[data-slide-variant="claim"] .zpres-slide-primary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18rem;
+  align-items: center;
+  gap: var(--spacing-slide-12);
+  min-height: 25rem;
+  padding: var(--spacing-slide-8) var(--spacing-slide-12);
+  border: 0;
+  background: transparent;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-claim-short[data-slide-variant="claim"] .zpres-block-fit-text p {
+  max-width: 13ch;
+  font-size: 5rem;
+  line-height: 0.92;
+  text-decoration-line: underline;
+  text-decoration-color: var(--paper-annotation-ink, var(--paper-rose));
+  text-decoration-thickness: var(--paper-annotation-stroke);
+  text-underline-offset: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-claim-short[data-slide-variant="claim"] .zpres-block-paragraph {
+  max-width: 17ch;
+  padding-inline-start: var(--spacing-slide-4);
+  border-inline-start: 2px solid var(--paper-rule);
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-resource-claim.zpres-slide-class-paper-claim-short[data-slide-variant="claim"] .zpres-slide-primary {
+  grid-template-columns: minmax(0, 1fr) 24rem;
+  grid-template-rows: minmax(0, 1fr) max-content;
+  gap: var(--spacing-slide-4) var(--spacing-slide-12);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-resource-claim[data-slide-variant="claim"] .zpres-block-fit-text {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-resource-claim[data-slide-variant="claim"] .zpres-block-figure {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  min-height: 0;
+  margin: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-resource-claim[data-slide-variant="claim"] .zpres-block-figure img {
+  width: 15rem;
+  height: 15rem;
+  margin-inline: auto;
+  background: #fff;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-resource-claim[data-slide-variant="claim"] .zpres-block-figure figcaption {
+  color: var(--paper-ink);
+  font-size: 14px;
+  line-height: 1.15;
+  overflow-wrap: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-resource-claim[data-slide-variant="claim"] .zpres-block-paragraph {
+  grid-column: 2;
+  grid-row: 2;
+  max-width: none;
+  margin: 0;
+  padding: var(--spacing-slide-2) 0 0;
+  border-inline-start: 0;
+  border-block-start: 2px solid var(--paper-rule);
+  text-align: center;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-result-bracket[data-slide-variant="claim"] .zpres-slide-primary::after {
+  content: "";
+  position: absolute;
+  inset-block: var(--spacing-slide-6);
+  inset-inline-start: var(--spacing-slide-2);
+  width: var(--spacing-slide-6);
+  border-block: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+  border-inline-start: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-focal-circle .zpres-chart-direct-annotation-point {
+  r: 13px;
+  fill: var(--paper-surface);
+  stroke: var(--paper-annotation-ink);
+  stroke-width: 5px;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-focal-circle {
+  --zpres-data-figure-max-block: 420px;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-focal-circle .zpres-chart-annotation {
+  fill: var(--paper-ink) !important;
+  stroke: var(--paper-surface) !important;
+  transform: translateX(calc(-1 * var(--paper-annotation-gap)));
+  text-decoration-line: underline;
+  text-decoration-color: var(--paper-annotation-ink);
+  text-decoration-thickness: var(--paper-annotation-stroke);
+  text-underline-offset: 5px;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-margin-observation[data-slide-variant="figure"] .zpres-slide-primary {
+  grid-template-columns: minmax(0, 1fr) 17rem;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-slide-8);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-margin-observation .zpres-block-figure {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-margin-observation .zpres-block-quote {
+  position: relative;
+  grid-column: 2;
+  align-self: center;
+  margin: 0;
+  padding: var(--spacing-slide-4);
+  border: 0;
+  border-block: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+  background: var(--paper-label-background);
+  box-shadow: var(--paper-annotation-shadow);
+  font-size: var(--text-slide-technical);
+  font-style: italic;
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-margin-observation .zpres-block-quote::before {
+  content: "";
+  position: absolute;
+  inset-inline-end: 100%;
+  inset-block-start: 50%;
+  width: var(--spacing-slide-4);
+  border-block-start: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+  transform: translateY(-50%) rotate(-8deg);
+  transform-origin: right center;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-margin-observation .zpres-block-quote::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: calc(100% + var(--spacing-slide-4) - 2px);
+  inset-block-start: calc(50% - var(--spacing-slide-2));
+  width: 0;
+  height: 0;
+  border-block: var(--spacing-slide-2) solid transparent;
+  border-inline-end: var(--spacing-slide-2) solid var(--paper-annotation-ink);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-annotation-checkpoint .zpres-layout-region[data-derivation-role="stage"]:last-child {
+  position: relative;
+  border-color: var(--paper-annotation-ink);
+  border-inline-end-width: 7px;
+  box-shadow: inset 0 -3px 0 var(--paper-annotation-ink);
+}
+
+.zpres-theme-paper-chalk .zpres-step[data-step-state="active"] {
+  border-inline-start-color: var(--paper-blue);
+}
+
+.zpres-theme-paper-chalk .zpres-diagram-surface,
+.zpres-theme-paper-chalk .zpres-diagram-node rect,
+.zpres-theme-paper-chalk .zpres-diagram-edge {
+  stroke: var(--paper-blue);
+}
+
+.zpres-theme-paper-chalk .zpres-diagram-arrow {
+  fill: var(--paper-blue);
+}
+
+.zpres-theme-paper-chalk .zpres-slide-frame {
+  position: relative;
+  color: var(--paper-ink);
+  background:
+    linear-gradient(90deg, transparent 47px, color-mix(in srgb, var(--paper-rose) 72%, transparent) 47px 49px, transparent 49px),
+    repeating-linear-gradient(0deg, transparent 0 31px, var(--paper-grid) 31px 32px),
+    linear-gradient(90deg, transparent 0 107px, color-mix(in srgb, var(--paper-rule) 25%, transparent) 107px 108px),
+    var(--paper-surface);
+  background-size: auto, auto, 108px 100%, auto;
+  box-shadow: 0 18px 50px rgb(17 32 25 / 0.16), inset 0 0 0 1px var(--paper-rule);
+}
+
+.zpres-theme-paper-chalk .zpres-slide-frame::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: 22px;
+  inset-block: 18% 18%;
+  width: 18px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, var(--paper-background) 0 6px, color-mix(in srgb, var(--paper-pencil) 36%, transparent) 6px 7px, transparent 7px) center top / 18px 18px no-repeat,
+    radial-gradient(circle, var(--paper-background) 0 6px, color-mix(in srgb, var(--paper-pencil) 36%, transparent) 6px 7px, transparent 7px) center / 18px 18px no-repeat,
+    radial-gradient(circle, var(--paper-background) 0 6px, color-mix(in srgb, var(--paper-pencil) 36%, transparent) 6px 7px, transparent 7px) center bottom / 18px 18px no-repeat;
+}
+
+.zpres-theme-paper-chalk .zpres-slide-frame::after {
+  content: "FIELD NOTE";
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 24px;
+  inset-inline-end: 32px;
+  padding: 4px 8px 3px;
+  color: var(--paper-pencil);
+  border: 1px solid var(--paper-rule);
+  background: var(--paper-label-background);
+  font-family: {{param.font_mono}};
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  transform: rotate(-1.2deg);
+}
+
+.zpres-theme-paper-chalk .zpres-slide-header {
+  padding-block-end: var(--paper-pad);
+  border-block-end: 2px solid var(--paper-rule);
+}
+
+.zpres-theme-paper-chalk .zpres-slide-title {
+  max-width: 27ch;
+  color: var(--paper-ink);
+  font-family: {{param.font_heading}};
+  font-size: 2.85rem;
+  font-stretch: condensed;
+  font-weight: 760;
+  letter-spacing: 0.01em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.zpres-theme-paper-chalk :where(.zpres-slide-body, .zpres-slide-primary) {
+  color: var(--paper-ink);
+  font-family: {{param.font_body}};
+}
+
+.zpres-theme-paper-chalk :where(.zpres-block-code, .zpres-block-math, .zpres-block-table, .zpres-layout-region-title),
+.zpres-theme-paper-chalk :where(figcaption, .zpres-slide-sources, .zpres-slide-footer) {
+  font-family: {{param.font_mono}};
+}
+
+.zpres-theme-paper-chalk :where(.zpres-slide-sources, .zpres-slide-footer) {
+  color: var(--paper-pencil);
+  border-color: var(--paper-rule);
+}
+
+.zpres-theme-paper-chalk .zpres-slide-footer-number {
+  margin-left: 8px;
+  margin-inline-start: 8px;
+  color: var(--paper-rose);
+  font-weight: 800;
+}
+
+/*
+ * Reserve one stable navigation mark on every Slide. A Main slide reveals the
+ * down arrow only when its Section contains Detail material, so the footer
+ * never shifts as the audience moves between Sections.
+ */
+.zpres-theme-paper-chalk .zpres-slide-footer::before {
+  content: "\2193";
+  display: block;
+  flex: none;
+  width: 1.5rem;
+  margin-inline-start: auto;
+  color: var(--paper-rose);
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-body);
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+}
+
+.zpres-theme-paper-chalk .zpres-section-stack:has(> .zpres-slide[data-slide-role="detail"]) > .zpres-slide[data-slide-role="main"] .zpres-slide-footer::before {
+  opacity: 1;
+}
+
+.zpres-theme-paper-chalk .zpres-print-slide .zpres-slide-footer::before {
+  opacity: 0;
+}
+
+.zpres-theme-paper-chalk .debug-diagnostics {
+  display: none !important;
+}
+
+.zpres-theme-paper-chalk .zpres-block-code pre {
+  width: 100%;
+  min-width: 0;
+  padding-inline-start: var(--spacing-slide-6);
+  box-sizing: border-box;
+  color: var(--paper-ink);
+  border: 1px solid var(--paper-rule);
+  background: color-mix(in srgb, var(--paper-surface) 88%, var(--paper-background));
+  box-shadow: inset 5px 0 0 var(--paper-blue);
+}
+
+.zpres-theme-paper-chalk .zpres-block-math {
+  border-color: color-mix(in srgb, var(--paper-blue) 42%, var(--paper-rule));
+  border-radius: 1px;
+  background: var(--paper-wash);
+  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--paper-blue) 42%, transparent);
+}
+
+.zpres-theme-paper-chalk .zpres-block-table {
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--paper-surface) 88%, transparent);
+}
+
+.zpres-theme-paper-chalk .zpres-block-table thead th {
+  color: var(--paper-ink);
+  border-color: var(--paper-blue);
+  font-size: var(--text-slide-technical);
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.zpres-theme-paper-chalk .zpres-block-table tbody tr:nth-child(even):not(:has(strong)) {
+  background: color-mix(in srgb, var(--paper-rule) 24%, transparent);
+}
+
+/* Let an authored reference table sit directly on the ruled notebook page. */
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-table-on-page .zpres-block-table {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-table-on-page .zpres-block-table tbody tr {
+  background: transparent;
+  box-shadow: none;
+}
+
+.zpres-theme-paper-chalk :where(.zpres-block-figure img, .zpres-chart-svg, .zpres-diagram-svg, .zpres-gallery-item img, .zpres-block-media :where(img, video)) {
+  border: 1px solid var(--paper-rule);
+  border-radius: 2px;
+  background: var(--paper-evidence-surface);
+  box-shadow: var(--paper-depth-1);
+}
+
+.zpres-theme-paper-chalk .zpres-chart-svg rect[fill="#ffffff"] {
+  fill: var(--paper-evidence-surface);
+}
+
+.zpres-theme-paper-chalk .zpres-chart-svg :where(.zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation) {
+  fill: var(--paper-ink);
+}
+
+.zpres-theme-paper-chalk .zpres-chart-svg line[stroke="#475569"] {
+  stroke: var(--paper-pencil);
+}
+
+.zpres-theme-paper-chalk .zpres-chart-svg line[stroke="#e2e8f0"] {
+  stroke: var(--paper-rule);
+}
+
+.zpres-theme-paper-chalk .zpres-chart-svg circle[stroke="#ffffff"]:not(.zpres-chart-direct-annotation-point) {
+  stroke: var(--paper-evidence-surface);
+}
+
+.zpres-theme-paper-chalk .zpres-chart-svg .zpres-chart-annotation {
+  stroke: var(--paper-evidence-surface) !important;
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-slide :where(.zpres-block-figure img, .zpres-gallery-item img, .zpres-block-media :where(img, video)) {
+  background: var(--paper-evidence-mat);
+}
+
+/*
+ * Keep vector evidence on its authored paint path. Chromium can rescale a
+ * filtered external SVG compositor layer inside an autoscaled Slide, which
+ * makes labels smaller than their Light peer and prevents reliable semantic
+ * text recapture. Raster images and video retain the night-field toning below.
+ */
+.zpres-theme-paper-chalk .zpres-slide :where(.zpres-block-figure img[src$=".svg" i], .zpres-gallery-item img[src$=".svg" i], .zpres-block-media img[src$=".svg" i]) {
+  filter: none;
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-slide :where(.zpres-block-figure img:not([src$=".svg" i]), .zpres-gallery-item img:not([src$=".svg" i]), .zpres-block-media :where(img:not([src$=".svg" i]), video)) {
+  filter:
+    brightness(calc(var(--zpres-figure-brightness, 1) * 0.78))
+    grayscale(var(--zpres-figure-gray, 0))
+    saturate(calc(var(--zpres-figure-saturate, 1) * 0.88))
+    contrast(1.08)
+    blur(var(--zpres-figure-blur, 0px));
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-slide.zpres-slide-class-paper-evidence-canvas .zpres-block-figure img[src$="paper-chalk-search-tree.svg"] {
+  background: var(--paper-evidence-surface);
+  filter: none;
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-chart-svg [data-chart-series-index] {
+  --paper-chart-series: var(--paper-blue);
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-chart-svg [data-chart-series-index="1"] {
+  --paper-chart-series: var(--paper-rose);
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-chart-svg [data-chart-series-index="2"] {
+  --paper-chart-series: color-mix(in srgb, var(--paper-blue) 58%, var(--paper-ink));
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-chart-svg [data-chart-series-index="3"] {
+  --paper-chart-series: color-mix(in srgb, var(--paper-rose) 60%, var(--paper-ink));
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-chart-svg [data-chart-series-index="4"] {
+  --paper-chart-series: var(--paper-pencil);
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-chart-svg :is(.zpres-chart-line, .zpres-chart-mark) {
+  stroke: var(--paper-chart-series, var(--paper-blue));
+}
+
+.zpres-theme-paper-chalk[data-zpres-palette="dark"] .zpres-chart-svg :is(.zpres-chart-point:not(.zpres-chart-direct-annotation-point), .zpres-chart-mark) {
+  fill: var(--paper-chart-series, var(--paper-blue));
+}
+
+.zpres-theme-paper-chalk :where(.zpres-block-figure figcaption, .zpres-block-gallery figcaption, .zpres-block-media figcaption) {
+  color: var(--paper-pencil);
+  font-size: var(--text-slide-technical);
+  letter-spacing: 0.01em;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-role="main"] :where(.zpres-block-figure figcaption, .zpres-block-gallery figcaption, .zpres-block-media figcaption, .zpres-layout-region-title) {
+  font-size: 26px;
+}
+
+.zpres-theme-paper-chalk :where(.zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation) {
+  color: var(--paper-ink);
+  font-family: {{param.font_mono}};
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-slide-content {
+  align-content: center;
+  grid-template-rows: max-content max-content max-content;
+  gap: var(--spacing-slide-8);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-slide-header {
+  max-width: 70rem;
+  padding-block-end: var(--spacing-slide-8);
+  border-block-end: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-slide-title {
+  max-width: 30ch;
+  font-size: 3rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-slide-body {
+  align-items: start;
+  padding-block-start: var(--spacing-slide-8);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-slide-primary {
+  align-content: start;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-block-fit-text {
+  min-height: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-block-fit-text p {
+  max-width: 23ch;
+  font-size: 3.5rem;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="section-title"] .zpres-slide-frame::after {
+  content: "INDEX";
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-slide-frame::after {
+  content: "CLAIM";
+  color: var(--paper-rose);
+  border-color: var(--paper-rose);
+}
+
+/* Class-only lead/result slides use the same compact stacked register as a
+   Claim while retaining their checked Source classes as the semantic hook. */
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-slide-body {
+  align-items: stretch;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-slide-primary {
+  align-content: start;
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-block-list :where(ul, ol) {
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-block-steps :where(ul, ol) {
+  margin-block: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+  gap: var(--spacing-slide-8);
+  padding: var(--spacing-slide-6);
+  border-block: 2px solid var(--paper-rule);
+  border-inline-start: 5px solid var(--paper-rose);
+  background: color-mix(in srgb, var(--paper-rose) 4%, var(--paper-label-background));
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) > .zpres-block-fit-text {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) > .zpres-block-math {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) > .zpres-block-layout {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text {
+  min-height: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text p,
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-block-paragraph:first-child {
+  max-width: 36ch;
+  color: var(--paper-ink);
+  font-family: {{param.font_heading}};
+  font-size: 2.75rem;
+  font-weight: 760;
+  line-height: 1.04;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary:has(> .zpres-block-layout) .zpres-block-fit-text p {
+  font-size: 2.5rem;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="claim"] :where(.zpres-layout-region p, .zpres-layout-region li, .zpres-block-list, .zpres-block-quote) {
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="comparison"] .zpres-slide-frame::after {
+  content: "COMPARE";
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role] {
+  border-color: var(--paper-rule);
+  border-radius: 1px;
+  background: var(--paper-label-background);
+  box-shadow: inset 0 4px 0 var(--paper-blue);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] {
+  box-shadow: inset 0 4px 0 var(--paper-rose);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region :where(p, li) {
+  font-size: 26px;
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title {
+  display: flex;
+  align-items: center;
+  column-gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title::before {
+  flex: 0 0 auto;
+  margin-inline-end: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk :where(.zpres-slide[data-slide-variant="comparison"], .zpres-slide[data-slide-variant="derivation"]) .zpres-layout-region-title {
+  color: var(--paper-ink);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="derivation"] .zpres-slide-frame::after {
+  content: "WORKING";
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="derivation"] .zpres-slide-title {
+  max-width: 34ch;
+  font-size: 2.5rem;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"],
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] {
+  border-radius: 1px;
+  background: var(--paper-label-background);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] {
+  border-inline-start-color: var(--paper-rose);
+  padding-inline-start: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] {
+  border-color: var(--paper-blue);
+  box-shadow: inset 0 0 0 2px var(--paper-blue), inset -6px 0 0 var(--paper-rose);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="derivation"] .zpres-slide-primary:has(> .zpres-block-figure + .zpres-block-quote) .zpres-block-figure img {
+  max-height: 252px;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="figure"] .zpres-slide-frame::after {
+  content: "EVIDENCE";
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="figure"] .zpres-slide-header {
+  max-width: 54rem;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="dense"] .zpres-slide-frame::after {
+  content: "DETAIL";
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="dense"] .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-2);
+  border-block-end-color: var(--paper-rose);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="dense"] .zpres-slide-primary {
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-code, .zpres-block-math, .zpres-block-table) {
+  padding: 4px var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="dense"] .zpres-block-table :where(th, td) {
+  padding: 4px var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-paragraph, .zpres-block-list) {
+  font-size: var(--text-slide-technical);
+  line-height: 1.2;
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-slide-role="detail"] .zpres-slide-frame::after {
+  content: "DETAIL";
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-register-none .zpres-slide-frame::after {
+  display: none;
+}
+
+.zpres-theme-paper-chalk :where(.zpres-slide[data-slide-role="detail"], .zpres-slide[data-slide-variant="dense"]) .zpres-slide-title {
+  font-family: {{param.font_body}};
+  font-size: var(--text-slide-heading);
+  font-stretch: normal;
+  font-weight: 720;
+  letter-spacing: 0;
+  line-height: var(--text-slide-heading--line-height);
+}
+
+/*
+ * A Dense Detail Figure followed by a qualification needs one unscaled
+ * Technical register. Cap the visual before autoscale can reduce both the
+ * authored caption and the qualification below their intended paint size.
+ */
+.zpres-theme-paper-chalk .zpres-slide[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-primary:has(> .zpres-block-figure + .zpres-block-quote) .zpres-block-figure img {
+  max-height: 390px;
+}
+
+/*
+ * Evidence-shaped Paper Chalk compositions. Each selector is opt-in from the
+ * Source file so ordinary Main and Detail slides retain the approved v1 grid.
+ */
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] {
+  --zpres-data-figure-max-block: 492px;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-slide-content {
+  grid-template-rows: max-content minmax(0, 1fr) max-content;
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-slide-header {
+  max-width: 50rem;
+  padding-block-end: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-slide-title {
+  font-size: 2.5rem;
+  line-height: 1.04;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-walk-title-wide[data-slide-variant="figure"] .zpres-slide-header,
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-walk-title-wide[data-slide-variant="figure"] .zpres-slide-title {
+  max-width: none;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-walk-title-wide[data-slide-variant="figure"] .zpres-slide-title {
+  white-space: nowrap;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] :where(.zpres-slide-body, .zpres-slide-primary, .zpres-block-figure, .zpres-block-chart) {
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-block-layout .zpres-block-figure {
+  align-self: center;
+  height: auto;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-slide-primary {
+  align-content: stretch;
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] :where(.zpres-block-figure img, .zpres-chart-svg) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 492px;
+  border: 0;
+  background: var(--paper-evidence-surface);
+  box-shadow: var(--paper-depth-1);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-block-layout .zpres-block-figure img {
+  height: var(--zpres-figure-height, 100%);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-layout-region[data-region-index="2"] .zpres-block-list {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-layout-region[data-region-index="2"] .zpres-block-list ul {
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas[data-slide-variant="figure"] .zpres-layout-region[data-region-index="2"] .zpres-block-list li {
+  white-space: nowrap;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas.zpres-slide-class-annotation-margin-observation[data-slide-variant="figure"] .zpres-slide-primary {
+  grid-template-columns: minmax(0, 1fr) 17rem;
+  gap: var(--spacing-slide-6);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas.zpres-slide-class-annotation-margin-observation[data-slide-variant="figure"] .zpres-block-quote {
+  padding: var(--spacing-slide-4);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas.zpres-slide-class-annotation-margin-observation[data-slide-variant="figure"] .zpres-block-quote blockquote {
+  padding: 0;
+  border: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas.zpres-slide-class-annotation-focal-circle[data-slide-variant="figure"] .zpres-slide-primary {
+  grid-template-rows: minmax(0, 1fr) max-content;
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas.zpres-slide-class-annotation-focal-circle[data-slide-variant="figure"] .zpres-block-quote {
+  margin: 0;
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+  border: 0;
+  border-inline-start: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+  background: var(--paper-label-background);
+  font-size: var(--text-slide-technical);
+  font-style: normal;
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas.zpres-slide-class-annotation-focal-circle[data-slide-variant="figure"] .zpres-block-quote blockquote,
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-evidence-canvas.zpres-slide-class-annotation-focal-circle[data-slide-variant="figure"] .zpres-block-quote p {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-slide-content {
+  grid-template-rows: max-content minmax(0, 1fr) max-content;
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-slide-title {
+  font-size: 2.5rem;
+  line-height: 1.04;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-slide-primary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) max-content;
+  align-content: stretch;
+  gap: var(--spacing-slide-6);
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-block-layout {
+  min-height: 0;
+  height: 100%;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role] {
+  padding: var(--spacing-slide-2) var(--spacing-slide-4) 0;
+  border: 0;
+  border-block-end: 4px solid var(--paper-blue);
+  border-radius: 0;
+  background: linear-gradient(0deg, var(--paper-wash), transparent 72%);
+  box-shadow: none;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-layout-region-title {
+  padding-block-end: var(--spacing-slide-2);
+  border-block-end: 1px solid var(--paper-rule);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-block-fit-text {
+  min-height: 8rem;
+  align-content: end;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-block-fit-text p {
+  font-size: 3.5rem;
+  line-height: 0.96;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline[data-slide-variant="comparison"] .zpres-layout-region :where(p, li) {
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline.zpres-slide-class-annotation-delta-bracket[data-slide-variant="comparison"] .zpres-block-quote {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--spacing-slide-2) var(--spacing-slide-6) var(--spacing-slide-2) var(--spacing-slide-16);
+  border: 0;
+  border-block: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+  background: var(--paper-label-background);
+  box-shadow: var(--paper-annotation-shadow);
+  font-size: var(--text-slide-technical);
+  font-style: normal;
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline.zpres-slide-class-annotation-delta-bracket[data-slide-variant="comparison"] .zpres-block-quote::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--spacing-slide-2);
+  inset-inline-start: var(--spacing-slide-4);
+  width: var(--spacing-slide-4);
+  border-block: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+  border-inline-start: var(--paper-annotation-stroke) solid var(--paper-annotation-ink);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline.zpres-slide-class-annotation-delta-bracket[data-slide-variant="comparison"] .zpres-block-quote blockquote {
+  padding: 0;
+  border: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-comparison-baseline.zpres-slide-class-annotation-delta-bracket[data-slide-variant="comparison"] .zpres-block-quote p {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-slide-content {
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-slide-body {
+  align-items: stretch;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] :where(.zpres-slide-primary, .zpres-block-layout) {
+  height: 100%;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-slide-title {
+  font-family: {{param.font_body}};
+  font-size: var(--text-slide-heading);
+  font-stretch: normal;
+  font-weight: 720;
+  line-height: var(--text-slide-heading--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role] {
+  position: relative;
+  min-height: 5.5rem;
+  grid-template-columns: minmax(11rem, 0.3fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-slide-6);
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] {
+  min-height: 7rem;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] {
+  padding-inline-start: var(--spacing-slide-4);
+  border-inline-start: 6px double var(--paper-blue);
+  border-block-end: 1px solid var(--paper-rule);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"]::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset-block-start: calc(var(--spacing-slide-2) + 2.5rem);
+  inset-block-end: calc(-1 * var(--spacing-slide-4));
+  inset-inline-start: calc(var(--spacing-slide-4) + 1.25rem);
+  border-inline-start: 3px solid var(--paper-rule);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="future"]::before {
+  content: attr(data-step-index);
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--spacing-slide-2);
+  inset-inline-start: var(--spacing-slide-4);
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  visibility: visible;
+  color: color-mix(in srgb, var(--paper-blue) 64%, var(--paper-pencil));
+  border: 2px solid color-mix(in srgb, var(--paper-blue) 52%, var(--paper-rule));
+  border-radius: 999px;
+  background: var(--paper-evidence-surface);
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  font-weight: 760;
+  line-height: 1;
+  opacity: 0.88;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="future"]::after {
+  visibility: visible;
+  border-inline-start-color: color-mix(in srgb, var(--paper-blue) 46%, var(--paper-rule));
+  opacity: 0.86;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"]:last-child::after {
+  display: none;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region-title {
+  position: relative;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  letter-spacing: 0.035em;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] .zpres-layout-region-title::before {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  margin-inline-end: var(--spacing-slide-4);
+  background: var(--paper-evidence-surface);
+  font-size: var(--text-slide-technical);
+  line-height: 1;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] {
+  border: 0;
+  background: var(--paper-wash);
+  box-shadow: none;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] .zpres-layout-region-title::before {
+  border-radius: 999px;
+  color: var(--paper-surface);
+  border-color: var(--paper-blue);
+  background: var(--paper-blue);
+  box-shadow: inset 0 0 0 4px var(--paper-evidence-surface);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] {
+  padding-block-end: var(--spacing-slide-2);
+  border-block-end: 3px double var(--paper-blue);
+  font-weight: 650;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path.zpres-slide-class-annotation-checkpoint[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"]:last-child {
+  padding-block-end: var(--spacing-slide-4);
+  border: 0;
+  border-block-end: var(--paper-annotation-stroke) double var(--paper-annotation-ink);
+  border-inline-end: 6px solid var(--paper-annotation-ink);
+  background: color-mix(in srgb, var(--paper-annotation-ink) 4%, transparent);
+  box-shadow: none;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-derivation-path.zpres-slide-class-annotation-checkpoint[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"]:last-child .zpres-layout-region-title {
+  text-decoration-line: underline;
+  text-decoration-color: var(--paper-annotation-ink);
+  text-decoration-thickness: var(--paper-annotation-stroke);
+  text-underline-offset: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-ledger[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-primary {
+  height: 100%;
+  grid-template-columns: minmax(0, 1fr) 16rem;
+  align-content: center;
+  align-items: start;
+  gap: var(--spacing-slide-6);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-ledger[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-body {
+  align-items: stretch;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-ledger[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-supporting:empty {
+  display: none;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-ledger[data-slide-role="detail"][data-slide-variant="dense"] .zpres-block-table {
+  grid-column: 1;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-ledger[data-slide-role="detail"][data-slide-variant="dense"] .zpres-block-quote {
+  grid-column: 2;
+  margin: 0;
+  padding: var(--spacing-slide-4);
+  border: 0;
+  border-inline-start: 5px solid var(--paper-rose);
+  background: var(--paper-label-background);
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-ledger[data-slide-role="detail"][data-slide-variant="dense"] .zpres-block-quote blockquote {
+  padding: 0;
+  border: 0;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-trace[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-primary {
+  height: 100%;
+  align-content: center;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-trace[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-body {
+  align-items: stretch;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-trace[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-supporting:empty {
+  display: none;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-trace[data-slide-role="detail"][data-slide-variant="dense"] .zpres-block-code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-trace[data-slide-role="detail"][data-slide-variant="dense"] .zpres-block-code pre {
+  display: grid;
+  min-height: 18rem;
+  align-items: center;
+  padding: var(--spacing-slide-6) var(--spacing-slide-8);
+  font-size: 1.75rem;
+  line-height: 1.25;
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-trace[data-slide-role="detail"][data-slide-variant="dense"] .zpres-block-code code {
+  align-content: center;
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide.zpres-slide-class-paper-detail-trace[data-slide-role="detail"][data-slide-variant="dense"] .zpres-code-line {
+  grid-template-columns: 3ch minmax(0, 1fr);
+  gap: var(--spacing-slide-4);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-theme-param-density="compact"] {
+  --paper-pad: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-theme-param-density="compact"] :where(.zpres-slide-content, .zpres-slide-primary) {
+  gap: var(--spacing-slide-2);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-theme-param-density="spacious"] {
+  --paper-pad: var(--spacing-slide-8);
+}
+
+.zpres-theme-paper-chalk .zpres-slide[data-theme-param-density="spacious"] :where(.zpres-slide-content, .zpres-slide-primary) {
+  gap: var(--spacing-slide-8);
+}
+
+@media (prefers-contrast: more) {
+  .zpres-theme-paper-chalk .zpres-slide-frame {
+    background: var(--paper-surface);
+  }
+}
+
+@media (forced-colors: active) {
+  .zpres-theme-paper-chalk .zpres-slide-frame::before,
+  .zpres-theme-paper-chalk .zpres-slide-frame::after {
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+
+  .zpres-theme-paper-chalk .zpres-slide[class*="zpres-slide-class-annotation-"] {
+    --paper-annotation-ink: CanvasText;
+  }
+}

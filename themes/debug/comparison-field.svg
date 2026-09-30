@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title description">
+  <title id="title">Nested feasible regions</title>
+  <desc id="description">Three nested regions with a search path ending at a highlighted point.</desc>
+  <rect width="960" height="540" fill="#e2e8f0"/>
+  <ellipse cx="480" cy="270" rx="360" ry="190" fill="#cffafe" stroke="#0e7490" stroke-width="8"/>
+  <ellipse cx="500" cy="270" rx="250" ry="130" fill="#a5f3fc" stroke="#0e7490" stroke-width="8"/>
+  <ellipse cx="540" cy="270" rx="130" ry="70" fill="#67e8f9" stroke="#0e7490" stroke-width="8"/>
+  <polyline points="150,390 280,330 390,360 500,285 590,250" fill="none" stroke="#7c3aed" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="590" cy="250" r="20" fill="#f8fafc" stroke="#0f172a" stroke-width="10"/>
+</svg>

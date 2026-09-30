@@ -1,0 +1,7 @@
+size,model,runtime_ms
+10,baseline,42
+20,baseline,95
+30,baseline,180
+10,symmetry-aware,35
+20,symmetry-aware,71
+30,symmetry-aware,128

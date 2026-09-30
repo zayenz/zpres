@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" role="img" aria-labelledby="title desc">
+  <title id="title">Propagation-pruned constraint search tree</title>
+  <desc id="desc">A root representing 63 candidates narrows along one retained cobalt path through 11 candidates to one solution. Rose crosses mark alternative branches removed by propagation.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#3976c1"/>
+    </marker>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M124 215L330 96M124 215L330 215M124 215L330 334" stroke="#748ca7" stroke-width="5"/>
+    <path d="M366 215L570 136M366 215L570 294" stroke="#3976c1" stroke-width="8" marker-end="url(#arrow)"/>
+    <path d="M606 294L820 215" stroke="#3976c1" stroke-width="8" marker-end="url(#arrow)"/>
+    <path d="M552 117L588 153M588 117L552 153" stroke="#b95f72" stroke-width="8"/>
+    <path d="M312 78L348 114M348 78L312 114M312 316L348 352M348 316L312 352" stroke="#b95f72" stroke-width="8"/>
+  </g>
+  <g font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="26" font-weight="800" text-anchor="middle" dominant-baseline="central">
+    <circle cx="96" cy="215" r="52" fill="#3976c1"/>
+    <text x="96" y="215" fill="#fffdf4">63</text>
+    <circle cx="348" cy="215" r="46" fill="#3976c1"/>
+    <text x="348" y="215" fill="#fffdf4">11</text>
+    <circle cx="588" cy="294" r="42" fill="#3976c1"/>
+    <text x="588" y="294" fill="#fffdf4">4</text>
+    <circle cx="844" cy="206" r="50" fill="#b95f72"/>
+    <text x="844" y="206" fill="#fffdf4">1</text>
+  </g>
+  <g fill="none" stroke="#748ca7" stroke-width="4">
+    <circle cx="330" cy="96" r="28"/>
+    <circle cx="330" cy="334" r="28"/>
+    <circle cx="570" cy="136" r="28"/>
+  </g>
+</svg>

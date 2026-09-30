@@ -1,0 +1,91 @@
+---
+source: src/deck.rs
+assertion_line: 1435
+expression: deck
+---
+source_path: talk.zp.md
+metadata:
+  title: Search and symmetry
+  author: Zayenz
+  theme: debug
+  aspect: "16:9"
+  extra: {}
+sections:
+  - index: 1
+    main_slide:
+      id: section-1-main
+      role: main
+      variant: ~
+      title: Main claim
+      blocks:
+        - type: heading
+          level: 1
+          text: Main claim
+        - type: paragraph
+          markdown: Constraint models leak structure.
+          inline_math: []
+        - type: speaker_notes
+          markdown: Say this slowly.
+    detail_slides:
+      - id: section-1-detail-1
+        role: detail
+        variant: ~
+        title: Detail evidence
+        blocks:
+          - type: heading
+            level: 2
+            text: Detail evidence
+          - type: paragraph
+            markdown: The toy model already shows it.
+            inline_math: []
+      - id: section-1-detail-2
+        role: detail
+        variant: ~
+        title: Detail caveat
+        blocks:
+          - type: heading
+            level: 2
+            text: Detail caveat
+          - type: paragraph
+            markdown: The example is small.
+            inline_math: []
+  - index: 2
+    main_slide:
+      id: section-2-main
+      role: main
+      variant: ~
+      title: Second claim
+      blocks:
+        - type: heading
+          level: 1
+          text: Second claim
+        - type: paragraph
+          markdown: Propagation is not the whole story.
+          inline_math: []
+    detail_slides: []
+  - index: 3
+    main_slide:
+      id: section-3-main
+      role: main
+      variant: ~
+      title: Third claim
+      blocks:
+        - type: heading
+          level: 1
+          text: Third claim
+        - type: paragraph
+          markdown: Search still decides the shape.
+          inline_math: []
+    detail_slides:
+      - id: section-3-detail-1
+        role: detail
+        variant: ~
+        title: Detail reference
+        blocks:
+          - type: heading
+            level: 2
+            text: Detail reference
+          - type: paragraph
+            markdown: Keep this for questions.
+            inline_math: []
+diagnostics: []

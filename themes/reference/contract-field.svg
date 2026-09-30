@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#edf1ee"/>
+  <rect x="76" y="54" width="808" height="432" rx="18" fill="#fffdf8" stroke="#ccd5ce"/>
+  <rect x="76" y="54" width="12" height="432" fill="#0a6c67"/>
+  <line x1="120" y1="150" x2="840" y2="150" stroke="#ccd5ce" stroke-width="2"/>
+  <line x1="120" y1="398" x2="840" y2="398" stroke="#ccd5ce" stroke-width="2"/>
+  <line x1="120" y1="444" x2="840" y2="444" stroke="#ccd5ce" stroke-width="2"/>
+  <rect x="160" y="194" width="432" height="150" rx="14" fill="#d7ebe6" stroke="#0a6c67" stroke-width="3"/>
+  <rect x="622" y="194" width="160" height="150" rx="14" fill="#f4eee3" stroke="#b67828" stroke-width="2"/>
+  <g fill="#17211f" font-family="Menlo, Consolas, monospace" font-size="22" letter-spacing="2">
+    <text x="124" y="110">TITLE</text>
+    <text x="124" y="426">SOURCES</text>
+    <text x="124" y="472">FOOTER</text>
+    <text x="184" y="232">BODY</text>
+    <text x="650" y="232">EVIDENCE</text>
+  </g>
+</svg>

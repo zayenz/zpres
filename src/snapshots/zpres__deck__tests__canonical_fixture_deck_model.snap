@@ -1,0 +1,288 @@
+---
+source: src/deck.rs
+assertion_line: 7899
+expression: deck
+---
+source_path: fixtures/canonical/canonical.zp.md
+metadata:
+  title: Canonical zpres fixture
+  author: Zayenz
+  theme: science
+  aspect: "16:9"
+  footer: Canonical fixture
+  slide_numbers: true
+  autoscale: true
+  transition: fade
+  image_corner_radius: "18"
+  theme_params:
+    accent: "#0f766e"
+    footer: slide-number
+    mode: light
+  extra: {}
+sections:
+  - index: 1
+    main_slide:
+      id: section-1-main
+      role: main
+      variant: section_title
+      title: Canonical zpres fixture
+      blocks:
+        - type: heading
+          level: 1
+          text: Canonical zpres fixture
+        - type: paragraph
+          markdown: "This deck is deliberately small and broad. It exists to pressure the deck model, HTML presentation, PDF export, theme contract, and live authoring loop."
+          inline_math: []
+        - type: speaker_notes
+          markdown: "The title slide should stay boring: if this fails, the pipeline is broken before the interesting content starts."
+    detail_slides: []
+  - index: 2
+    main_slide:
+      id: section-2-main
+      role: main
+      preset: spotlight
+      variant: ~
+      title: "Claim: structure leaks through search"
+      blocks:
+        - type: heading
+          level: 1
+          text: "Claim: structure leaks through search"
+        - type: fit_text
+          markdown: Search order is part of the model.
+          inline_math: []
+        - type: paragraph
+          markdown: "Constraint models do not only state what is feasible. They also shape what the solver sees first[^model-shape]."
+          inline_math: []
+        - type: list
+          ordered: false
+          reveal: true
+          items:
+            - markdown: typed content
+              inline_math: []
+            - markdown: explicit intent
+              inline_math: []
+        - type: quote
+          markdown: "The model's shape becomes part of the search story."
+          inline_math: []
+        - type: callout
+          kind: note
+          title: Theme contract
+          markdown: "Claims, lists, quotes, and callouts should all expose stable hooks."
+          inline_math: []
+        - type: steps
+          pdf_policy: final_state
+          steps:
+            - index: 1
+              markdown: Start from the model.
+            - index: 2
+              markdown: Reveal the symmetry.
+            - index: 3
+              markdown: Show the branching consequence.
+        - type: footnotes
+          notes:
+            - label: model-shape
+              number: 1
+              markdown: "Footnotes stay attached to the slide that cites them, which keeps source context visible in static exports."
+              inline_math: []
+    detail_slides: []
+  - index: 3
+    main_slide:
+      id: section-3-main
+      role: main
+      variant: derivation
+      title: "Theorem: propagation is local"
+      blocks:
+        - type: heading
+          level: 1
+          text: "Theorem: propagation is local"
+        - type: paragraph
+          markdown: "For a propagator \\(p\\), the strongest useful local statement is often:"
+          inline_math:
+            - p
+        - type: math
+          display: true
+          latex: "p(D_1 \\cap D_2) \\subseteq p(D_1) \\cap p(D_2)"
+        - type: paragraph
+          markdown: "The equation above is a typed display math block, and the paragraph contains typed inline math."
+          inline_math: []
+        - type: code
+          language: rust
+          code: "fn propagate(domain: Domain) -> Domain {\n    domain.tighten()\n}"
+    detail_slides: []
+  - index: 4
+    main_slide:
+      id: section-4-main
+      role: main
+      variant: dense
+      title: "Table: search policy comparison"
+      blocks:
+        - type: heading
+          level: 1
+          text: "Table: search policy comparison"
+        - type: table
+          headers:
+            - Policy
+            - Strength
+            - Risk
+          alignments:
+            - default
+            - default
+            - default
+          rows:
+            - - first-fail
+              - fast pruning
+              - unstable tie breaks
+            - - activity
+              - adapts quickly
+              - can chase noise
+            - - impact
+              - explains choices
+              - needs calibration
+    detail_slides: []
+  - index: 5
+    main_slide:
+      id: section-5-main
+      role: main
+      variant: ~
+      title: "Chart: runtime by model size"
+      blocks:
+        - type: heading
+          level: 1
+          text: "Chart: runtime by model size"
+        - type: chart
+          format: vega_lite
+          spec:
+            $schema: "https://vega.github.io/schema/vega-lite/v5.json"
+            data:
+              url: data/runtime.csv
+            encoding:
+              color:
+                field: model
+                type: nominal
+              x:
+                field: size
+                type: quantitative
+              y:
+                field: runtime_ms
+                type: quantitative
+            mark: line
+          data:
+            url: data/runtime.csv
+            format: csv
+    detail_slides: []
+  - index: 6
+    main_slide:
+      id: section-6-main
+      role: main
+      variant: figure
+      title: "Figure: phase space sketch"
+      background_image:
+        src: assets/phase-space.svg
+        intent: contextual
+        alt: Phase-space sketch background
+        position: center 42%
+        fit: cover
+        dim: 86
+        grayscale: 35
+        saturate: 72
+        blur: 0
+        splash: false
+      blocks:
+        - type: heading
+          level: 1
+          text: "Figure: phase space sketch"
+        - type: figure
+          src: assets/phase-space.svg
+          alt: Phase-space sketch
+          caption: A small synthetic phase-space sketch used by the canonical fixture.
+          options:
+            radius: "18"
+    detail_slides: []
+  - index: 7
+    main_slide:
+      id: section-7-main
+      role: main
+      variant: comparison
+      title: "Layout: two-column explanation"
+      blocks:
+        - type: heading
+          level: 1
+          text: "Layout: two-column explanation"
+        - type: layout
+          kind: columns
+          values:
+            widths:
+              - kind: fraction
+                units: 40
+              - kind: fraction
+                units: 60
+            gap:
+              kind: scale
+              step: 4
+            align: start
+          regions:
+            - name: Left
+              source_span:
+                source_path: fixtures/canonical/canonical.zp.md
+                line: 132
+                column: 1
+              role: primary
+              blocks:
+                - type: list
+                  ordered: false
+                  reveal: false
+                  items:
+                    - markdown: compact model
+                      inline_math: []
+                    - markdown: visible invariant
+                      inline_math: []
+            - name: Right
+              source_span:
+                source_path: fixtures/canonical/canonical.zp.md
+                line: 137
+                column: 1
+              role: supporting
+              blocks:
+                - type: paragraph
+                  markdown: The solver-facing story should remain next to the model-facing story.
+                  inline_math: []
+    detail_slides: []
+  - index: 8
+    main_slide:
+      id: section-8-main
+      role: main
+      variant: ~
+      title: Main path with detail slides
+      blocks:
+        - type: heading
+          level: 1
+          text: Main path with detail slides
+        - type: paragraph
+          markdown: This section checks that the main slide and detail slides stay attached in the model and linearize correctly for PDF export.
+          inline_math: []
+    detail_slides:
+      - id: section-8-detail-1
+        role: detail
+        variant: ~
+        title: "Detail: explicit HTML-only content"
+        blocks:
+          - type: heading
+            level: 2
+            text: "Detail: explicit HTML-only content"
+          - type: paragraph
+            markdown: "Unsupported until issue 0004/0005 rendering: HTML-only content is explicit so output targets can decide how to handle it."
+            inline_math: []
+          - type: html_only
+            html: "<aside class=\"fixture-callout\">HTML-only fixture block</aside>"
+      - id: section-8-detail-2
+        role: detail
+        variant: ~
+        title: "Detail: backup note"
+        blocks:
+          - type: heading
+            level: 2
+            text: "Detail: backup note"
+          - type: paragraph
+            markdown: This detail slide exists to verify one main slide with two detail slides.
+            inline_math: []
+diagnostics: []

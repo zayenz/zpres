@@ -1,0 +1,433 @@
+.zpres-theme-debug {
+  --debug-ink: var(--zpres-color-text, {{param.text}});
+  --debug-muted: var(--zpres-color-muted, {{param.muted}});
+  --debug-paper: var(--zpres-color-surface, {{param.surface}});
+  --debug-stage: var(--zpres-color-background, {{param.background}});
+  --debug-accent: var(--zpres-color-accent, {{param.accent}});
+  --debug-active: {{param.accent_alt}};
+  --debug-mono: {{param.font_mono}};
+  --debug-warning: #b45309;
+  --debug-failure: #b91c1c;
+  --debug-rule: var(--zpres-color-rule, {{param.rule}});
+  color: var(--debug-ink);
+  background: var(--debug-stage);
+}
+
+/* Resolve aliases at Slide scope so authored spot colors remain local. */
+.zpres-theme-debug .zpres-slide {
+  --debug-ink: var(--zpres-color-text, {{param.text}});
+  --debug-muted: var(--zpres-color-muted, {{param.muted}});
+  --debug-paper: var(--zpres-color-surface, {{param.surface}});
+  --debug-stage: var(--zpres-color-background, {{param.background}});
+  --debug-accent: var(--zpres-color-accent, {{param.accent}});
+  --debug-rule: var(--zpres-color-rule, {{param.rule}});
+}
+
+.zpres-theme-debug .zpres-slide[data-theme-param-background] {
+  --debug-paper: var(--zpres-color-background, {{param.background}});
+  --debug-muted: var(--zpres-color-text, {{param.text}});
+  --debug-accent: var(--zpres-color-text, {{param.text}});
+  --debug-rule: var(--zpres-color-text, {{param.text}});
+}
+
+.zpres-theme-debug .zpres-slide-frame {
+  background-color: var(--debug-paper);
+  background-image:
+    linear-gradient(rgb(8 145 178 / 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(8 145 178 / 0.055) 1px, transparent 1px);
+  background-size: 32px 32px;
+  box-shadow: inset 0 0 0 1px var(--debug-rule);
+}
+
+.zpres-theme-debug .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-4);
+  border-block-end: 1px solid var(--debug-rule);
+}
+
+.zpres-theme-debug .zpres-slide-body {
+  color: var(--debug-ink);
+}
+
+.zpres-theme-debug .zpres-slide-title {
+  color: var(--debug-ink);
+  font-family: var(--zpres-font-heading, ui-monospace, monospace);
+  font-weight: 760;
+  letter-spacing: -0.035em;
+}
+
+.zpres-theme-debug .zpres-slide-primary {
+  color: var(--debug-ink);
+  font-family: var(--zpres-font-body, ui-sans-serif, sans-serif);
+}
+
+/* Legacy lead classes are a safe unannotated Claim fallback. */
+.zpres-theme-debug .zpres-slide-class-lead .zpres-slide-title {
+  max-width: 100%;
+  text-wrap: pretty;
+}
+
+.zpres-theme-debug .zpres-slide-class-lead .zpres-slide-body {
+  align-items: start;
+}
+
+.zpres-theme-debug .zpres-slide-class-lead .zpres-slide-primary {
+  gap: var(--spacing-slide-3);
+}
+
+.zpres-theme-debug .zpres-slide-class-lead :where(.zpres-block-list, .zpres-block-steps) {
+  line-height: 1.2;
+}
+
+.zpres-theme-debug .zpres-slide-sources,
+.zpres-theme-debug .zpres-slide-footer {
+  color: var(--debug-muted);
+  border-color: var(--debug-rule);
+}
+
+/* Semantic lanes: the label sits in reserved lane space, never over authored ink. */
+.zpres-theme-debug .zpres-block-figure {
+  position: relative;
+  padding-block-start: 18px;
+  border: 2px solid var(--debug-accent);
+}
+
+.zpres-theme-debug .zpres-block-figure > .zpres-block-label {
+  position: absolute;
+  display: block;
+  padding: 2px 6px;
+  color: var(--debug-paper);
+  background: var(--debug-accent);
+  font: 700 10px/1.2 var(--debug-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.zpres-theme-debug .zpres-block-figure figcaption,
+.zpres-theme-debug .zpres-slide-sources,
+.zpres-theme-debug .zpres-slide-footer {
+  position: relative;
+  padding-block-start: 16px;
+}
+
+.zpres-theme-debug .zpres-block-figure figcaption {
+  width: 100%;
+  border-block-start: 3px double var(--debug-muted);
+}
+
+.zpres-theme-debug .zpres-slide-sources {
+  border-block-start: 2px dashed var(--debug-muted);
+}
+
+.zpres-theme-debug .zpres-slide-footer {
+  border-block-start: 3px double var(--debug-rule);
+}
+
+.zpres-theme-debug .zpres-slide-footer-content {
+  margin-inline-start: 8.75rem;
+}
+
+.zpres-theme-debug .zpres-block-figure figcaption::before,
+.zpres-theme-debug .zpres-slide-sources::before,
+.zpres-theme-debug .zpres-slide-footer::before {
+  position: absolute;
+  inset-block-start: 1px;
+  inset-inline-start: 0;
+  color: var(--debug-muted);
+  font: 750 10px/1.1 var(--debug-mono);
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.zpres-theme-debug .zpres-block-figure figcaption::before { content: "CAPTION / DOUBLE"; }
+.zpres-theme-debug .zpres-slide-sources::before { content: "SOURCES / DASHED"; }
+.zpres-theme-debug .zpres-slide-footer::before { content: "FOOTER / DOUBLE"; }
+
+.zpres-theme-debug .zpres-slide-footer-number,
+.zpres-theme-debug :where(a, .zpres-footnote-ref) {
+  color: var(--debug-accent);
+}
+
+.zpres-theme-debug .zpres-block-code pre {
+  color: #e2e8f0;
+  background: #0f172a;
+}
+
+.zpres-theme-debug .zpres-diagram-surface {
+  fill: var(--debug-paper);
+  stroke: var(--debug-muted);
+  stroke-width: 2;
+}
+
+.zpres-theme-debug .zpres-diagram-node rect {
+  fill: var(--debug-paper);
+  stroke: var(--debug-accent);
+  stroke-width: 2;
+}
+
+.zpres-theme-debug .zpres-diagram-edge {
+  stroke: var(--debug-accent);
+  stroke-width: 2;
+}
+
+.zpres-theme-debug .zpres-diagram-arrow {
+  fill: var(--debug-accent);
+}
+
+.zpres-theme-debug :where(.zpres-diagram-edge-label, .zpres-diagram-node text) {
+  fill: var(--debug-ink);
+  font-family: var(--debug-mono);
+  font-size: var(--text-slide-technical);
+  text-anchor: middle;
+}
+
+.zpres-theme-debug .zpres-diagram-edge-label {
+  stroke: var(--debug-paper);
+  stroke-width: 8px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+.zpres-theme-debug .zpres-slide-primary:has(> .zpres-block-diagram) {
+  max-width: none;
+}
+
+.zpres-theme-debug .zpres-slide-primary:has(> .zpres-block-chart) {
+  max-width: none;
+}
+
+.zpres-theme-debug .zpres-slide-primary:has(> .zpres-block-chart) .zpres-chart-svg {
+  max-height: none;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-slide-primary {
+  max-width: none;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-slide-body {
+  align-items: stretch;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-block-diagram {
+  --zpres-data-figure-max-block: 12rem;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-2);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role] {
+  column-gap: var(--spacing-slide-8);
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region:has(.zpres-block-diagram) {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--spacing-slide-2);
+  padding-block: var(--spacing-slide-1);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] :where(.zpres-block-code, .zpres-block-math) {
+  padding: var(--spacing-slide-1) var(--spacing-slide-4);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="dense"] .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-1);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="dense"] .zpres-slide-primary {
+  gap: var(--spacing-slide-1);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-code, .zpres-block-math, .zpres-block-table) {
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="dense"] .zpres-block-paragraph {
+  line-height: 1.2;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="dense"] .zpres-slide-frame {
+  background-image:
+    linear-gradient(rgb(8 145 178 / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(8 145 178 / 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-code, .zpres-block-math, .zpres-block-table) {
+  border-width: 2px;
+  border-color: var(--debug-accent);
+}
+
+.zpres-theme-debug :where(.zpres-block-callout, .debug-quote blockquote) {
+  border-inline-start-color: var(--debug-accent);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="primary"] {
+  border-width: 2px;
+  border-color: var(--debug-accent);
+  border-style: solid;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] {
+  border-width: 2px;
+  border-color: var(--debug-muted);
+  border-style: dashed;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title {
+  color: var(--debug-ink);
+  font-family: var(--zpres-font-heading, ui-monospace, monospace);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] {
+  border-style: double;
+  border-color: var(--debug-muted);
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"] {
+  border-style: dashed;
+}
+
+.zpres-theme-debug .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] {
+  border-style: solid;
+  border-color: var(--debug-accent);
+}
+
+/* Step lifecycle is future/active/complete. Failure belongs to diagnostics. */
+.zpres-theme-debug .zpres-step:is([data-step-state], [data-zpres-print-step-state]) {
+  position: relative;
+  min-height: 1.5em;
+  padding-inline-start: 7.6em;
+}
+
+.zpres-theme-debug .zpres-step:is([data-step-state], [data-zpres-print-step-state])::before {
+  position: absolute;
+  inset-block-start: 0.12em;
+  inset-inline-start: 0;
+  width: 6.5em;
+  padding: 0.22em 0.45em;
+  border: 2px solid currentColor;
+  font: 750 0.42em/1.15 var(--debug-mono);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.zpres-theme-debug .zpres-step:is([data-step-state="future"], [data-zpres-print-step-state="future"])::before {
+  border-style: dashed;
+  content: "QUEUED  ◇";
+}
+
+.zpres-theme-debug .zpres-step:is([data-step-state="active"], [data-zpres-print-step-state="active"]) {
+  color: var(--debug-active);
+  border-inline-start: 6px solid currentColor;
+}
+
+.zpres-theme-debug .zpres-step:is([data-step-state="active"], [data-zpres-print-step-state="active"])::before {
+  border-radius: 999px;
+  border-style: solid;
+  content: "CURRENT  ●";
+}
+
+.zpres-theme-debug .zpres-step:is([data-step-state="complete"], [data-zpres-print-step-state="complete"])::before {
+  border-style: double;
+  border-width: 3px;
+  content: "COMPLETED  ✓";
+}
+
+/* Bounds instrumentation is renderer-owned and retained by theme check --inspection. */
+.zpres-theme-debug[data-zpres-debug="enabled"],
+.zpres-theme-debug[data-zpres-debug="enabled"] .zpres-slide {
+  --debug-label-size: 11px;
+}
+
+.zpres-theme-debug[data-zpres-debug="enabled"] [data-zpres-debug-region] {
+  outline: 1px dashed var(--debug-accent);
+  outline-offset: -1px;
+}
+
+.zpres-theme-debug[data-zpres-debug="enabled"] :is(
+  [data-zpres-debug-region="header"],
+  [data-zpres-debug-region="body"],
+  [data-zpres-debug-region="primary"],
+  [data-zpres-debug-region="supporting"],
+  [data-zpres-debug-region="sources"],
+  [data-zpres-debug-region="footer"]
+) {
+  position: relative;
+}
+
+.zpres-theme-debug[data-zpres-debug="enabled"] [data-zpres-debug-label-role] {
+  position: absolute;
+  z-index: 20;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: block;
+  padding: 2px 5px;
+  color: #ecfeff;
+  background: #0e7490;
+  font: 600 var(--debug-label-size)/1.2 ui-monospace, monospace;
+  letter-spacing: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.zpres-theme-debug[data-zpres-debug="enabled"] .zpres-slide::before {
+  position: absolute;
+  z-index: 30;
+  inset-block-start: 8px;
+  inset-inline: 72px;
+  padding: 5px 7px;
+  color: #ecfeff;
+  background: #0f172a;
+  font: 600 11px/1.25 ui-monospace, monospace;
+  white-space: nowrap;
+  text-align: center;
+  content: attr(data-zpres-debug-identity) "  |  " attr(data-zpres-debug-role) "  |  " attr(data-zpres-debug-route) "  |  " attr(data-zpres-debug-target);
+  pointer-events: none;
+}
+
+.zpres-theme-debug[data-zpres-debug="enabled"] .zpres-block-steps::after {
+  position: absolute;
+  z-index: 22;
+  inset-block-end: 8px;
+  inset-inline-end: 8px;
+  padding: 4px 7px;
+  border-block-end: 3px dashed var(--debug-accent);
+  color: var(--debug-ink);
+  background: rgb(248 250 252 / 0.94);
+  font: 700 10px/1.2 var(--debug-mono);
+  content: attr(data-zpres-debug-step-summary);
+  pointer-events: none;
+}
+
+.zpres-theme-debug[data-zpres-debug="enabled"] .zpres-block-steps {
+  position: relative;
+}
+
+.zpres-theme-debug[data-zpres-output-target="screen"][data-zpres-debug="enabled"] .zpres-slide[data-zpres-debug-status="WARNING"]::after,
+.zpres-theme-debug[data-zpres-output-target="screen"][data-zpres-debug="enabled"] .zpres-slide[data-zpres-debug-status="FAILED"]::after {
+  position: absolute;
+  z-index: 31;
+  inset-block-end: 8px;
+  inset-inline: 300px;
+  padding: 4px 7px;
+  border: 2px solid currentColor;
+  color: var(--debug-warning);
+  background: var(--debug-paper);
+  font: 800 11px/1.2 var(--debug-mono);
+  text-align: center;
+  content: attr(data-zpres-debug-diagnostics);
+  pointer-events: none;
+}
+
+.zpres-theme-debug[data-zpres-output-target="screen"][data-zpres-debug="enabled"] .zpres-slide[data-zpres-debug-status="FAILED"]::after {
+  border-style: double;
+  border-width: 4px;
+  color: var(--debug-failure);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zpres-theme-debug * {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,556 @@
+.zpres-theme-dark-splash {
+  --zpres-color-background: {{param.background}};
+  --zpres-color-surface: {{param.surface}};
+  --zpres-color-text: {{param.text}};
+  --zpres-color-muted: {{param.muted}};
+  --zpres-color-accent: {{param.accent}};
+  --zpres-color-accent-alt: {{param.accent_alt}};
+  --zpres-color-rule: {{param.rule}};
+  --atlas-background: {{param.background}};
+  --atlas-surface: {{param.surface}};
+  --atlas-text: {{param.text}};
+  --atlas-muted: {{param.muted}};
+  --atlas-accent: {{param.accent}};
+  /* Result is deliberately scarce: winner, feasible witness, or proved state only. */
+  --atlas-result: {{param.accent_alt}};
+  --atlas-rule: {{param.rule}};
+  --atlas-grid: color-mix(in srgb, var(--atlas-rule) 44%, transparent);
+  --atlas-panel: color-mix(in srgb, var(--atlas-surface) 94%, var(--atlas-background));
+  --atlas-glow: color-mix(in srgb, var(--atlas-accent) 15%, transparent);
+  --atlas-gap: var(--spacing-slide-4);
+  --atlas-evidence-band: 76px;
+  --zpres-data-primary-measure: none;
+  --zpres-data-claim-measure: none;
+  --zpres-data-claim-inset: var(--spacing-slide-8);
+  --zpres-data-dense-measure: none;
+  --zpres-data-figure-max-block: 458px;
+  color: var(--atlas-text);
+  background: var(--atlas-background);
+  font-family: {{param.font_body}};
+  color-scheme: dark;
+}
+
+.zpres-theme-dark-splash .zpres-slide-frame {
+  position: relative;
+  isolation: isolate;
+  color: var(--atlas-text);
+  background: var(--atlas-background);
+  box-shadow: inset 0 0 0 1px var(--atlas-rule), inset 10px 0 0 var(--atlas-accent);
+}
+
+.zpres-theme-dark-splash .zpres-slide-frame::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 28px 120px auto auto;
+  width: 72px;
+  height: 38px;
+  pointer-events: none;
+  border-block-start: 3px solid var(--atlas-accent);
+  border-inline-end: 3px solid var(--atlas-accent);
+  background: linear-gradient(135deg, transparent 46%, var(--atlas-rule) 47% 49%, transparent 50%);
+}
+
+.zpres-theme-dark-splash .zpres-slide-header {
+  padding-block-end: var(--atlas-gap);
+  border-block-end: 1px solid var(--atlas-rule);
+}
+
+.zpres-theme-dark-splash .zpres-slide-title {
+  max-width: 28ch;
+  color: var(--atlas-text);
+  font-family: {{param.font_heading}};
+  font-size: 3rem;
+  font-weight: 720;
+  letter-spacing: 0.015em;
+  line-height: 0.96;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.zpres-theme-dark-splash :where(.zpres-slide-body, .zpres-slide-primary) {
+  color: var(--atlas-text);
+  font-family: {{param.font_body}};
+}
+
+.zpres-theme-dark-splash :where(.zpres-block-code, .zpres-block-math, .zpres-block-table, .zpres-layout-region-title, figcaption, .zpres-slide-sources, .zpres-slide-footer) {
+  font-family: {{param.font_mono}};
+}
+
+.zpres-theme-dark-splash :where(.zpres-slide-footer, .zpres-slide-sources) {
+  color: var(--atlas-muted);
+  border-color: var(--atlas-rule);
+}
+
+.zpres-theme-dark-splash .zpres-slide-footer-number,
+.zpres-theme-dark-splash .zpres-detail-indicator {
+  color: var(--atlas-accent);
+  font-weight: 800;
+}
+.zpres-theme-dark-splash .zpres-slide-footer-number {
+  position: absolute;
+  inset-inline-end: 160px;
+  inset-block-end: 0;
+  z-index: 4;
+  display: block;
+  width: 10ch;
+  max-width: none;
+  margin: 0;
+  overflow: visible;
+  color: var(--atlas-accent);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: start;
+  white-space: nowrap;
+}
+
+/* Keep one stable navigation register: page count plus a reserved Detail cue.
+   The cue stays in the layout on every Main slide and becomes visible only
+   when that Section has Detail slides, so horizontal navigation never shifts. */
+.zpres-theme-dark-splash .zpres-slide::after {
+  content: "\2193";
+  position: absolute;
+  inset-inline-end: 120px;
+  inset-block-end: 28px;
+  z-index: 4;
+  display: block;
+  width: 1.5rem;
+  color: var(--atlas-accent);
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-body);
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0;
+  text-align: center;
+}
+.zpres-theme-dark-splash .zpres-section-stack:has(> .zpres-slide[data-slide-role="detail"]) > .zpres-slide[data-slide-role="main"]::after {
+  opacity: 1;
+}
+.zpres-theme-dark-splash .zpres-print-slide::after {
+  opacity: 0;
+}
+
+.zpres-theme-dark-splash :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline-color: var(--atlas-accent);
+  box-shadow: 0 0 0 3px var(--atlas-text);
+}
+.zpres-theme-dark-splash .zpres-step[data-step-state="active"] { border-inline-start-color: var(--atlas-accent); }
+
+.zpres-theme-dark-splash .debug-diagnostics { display: none !important; }
+
+.zpres-theme-dark-splash :where(.zpres-block-code pre, .zpres-block-math, .zpres-block-table, .zpres-layout-region[data-comparison-role], .zpres-layout-region[data-derivation-role]) {
+  color: var(--atlas-text);
+  border-color: var(--atlas-rule);
+  border-radius: 2px;
+  background: var(--atlas-panel);
+}
+
+.zpres-theme-dark-splash .zpres-block-code pre {
+  padding-inline-start: var(--spacing-slide-4);
+  box-shadow: inset 5px 0 0 var(--atlas-accent);
+}
+
+.zpres-theme-dark-splash .zpres-block-math {
+  box-shadow: inset 0 -3px 0 var(--atlas-accent);
+}
+
+.zpres-theme-dark-splash .zpres-block-table thead th {
+  color: var(--atlas-text);
+  border-color: var(--atlas-accent);
+  font-size: var(--text-slide-technical);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.zpres-theme-dark-splash .zpres-block-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--atlas-accent) 7%, transparent);
+}
+
+.zpres-theme-dark-splash :where(.zpres-block-figure img, .zpres-chart-svg, .zpres-diagram-svg, .zpres-gallery-item img, .zpres-block-media :where(img, video)) {
+  color: var(--atlas-text);
+  border: 1px solid var(--atlas-rule);
+  border-radius: 2px;
+  background:
+    linear-gradient(90deg, var(--atlas-grid) 1px, transparent 1px),
+    linear-gradient(0deg, var(--atlas-grid) 1px, transparent 1px),
+    var(--atlas-panel);
+  background-size: 48px 48px;
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--atlas-accent) 18%, transparent);
+}
+
+/* Renderer-native diagrams and charts use the same dark plate as the surrounding Slide. */
+.zpres-theme-dark-splash .zpres-chart-svg > rect:first-child,
+.zpres-theme-dark-splash .zpres-chart-svg > rect[fill="#ffffff"] { fill: var(--atlas-panel) !important; }
+.zpres-theme-dark-splash .zpres-chart-svg > line { stroke: var(--atlas-rule) !important; }
+.zpres-theme-dark-splash .zpres-chart-svg > path { stroke: var(--atlas-accent) !important; }
+.zpres-theme-dark-splash .zpres-chart-svg > circle { fill: var(--atlas-accent) !important; stroke: var(--atlas-background) !important; }
+.zpres-theme-dark-splash .zpres-chart-svg .zpres-chart-annotation { fill: var(--atlas-accent) !important; stroke: var(--atlas-panel) !important; }
+.zpres-theme-dark-splash .zpres-chart-svg :where(.zpres-chart-legend, .zpres-chart-axis-label) { fill: var(--atlas-text) !important; }
+
+/* Mermaid stays on the atlas field: geometry is luminous, never a pale embedded card. */
+.zpres-theme-dark-splash .zpres-diagram-surface,
+.zpres-theme-dark-splash .zpres-diagram-node rect { fill: transparent; }
+.zpres-theme-dark-splash .zpres-diagram-surface { stroke: var(--atlas-accent); }
+.zpres-theme-dark-splash .zpres-diagram-node rect,
+.zpres-theme-dark-splash .zpres-diagram-edge { stroke: var(--atlas-accent); }
+.zpres-theme-dark-splash .zpres-diagram-arrow { fill: var(--atlas-accent); }
+.zpres-theme-dark-splash :where(.zpres-diagram-edge-label, .zpres-diagram-node text) { fill: var(--atlas-text); font-size: var(--text-slide-technical); }
+
+.zpres-theme-dark-splash :where(figcaption, .zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation, .zpres-layout-region-title) {
+  color: color-mix(in srgb, var(--atlas-muted) 70%, var(--atlas-text));
+  font-size: var(--text-slide-technical);
+}
+
+/* Type is assigned by communicative role: condensed display, calm body,
+   mono navigation/code, and tabular mono data labels. */
+.zpres-theme-dark-splash [data-zpres-type-role="display"] { font-family: {{param.font_heading}}; }
+.zpres-theme-dark-splash :where([data-zpres-type-role="body"], [data-zpres-type-role="supporting"]) { font-family: {{param.font_body}}; }
+.zpres-theme-dark-splash :where(.zpres-slide-footer, .zpres-slide-sources, .zpres-block-code) { font-family: {{param.font_mono}}; }
+.zpres-theme-dark-splash :where(.zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation, .zpres-block-table) {
+  font-family: {{param.font_mono}};
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="main"] :where(figcaption, .zpres-chart-axis-label, .zpres-chart-legend, .zpres-chart-annotation, .zpres-layout-region-title) {
+  font-size: 26px;
+}
+
+.zpres-theme-dark-splash :where(.zpres-chart-mark, .zpres-chart-line, .zpres-chart-point) { color: var(--atlas-accent); }
+.zpres-theme-dark-splash :where(.zpres-chart-axis, .zpres-chart-grid) { color: var(--atlas-rule); }
+
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-slide-content {
+  grid-template-areas:
+    "billboard-title"
+    "billboard-body"
+    "billboard-sources";
+  grid-template-rows: minmax(0, 0.64fr) minmax(0, 0.36fr) min-content;
+  gap: var(--spacing-slide-2);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-slide-header {
+  grid-area: billboard-title;
+  display: grid;
+  align-content: end;
+  max-width: 68rem;
+  padding: 0 0 var(--spacing-slide-6);
+  border-block-end: 0;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-slide-title {
+  max-width: 24ch;
+  font-size: 4.3rem;
+  line-height: 0.92;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-slide-body {
+  grid-area: billboard-body;
+  align-items: start;
+  padding-block-start: var(--spacing-slide-2);
+  border-block-start: 8px solid var(--atlas-accent);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-slide-sources { grid-area: billboard-sources; }
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-block-fit-text { min-height: 0; }
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-block-fit-text p {
+  max-width: 26ch;
+  color: var(--atlas-text);
+  font-size: 3rem;
+  font-weight: 650;
+  line-height: 1.04;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="section-title"] .zpres-block-math {
+  width: fit-content;
+  max-width: 100%;
+  padding: var(--spacing-slide-2) var(--spacing-slide-6);
+  font-size: 2.6rem;
+}
+
+/* A class-only lead/result surface still needs the same safe reading rhythm as
+   a named Claim. Keep its stacked evidence inside the body track without
+   shrinking the room-scale type. */
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-slide-primary {
+  align-content: start;
+  gap: var(--spacing-slide-2);
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-slide-body {
+  align-items: stretch;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-block-list :where(ul, ol) {
+  gap: var(--spacing-slide-2);
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-lead.zpres-slide-class-result:not([data-slide-variant]) .zpres-block-steps :where(ul, ol) {
+  margin-block: 0;
+}
+
+/* Billboard is explicit: short assertions opt in; ordinary Claims remain safe plates. */
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-slide-content {
+  grid-template-rows: min-content minmax(0, 1fr) min-content;
+  gap: var(--spacing-slide-8);
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-slide-header {
+  width: fit-content;
+  max-width: 34rem;
+  padding-block-end: var(--spacing-slide-2);
+  border-block-end: 3px solid var(--atlas-accent);
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-slide-title {
+  color: var(--atlas-muted);
+  font-family: {{param.font_mono}};
+  font-size: var(--text-slide-technical);
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-slide-primary {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-slide-primary::after {
+  content: none;
+  display: none;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] :where(.zpres-block-fit-text p, .zpres-block-paragraph:first-child) {
+  max-width: 16ch;
+  font-size: 5.4rem;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-block-list :where(ul, ol) {
+  display: grid;
+  gap: var(--spacing-slide-3);
+  max-width: 22ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-block-list li {
+  color: var(--atlas-text);
+  font-family: {{param.font_heading}};
+  font-size: 2.7rem;
+  font-weight: 760;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-block-list li:nth-child(odd) { color: var(--atlas-result); }
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-block-list li:nth-child(even) { color: var(--atlas-accent); }
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-block-list li:nth-child(3) { color: var(--atlas-text); }
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard[data-slide-variant="claim"] .zpres-block-list li:nth-child(4) { color: var(--atlas-result); }
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-list {
+  width: 100%;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-list :where(ul, ol) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--spacing-slide-10);
+  row-gap: var(--spacing-slide-8);
+  width: 100%;
+  max-width: none;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-billboard.zpres-slide-class-result[data-slide-variant="claim"] .zpres-block-list li {
+  font-size: 3.4rem;
+}
+
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary {
+  position: relative;
+  padding: var(--spacing-slide-4) var(--spacing-slide-8);
+  border-block: 1px solid var(--atlas-rule);
+  border-inline-start: 8px solid var(--atlas-accent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--atlas-accent) 12%, var(--atlas-panel)), var(--atlas-panel));
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="claim"] .zpres-slide-primary::after {
+  content: "CONSTRAINT";
+  position: absolute;
+  inset: 16px 20px auto auto;
+  color: var(--atlas-accent);
+  font-family: {{param.font_mono}};
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text { min-height: 0; }
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="claim"] .zpres-block-fit-text p,
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="claim"] .zpres-block-paragraph:first-child { max-width: 34ch; color: var(--atlas-text); font-family: {{param.font_heading}}; font-size: 3rem; font-weight: 720; line-height: 1.02; }
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="claim"] :where(.zpres-layout-region p, .zpres-layout-region li) { font-size: var(--text-slide-technical); line-height: var(--text-slide-technical--line-height); }
+
+/* Atlas evidence: a compact coordinate band yields the field to the scientific object. */
+.zpres-theme-dark-splash .zpres-slide:where([data-slide-variant="figure"], [data-slide-variant="comparison"], [data-slide-variant="derivation"]) .zpres-slide-content {
+  grid-template-rows: var(--atlas-evidence-band) minmax(0, 1fr) min-content;
+  gap: var(--spacing-slide-2);
+}
+.zpres-theme-dark-splash .zpres-slide:where([data-slide-variant="figure"], [data-slide-variant="comparison"], [data-slide-variant="derivation"]) .zpres-slide-header {
+  display: grid;
+  align-content: center;
+  width: 100%;
+  max-width: none;
+  padding: 0 var(--spacing-slide-6);
+  border-block: 0;
+  border-inline-start: 5px solid var(--atlas-accent);
+}
+.zpres-theme-dark-splash .zpres-slide:where([data-slide-variant="figure"], [data-slide-variant="comparison"], [data-slide-variant="derivation"]) .zpres-slide-title {
+  max-width: 38ch;
+  font-size: 2.45rem;
+  line-height: 0.98;
+}
+.zpres-theme-dark-splash .zpres-slide:where([data-slide-variant="figure"], [data-slide-variant="comparison"], [data-slide-variant="derivation"]) .zpres-slide-body {
+  align-items: stretch;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role] {
+  padding: var(--spacing-slide-4) var(--spacing-slide-6);
+  border: 0;
+  border-inline-start: 5px solid var(--atlas-accent);
+  border-block-end: 2px solid var(--atlas-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title {
+  column-gap: var(--spacing-slide-4);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region-title::before {
+  margin-inline-end: var(--spacing-slide-2);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] {
+  border-inline-start-color: var(--atlas-muted);
+  box-shadow: none;
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-result[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] {
+  border-block-end-color: var(--atlas-result);
+}
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-result[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] :where(.zpres-layout-region-title, .zpres-block-math) {
+  color: var(--atlas-result);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="comparison"] .zpres-layout-region :where(p, li) { font-size: var(--text-slide-technical); }
+
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role] {
+  grid-template-columns: minmax(18rem, 0.36fr) minmax(0, 1fr);
+  align-items: center;
+  min-height: 88px;
+  margin-block: var(--spacing-slide-2);
+  padding: var(--spacing-slide-4) var(--spacing-slide-6);
+  border-block: 0;
+  border-inline-end: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-block-layout {
+  display: grid;
+  min-height: 0;
+  height: 100%;
+  align-content: center;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region-title {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--spacing-slide-4);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region-title::before {
+  margin-inline-end: 0;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="context"] {
+  border-inline-start-color: var(--atlas-muted);
+  background: color-mix(in srgb, var(--atlas-muted) 5%, transparent);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"]:last-child[data-step-state="complete"] {
+  border-inline-start-color: var(--atlas-result);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"]:last-child[data-step-state="complete"] .zpres-layout-region-title {
+  color: var(--atlas-result);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] {
+  border-color: var(--atlas-accent);
+  background: color-mix(in srgb, var(--atlas-accent) 8%, transparent);
+  box-shadow: inset 7px 0 0 var(--atlas-accent);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-slide-primary:has(> .zpres-block-table) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: var(--spacing-slide-4);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-slide-primary:has(> .zpres-block-table) > .zpres-block-table {
+  height: auto;
+  min-height: max-content;
+  padding-block: 4px;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="derivation"] .zpres-slide-primary:has(> .zpres-block-table) > .zpres-block-table :where(th, td) {
+  padding-block: 3px;
+}
+
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="figure"] :where(.zpres-block-figure img, .zpres-diagram-svg, .zpres-chart-svg) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="figure"] :where(.zpres-block-diagram, .zpres-block-chart) {
+  display: grid;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="figure"] .zpres-slide-primary:has(> .zpres-block-diagram) {
+  height: 100%;
+  grid-template-rows: minmax(300px, 1fr) max-content max-content;
+  align-content: stretch;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="figure"] .zpres-diagram-svg {
+  width: 100%;
+  min-height: 300px;
+  height: 100%;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-paragraph, .zpres-block-list, .zpres-block-table, .zpres-block-code, .zpres-block-math) { font-size: var(--text-slide-technical); line-height: 1.16; }
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="dense"] :where(.zpres-slide-content, .zpres-slide-primary) { gap: var(--spacing-slide-2); }
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-code, .zpres-block-math, .zpres-block-table) { padding: 4px var(--spacing-slide-2); }
+.zpres-theme-dark-splash .zpres-slide[data-slide-variant="dense"] .zpres-slide-title,
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"] .zpres-slide-title { font-size: 2.25rem; }
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"] .zpres-slide-primary {
+  width: 100%;
+  max-width: 68rem;
+  align-content: center;
+  gap: var(--spacing-slide-6);
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"] .zpres-slide-body {
+  grid-template-rows: minmax(0, 1fr);
+  align-items: stretch;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-body:has(> .zpres-slide-primary > .zpres-block-paragraph:only-child) {
+  display: flex;
+  align-items: center;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-primary:has(> .zpres-block-paragraph:only-child) {
+  place-self: center start;
+  width: min(100%, 68rem);
+  padding: var(--spacing-slide-8) var(--spacing-slide-6);
+  border-inline-start: 6px solid var(--atlas-accent);
+  background: color-mix(in srgb, var(--atlas-accent) 7%, var(--atlas-panel));
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"][data-slide-variant="dense"] .zpres-slide-primary:has(> .zpres-block-paragraph:only-child) .zpres-block-paragraph {
+  max-width: none;
+  font-size: calc(var(--text-slide-body) * 0.9375);
+  line-height: var(--text-slide-body--line-height);
+}
+
+/* Result/winner/feasible/proved is the only authored route to lime (or the
+   palette's equivalent result hue). Routine pagination and furniture stay cyan. */
+.zpres-theme-dark-splash .zpres-slide.zpres-slide-class-result[data-slide-variant="claim"] :where(.zpres-block-fit-text p, .zpres-block-paragraph:first-child, strong) {
+  color: var(--atlas-result) !important;
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"][data-slide-variant="dense"] .zpres-block-paragraph {
+  max-width: 68ch;
+  font-family: {{param.font_body}};
+}
+.zpres-theme-dark-splash .zpres-slide[data-slide-role="detail"] .zpres-block-math {
+  margin-block-end: var(--spacing-slide-2);
+}
+
+.zpres-theme-dark-splash .zpres-slide[data-theme-param-density="compact"] { --atlas-gap: var(--spacing-slide-2); }
+.zpres-theme-dark-splash .zpres-slide[data-theme-param-density="compact"] :where(.zpres-slide-content, .zpres-slide-primary) { gap: var(--spacing-slide-2); }
+.zpres-theme-dark-splash .zpres-slide[data-theme-param-density="spacious"] { --atlas-gap: var(--spacing-slide-8); }
+.zpres-theme-dark-splash .zpres-slide[data-theme-param-density="spacious"] :where(.zpres-slide-content, .zpres-slide-primary) { gap: var(--spacing-slide-8); }
+
+/* Renderer-owned backgrounds keep their semantic lanes. Full-field images receive a dark atlas scrim. */
+.zpres-theme-dark-splash .zpres-slide:has(> .zpres-slide-background):not([data-background-split]) .zpres-slide-frame { background: color-mix(in srgb, var(--atlas-background) 86%, transparent); backdrop-filter: blur(1px); }
+.zpres-theme-dark-splash .zpres-slide[data-background-split] .zpres-slide-frame { background: var(--atlas-background); }
+
+@media (prefers-contrast: more) {
+  .zpres-theme-dark-splash .zpres-slide-frame { background-color: var(--atlas-background); }
+}
+@media (forced-colors: active) {
+  .zpres-theme-dark-splash .zpres-slide-frame::before { border-color: CanvasText; }
+}

@@ -1,0 +1,62 @@
+[theme]
+name = "reference"
+version = "0.1.0"
+api_version = 1
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+feature_hooks = [
+  "detail-slides",
+  "figure-fit",
+  "figure-radius",
+  "footer",
+  "footnotes",
+  "steps-final-state",
+  "steps-pages",
+]
+
+[style]
+family = "quiet-editorial-reference"
+
+[parameters.background]
+type = "color"
+default = "#edf1ee"
+
+[parameters.surface]
+type = "color"
+default = "#fffdf8"
+
+[parameters.text]
+type = "color"
+default = "#17211f"
+
+[parameters.muted]
+type = "color"
+default = "#586a64"
+
+[parameters.accent]
+type = "color"
+default = "#0a6c67"
+
+[parameters.accent_alt]
+type = "color"
+default = "#b67828"
+
+[parameters.rule]
+type = "color"
+default = "#ccd5ce"
+
+[parameters.font_heading]
+type = "font"
+default = '"Iowan Old Style", Charter, Georgia, serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Avenir Next", Aptos, "Segoe UI", sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = 'Menlo, Consolas, monospace'

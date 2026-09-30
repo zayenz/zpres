@@ -1,0 +1,44 @@
+schema_version = 1
+name = "projected-room-default"
+status = "provisional"
+
+[logical_field]
+width = 1280
+height = 720
+aspect = "16:9"
+
+[physical_assumptions]
+screen_geometry = "pending representative-room measurement"
+farthest_viewing_position = "pending representative-room measurement"
+ambient_conditions = "pending representative-room observation"
+display = "pending venue projector or display"
+machine = "pending presentation-machine identity"
+
+[font_metrics]
+cap_height_proxy = 0.70
+reference_families = ["Avenir Next", "Charter", "Menlo"]
+
+[type_floors]
+display = 72.0
+title = 48.0
+heading = 36.0
+body = 32.0
+technical = 24.0
+micro = 18.0
+
+[contrast_targets]
+ordinary = 7.0
+large = 4.5
+
+[occupancy]
+evidence_review_below = 0.18
+
+[autoscale]
+warning_below = 0.92
+hard_floor = 0.80
+
+[evidence]
+test_date = ""
+reviewers = []
+record = "pending representative-room observation record"
+decision = "Pending representative-room observation and owner approval."

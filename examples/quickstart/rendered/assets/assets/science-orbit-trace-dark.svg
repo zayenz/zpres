@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 540" role="img" aria-labelledby="title desc">
+  <title id="title">Feasible-region contraction with a competing branch</title>
+  <desc id="desc">A scientific diagram with nested feasible contours, a bright teal propagation path with circular markers, and an amber dashed competing branch with triangular markers and direct labels.</desc>
+  <g stroke="#97b1ab" stroke-opacity=".56" stroke-width="2.8">
+    <line x1="116" y1="418" x2="1006" y2="418"/>
+    <line x1="116" y1="418" x2="116" y2="102"/>
+  </g>
+  <g fill="none" stroke="#5eead4">
+    <ellipse cx="590" cy="310" rx="276" ry="118" fill="#5eead4" fill-opacity=".065" stroke-width="4.5"/>
+    <ellipse cx="666" cy="286" rx="198" ry="92" fill="#5eead4" fill-opacity=".11" stroke-width="4.5"/>
+    <ellipse cx="742" cy="252" rx="104" ry="48" fill="#5eead4" fill-opacity=".17" stroke-width="4.5"/>
+  </g>
+  <path d="M170 390 L314 340 L476 348 L642 284 L724 230" fill="none" stroke="#5eead4" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#5eead4">
+    <circle cx="170" cy="390" r="11"/>
+    <circle cx="314" cy="340" r="11"/>
+    <circle cx="476" cy="348" r="11"/>
+    <circle cx="642" cy="284" r="11"/>
+    <circle cx="724" cy="230" r="14" stroke="#172126" stroke-width="4.5"/>
+  </g>
+  <path d="M476 348 L664 364 L828 304 L952 212" fill="none" stroke="#f59e0b" stroke-width="8" stroke-dasharray="22 16" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#f59e0b">
+    <path d="M476 333 l15 26 h-30z"/>
+    <path d="M664 349 l15 26 h-30z"/>
+    <path d="M828 289 l15 26 h-30z"/>
+    <path d="M952 197 l15 26 h-30z"/>
+  </g>
+  <g stroke-width="2.6" fill="none" stroke-linecap="round">
+    <path d="M260 182 L318 224" stroke="#97b1ab"/>
+    <path d="M806 172 L754 214" stroke="#5eead4" stroke-opacity=".92"/>
+    <path d="M698 365 L704 426" stroke="#f59e0b" stroke-opacity=".92"/>
+  </g>
+  <g font-family="Avenir Next, Aptos, Segoe UI, sans-serif">
+    <text x="148" y="132" fill="#5eead4" font-size="38" font-weight="760">73% pair reduction</text>
+    <text x="148" y="168" fill="#c5d4d0" font-size="26" font-weight="600">Solid circles mark the accepted path</text>
+    <text x="744" y="132" fill="#5eead4" font-size="38" font-weight="760">Accepted basin</text>
+    <text x="744" y="168" fill="#c5d4d0" font-size="26" font-weight="600">Contours = accepted fit</text>
+    <text x="348" y="478" fill="#f59e0b" font-size="36" font-weight="760">
+      <tspan x="348" dy="0">Competing fit</tspan>
+      <tspan x="348" dy="38">fails final bound</tspan>
+    </text>
+    <text x="760" y="494" fill="#c5d4d0" font-size="26" font-weight="600">Triangles = rejected fit</text>
+  </g>
+</svg>

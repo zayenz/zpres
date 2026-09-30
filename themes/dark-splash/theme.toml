@@ -1,0 +1,120 @@
+[theme]
+name = "dark-splash"
+version = "0.1.0"
+api_version = 1
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+modules = ["scientific-data"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+palette_parameter = "variant"
+feature_hooks = ["code-reveal", "fit-text", "footer", "speaker-notes"]
+
+[presets.spotlight]
+variant = "claim"
+classes = ["lead"]
+transition = "fade"
+
+[presets.spotlight.theme_params]
+accent = "#22d3ee"
+
+[presets.billboard]
+variant = "claim"
+classes = ["billboard"]
+
+[parameters.variant]
+type = "enum"
+default = "violet"
+values = ["violet", "cyan", "magenta", "ember"]
+
+[parameters.background]
+type = "color"
+default = "#08090d"
+
+[parameters.surface]
+type = "color"
+default = "#101116"
+
+[parameters.text]
+type = "color"
+default = "#f5f2ed"
+
+[parameters.muted]
+type = "color"
+default = "#a8a4ae"
+
+[parameters.accent]
+type = "color"
+default = "#9b6cff"
+
+[parameters.accent_alt]
+type = "color"
+default = "#d4ff5f"
+
+[parameters.rule]
+type = "color"
+default = "#34303f"
+
+[parameters.density]
+type = "enum"
+default = "normal"
+values = ["compact", "normal", "spacious"]
+
+[parameters.footer]
+type = "enum"
+default = "section-progress"
+values = ["none", "slide-number", "section-title", "section-progress"]
+
+[parameters.font_heading]
+type = "font"
+default = '"Avenir Next Condensed", "Arial Narrow", "Aptos Display", ui-sans-serif, sans-serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Avenir Next", Aptos, "Segoe UI", ui-sans-serif, sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = '"SFMono-Regular", Menlo, Consolas, ui-monospace, monospace'
+
+[color_variants.violet]
+background = "#08090d"
+surface = "#101116"
+text = "#f5f2ed"
+muted = "#aaa5b2"
+accent = "#9b6cff"
+accent_alt = "#d4ff5f"
+rule = "#373143"
+
+[color_variants.cyan]
+background = "#060b0f"
+surface = "#0c151b"
+text = "#f2f8fa"
+muted = "#9fadb4"
+accent = "#22d3ee"
+accent_alt = "#c8ff59"
+rule = "#25414a"
+
+[color_variants.magenta]
+background = "#0d080e"
+surface = "#171018"
+text = "#fff4fa"
+muted = "#b4a1ad"
+accent = "#f06edc"
+accent_alt = "#ffb347"
+rule = "#482b43"
+
+[color_variants.ember]
+background = "#0f0a07"
+surface = "#19110c"
+text = "#fff5eb"
+muted = "#b5a294"
+accent = "#ff914d"
+accent_alt = "#ffd34e"
+rule = "#4a3021"
+
+[style]
+family = "midnight-constraint-atlas"
+inspiration = []

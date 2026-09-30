@@ -1,0 +1,81 @@
+[theme]
+name = "science"
+version = "0.1.0"
+api_version = 1
+fonts = []
+assets = ["assets/science-orbit-trace-dark.svg"]
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+modules = ["scientific-data"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+palette_parameter = "mode"
+feature_hooks = ["detail-slides", "figure-radius", "footer", "footnotes", "list-reveal", "speaker-notes", "steps-final-state"]
+
+[parameters.mode]
+type = "enum"
+default = "light"
+values = ["light", "dark"]
+
+[parameters.background]
+type = "color"
+default = "#e7ecea"
+
+[parameters.surface]
+type = "color"
+default = "#fbfcfd"
+
+[parameters.text]
+type = "color"
+default = "#14171a"
+
+[parameters.muted]
+type = "color"
+default = "#5a646a"
+
+[parameters.accent]
+type = "color"
+default = "#0f766e"
+
+[parameters.accent_alt]
+type = "color"
+default = "#9a3412"
+
+[parameters.rule]
+type = "color"
+default = "#d7e0dd"
+
+[parameters.footer]
+type = "enum"
+default = "slide-number"
+values = ["none", "slide-number", "section-title", "section-progress"]
+
+[parameters.font_heading]
+type = "font"
+default = 'Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif'
+
+[parameters.font_body]
+type = "font"
+default = 'Aptos, "Avenir Next", "Segoe UI", ui-sans-serif, sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = 'Menlo, Consolas, ui-monospace, monospace'
+
+[color_variants.light]
+background = "#e7ecea"
+surface = "#fbfcfd"
+text = "#14171a"
+muted = "#5a646a"
+accent = "#0f766e"
+accent_alt = "#9a3412"
+rule = "#d7e0dd"
+
+[color_variants.dark]
+background = "#101820"
+surface = "#172126"
+text = "#eef4f1"
+muted = "#a9b8b4"
+accent = "#5eead4"
+accent_alt = "#f59e0b"
+rule = "#34464b"

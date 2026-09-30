@@ -1,0 +1,83 @@
+.zpres-theme-sv.zpres-print-body {
+  color: {{param.text}};
+  background: {{param.background}};
+}
+
+.zpres-theme-sv .zpres-print-slide .zpres-slide-frame {
+  color: {{param.text}};
+  background-color: {{param.surface}};
+  box-shadow: inset 0 0 0 1px {{param.rule}};
+}
+
+.zpres-theme-sv .zpres-print-slide :where(.zpres-slide-header, .zpres-slide-sources, .zpres-slide-footer) {
+  border-color: {{param.rule}};
+}
+
+.zpres-theme-sv .zpres-print-slide :where(.zpres-slide-title, .zpres-slide-body, .zpres-slide-primary) {
+  color: {{param.text}};
+}
+
+.zpres-theme-sv .zpres-print-slide :where(.zpres-slide-sources, .zpres-slide-footer, figcaption) {
+  color: {{param.muted}};
+}
+
+.zpres-theme-sv .zpres-print-slide .zpres-slide-footer-number {
+  color: {{param.muted}};
+}
+
+.zpres-theme-sv .zpres-print-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="primary"] {
+  border-block-start-color: {{param.rule}};
+}
+
+.zpres-theme-sv .zpres-print-slide[data-slide-variant="comparison"] .zpres-layout-region[data-comparison-role="supporting"] {
+  border-block-start-color: {{param.muted}};
+}
+
+.zpres-theme-sv .zpres-print-slide[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-state="active"] {
+  border-color: {{param.text}};
+}
+
+.zpres-theme-sv .zpres-print-slide:is(
+  .zpres-slide-class-sv-state-queued,
+  .zpres-slide-class-sv-state-active,
+  .zpres-slide-class-sv-state-fixed,
+  .zpres-slide-class-sv-state-failed,
+  .zpres-slide-class-sv-state-trace
+) .zpres-slide-frame::after {
+  text-shadow: none;
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="1"][data-step-state="active"] {
+  border-color: {{param.accent}};
+  box-shadow: inset 7px 0 0 {{param.accent}};
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-state-trace[data-slide-variant="derivation"] .zpres-layout-region[data-derivation-role="stage"][data-step-index="2"]:is([data-step-state="active"], [data-step-state="complete"]) {
+  border-color: {{param.accent_alt}};
+  box-shadow: inset 7px 0 0 {{param.accent_alt}};
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-evidence-domain-update[data-slide-variant="comparison"] .zpres-layout-regions::after {
+  text-shadow: none;
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-evidence-causal-schedule[data-slide-variant="comparison"] .zpres-layout-regions::after {
+  text-shadow: none;
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-evidence-search-consequence.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-block-fit-text {
+  background: transparent;
+  box-shadow: none;
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-evidence-search-consequence.zpres-slide-class-sv-evidence-claim[data-slide-variant="claim"] .zpres-block-fit-text p {
+  text-shadow: none;
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-evidence-native[data-slide-variant="figure"] :where(.zpres-diagram-svg, .zpres-chart-svg) {
+  box-shadow: none;
+}
+
+.zpres-theme-sv .zpres-print-slide.zpres-slide-class-sv-evidence-imported[data-slide-variant="figure"] .zpres-block-figure img {
+  box-shadow: none;
+}

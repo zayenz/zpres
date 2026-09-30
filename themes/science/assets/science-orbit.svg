@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc">
+  <title id="title">Nested feasible regions and a search trajectory</title>
+  <desc id="desc">Three translucent ellipses narrow toward a highlighted feasible point, connected by a stepped search path.</desc>
+  <rect width="960" height="480" rx="20" fill="#f7faf9"/>
+  <g fill="none" stroke="#0f766e">
+    <ellipse cx="480" cy="240" rx="380" ry="174" fill="#0f766e" fill-opacity=".06" stroke-width="3"/>
+    <ellipse cx="520" cy="244" rx="260" ry="122" fill="#0f766e" fill-opacity=".09" stroke-width="3"/>
+    <ellipse cx="560" cy="248" rx="132" ry="68" fill="#0f766e" fill-opacity=".14" stroke-width="3"/>
+  </g>
+  <path d="M142 354 L268 302 L390 332 L484 270 L558 248" fill="none" stroke="#9a3412" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#9a3412"><circle cx="142" cy="354" r="10"/><circle cx="268" cy="302" r="10"/><circle cx="390" cy="332" r="10"/><circle cx="484" cy="270" r="10"/></g>
+  <circle cx="558" cy="248" r="17" fill="#0f766e" stroke="#fff" stroke-width="6"/>
+</svg>

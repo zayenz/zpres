@@ -1,0 +1,2 @@
+# Keep explicit inputs instead of adding context objects just to satisfy this lint.
+too-many-arguments-threshold = 16
