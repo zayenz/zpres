@@ -1,0 +1,55 @@
+[theme]
+name = "signal"
+version = "0.1.0"
+api_version = 1
+modules = ["scientific-data"]
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+feature_hooks = ["detail-slides", "footer", "speaker-notes"]
+
+[style]
+family = "swiss-poster"
+
+[parameters.background]
+type = "color"
+default = "#f6f4ed"
+
+[parameters.surface]
+type = "color"
+default = "#fffdf8"
+
+[parameters.text]
+type = "color"
+default = "#161616"
+
+[parameters.muted]
+type = "color"
+default = "#52504a"
+
+[parameters.accent]
+type = "color"
+default = "#bd350e"
+
+[parameters.accent_alt]
+type = "color"
+default = "#344e6c"
+
+[parameters.rule]
+type = "color"
+default = "#c7c3b9"
+
+[parameters.font_heading]
+type = "font"
+default = '"Helvetica Neue", Arial, sans-serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Helvetica Neue", Arial, sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = 'Menlo, Consolas, monospace'

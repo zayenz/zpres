@@ -1,0 +1,55 @@
+[theme]
+name = "kiln"
+version = "0.1.0"
+api_version = 1
+modules = ["scientific-data"]
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+feature_hooks = ["detail-slides", "footer", "speaker-notes"]
+
+[style]
+family = "warm-printmaking"
+
+[parameters.background]
+type = "color"
+default = "#eee5d6"
+
+[parameters.surface]
+type = "color"
+default = "#faf3e6"
+
+[parameters.text]
+type = "color"
+default = "#342018"
+
+[parameters.muted]
+type = "color"
+default = "#675044"
+
+[parameters.accent]
+type = "color"
+default = "#a63d22"
+
+[parameters.accent_alt]
+type = "color"
+default = "#755116"
+
+[parameters.rule]
+type = "color"
+default = "#cdb89e"
+
+[parameters.font_heading]
+type = "font"
+default = 'Baskerville, "Palatino Linotype", Georgia, serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Optima", "Segoe UI", sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = 'Menlo, Consolas, monospace'

@@ -28,6 +28,126 @@ pub const SUPPORTED_SLIDE_VARIANTS: &[&str] = &[
 
 const BUILTIN_THEME_FILES: &[(&str, &[u8])] = &[
     (
+        "signal/runtime.csv",
+        include_bytes!("../themes/signal/runtime.csv"),
+    ),
+    (
+        "tidal/runtime.csv",
+        include_bytes!("../themes/tidal/runtime.csv"),
+    ),
+    (
+        "kiln/runtime.csv",
+        include_bytes!("../themes/kiln/runtime.csv"),
+    ),
+    (
+        "prism/runtime.csv",
+        include_bytes!("../themes/prism/runtime.csv"),
+    ),
+    (
+        "blueprint/runtime.csv",
+        include_bytes!("../themes/blueprint/runtime.csv"),
+    ),
+    (
+        "signal/theme.toml",
+        include_bytes!("../themes/signal/theme.toml"),
+    ),
+    (
+        "signal/theme.css.tmpl",
+        include_bytes!("../themes/signal/theme.css.tmpl"),
+    ),
+    (
+        "signal/print.css.tmpl",
+        include_bytes!("../themes/signal/print.css.tmpl"),
+    ),
+    (
+        "signal/specimen.zp.md",
+        include_bytes!("../themes/signal/specimen.zp.md"),
+    ),
+    (
+        "signal/evidence.svg",
+        include_bytes!("../themes/signal/evidence.svg"),
+    ),
+    (
+        "tidal/theme.toml",
+        include_bytes!("../themes/tidal/theme.toml"),
+    ),
+    (
+        "tidal/theme.css.tmpl",
+        include_bytes!("../themes/tidal/theme.css.tmpl"),
+    ),
+    (
+        "tidal/print.css.tmpl",
+        include_bytes!("../themes/tidal/print.css.tmpl"),
+    ),
+    (
+        "tidal/specimen.zp.md",
+        include_bytes!("../themes/tidal/specimen.zp.md"),
+    ),
+    (
+        "tidal/evidence.svg",
+        include_bytes!("../themes/tidal/evidence.svg"),
+    ),
+    (
+        "kiln/theme.toml",
+        include_bytes!("../themes/kiln/theme.toml"),
+    ),
+    (
+        "kiln/theme.css.tmpl",
+        include_bytes!("../themes/kiln/theme.css.tmpl"),
+    ),
+    (
+        "kiln/print.css.tmpl",
+        include_bytes!("../themes/kiln/print.css.tmpl"),
+    ),
+    (
+        "kiln/specimen.zp.md",
+        include_bytes!("../themes/kiln/specimen.zp.md"),
+    ),
+    (
+        "kiln/evidence.svg",
+        include_bytes!("../themes/kiln/evidence.svg"),
+    ),
+    (
+        "prism/theme.toml",
+        include_bytes!("../themes/prism/theme.toml"),
+    ),
+    (
+        "prism/theme.css.tmpl",
+        include_bytes!("../themes/prism/theme.css.tmpl"),
+    ),
+    (
+        "prism/print.css.tmpl",
+        include_bytes!("../themes/prism/print.css.tmpl"),
+    ),
+    (
+        "prism/specimen.zp.md",
+        include_bytes!("../themes/prism/specimen.zp.md"),
+    ),
+    (
+        "prism/evidence.svg",
+        include_bytes!("../themes/prism/evidence.svg"),
+    ),
+    (
+        "blueprint/theme.toml",
+        include_bytes!("../themes/blueprint/theme.toml"),
+    ),
+    (
+        "blueprint/theme.css.tmpl",
+        include_bytes!("../themes/blueprint/theme.css.tmpl"),
+    ),
+    (
+        "blueprint/print.css.tmpl",
+        include_bytes!("../themes/blueprint/print.css.tmpl"),
+    ),
+    (
+        "blueprint/specimen.zp.md",
+        include_bytes!("../themes/blueprint/specimen.zp.md"),
+    ),
+    (
+        "blueprint/evidence.svg",
+        include_bytes!("../themes/blueprint/evidence.svg"),
+    ),
+    (
         "dark-splash/theme.toml",
         include_bytes!("../themes/dark-splash/theme.toml"),
     ),
@@ -3958,8 +4078,13 @@ mod tests {
     use super::*;
     use tempfile::tempdir;
 
-    fn built_in_theme_names() -> [&'static str; 6] {
+    fn built_in_theme_names() -> [&'static str; 11] {
         [
+            "signal",
+            "tidal",
+            "kiln",
+            "prism",
+            "blueprint",
             "debug",
             "science",
             "paper-chalk",

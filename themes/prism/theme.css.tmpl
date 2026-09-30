@@ -1,0 +1,134 @@
+/* Shared geometry, type sizes, scientific blocks, and accessibility states
+   come from Theme API v1 and its scientific-data module. */
+.zpres-theme-prism {
+  --zpres-data-primary-measure: none;
+  color: var(--zpres-color-text);
+  background: var(--zpres-color-background);
+  font-family: var(--zpres-font-body);
+}
+.zpres-theme-prism .zpres-slide-frame {
+  background: var(--zpres-color-surface);
+}
+.zpres-theme-prism .zpres-slide-title {
+  font-family: var(--zpres-font-heading);
+  max-width: 30ch;
+  letter-spacing: -0.025em;
+}
+.zpres-theme-prism .zpres-slide-header {
+  padding-block-end: var(--spacing-slide-4);
+}
+.zpres-theme-prism .zpres-slide[data-slide-variant="section-title"] .zpres-slide-title {
+  max-width: 22ch;
+  font-size: var(--text-slide-display);
+}
+.zpres-theme-prism .zpres-slide[data-slide-variant="section-title"] .zpres-slide-header {
+  align-self: end;
+}
+.zpres-theme-prism .zpres-slide[data-slide-variant="section-title"] .zpres-slide-content {
+  grid-template-rows: minmax(min-content, 1fr) minmax(0, 1fr) min-content;
+}
+.zpres-theme-prism .zpres-slide[data-slide-variant="section-title"] .zpres-slide-body {
+  align-items: start;
+}
+.zpres-theme-prism .zpres-slide[data-slide-variant="section-title"] .zpres-slide-primary {
+  align-content: start;
+}
+.zpres-theme-prism :where(.zpres-slide-footer, .zpres-slide-sources, figcaption) {
+  color: var(--zpres-color-muted);
+}
+.zpres-theme-prism .zpres-slide-footer-number {
+  color: var(--zpres-color-accent);
+  font-weight: 700;
+}
+.zpres-theme-prism .zpres-layout-region-title {
+  column-gap: var(--spacing-slide-4);
+}
+.zpres-theme-prism .zpres-block-code pre {
+  color: var(--zpres-color-text);
+  background: var(--zpres-color-surface);
+}
+.zpres-theme-prism .zpres-slide[data-slide-role="detail"] .zpres-detail-indicator {
+  color: var(--zpres-color-accent-alt);
+}
+.zpres-theme-prism .zpres-slide:is([data-background-phase="content"], [data-background-phase="title"]) > .zpres-slide-frame {
+  background-color: color-mix(in srgb, var(--zpres-color-surface) 94%, transparent);
+}
+/* Authored backgrounds keep the renderer's treatment and split semantics. */
+.zpres-theme-prism .zpres-slide[data-background-phase] > .zpres-slide-ornament {
+  display: none;
+}
+@media (forced-colors: active) {
+  .zpres-theme-prism .zpres-slide-ornament { display: none; }
+}
+/* Facets are clipped decorative planes in the margin, never content masks. */
+.zpres-theme-prism .zpres-slide-title { font-weight: 750; letter-spacing: -0.04em; }
+.zpres-theme-prism .zpres-slide-ornament::before,
+.zpres-theme-prism .zpres-slide-ornament::after {
+  content: ""; position: absolute; width: 220px; height: 36px;
+  background: linear-gradient(135deg, var(--zpres-color-accent), var(--zpres-color-rule));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 60% 38%);
+}
+.zpres-theme-prism .zpres-slide-ornament::before { right: 0; top: 0; }
+.zpres-theme-prism .zpres-slide-ornament::after { left: 0; bottom: 0; transform: rotate(180deg); }
+.zpres-theme-prism .zpres-slide-header { border-block-end: 2px solid var(--zpres-color-rule); }
+.zpres-theme-prism .zpres-slide[data-slide-variant="section-title"] .zpres-slide-header { border: 0; }
+.zpres-theme-prism .zpres-layout-region[data-comparison-role] { border-radius: 0 24px 0 24px; border: 2px solid var(--zpres-color-rule); }
+.zpres-theme-prism .zpres-layout-region[data-comparison-role="primary"] { border-color: var(--zpres-color-accent); }
+.zpres-theme-prism .zpres-block-math { border-radius: 0 20px 0 20px; }
+.zpres-theme-prism .zpres-slide-footer-number { font-family: var(--zpres-font-heading); }
+
+.zpres-theme-prism :where(.zpres-block-code, .zpres-block-math, .zpres-block-table) {
+  border-color: var(--zpres-color-rule);
+}
+.zpres-theme-prism .zpres-block-code pre {
+  font-family: var(--zpres-font-mono);
+}
+
+.zpres-theme-prism .zpres-block-figure figcaption {
+  font-size: var(--text-slide-technical);
+}
+
+/* Diagram strokes must remain meaningful on both light and dark surfaces. */
+.zpres-theme-prism :where(.zpres-diagram-surface, .zpres-diagram-node rect, .zpres-diagram-edge) {
+  stroke: var(--zpres-color-accent);
+}
+.zpres-theme-prism .zpres-diagram-arrow { fill: var(--zpres-color-accent); }
+/* Keep stage labels beside their evidence and leave a full spacing step
+   between the cue and its text, including long labels. */
+.zpres-theme-prism .zpres-layout-region[data-derivation-role] {
+  grid-template-columns: minmax(18rem, 0.36fr) minmax(0, 1fr);
+  gap: var(--spacing-slide-2) var(--spacing-slide-5);
+  padding-block: var(--spacing-slide-3);
+}
+.zpres-theme-prism .zpres-layout-region[data-derivation-role] > .zpres-block {
+  grid-column: 2;
+}
+.zpres-theme-prism .zpres-layout-region[data-derivation-role] .zpres-layout-region-title {
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+.zpres-theme-prism .zpres-layout-region[data-derivation-role] .zpres-layout-region-title::before {
+  flex: none;
+  margin-inline-end: 0;
+}
+.zpres-theme-prism .zpres-layout-region[data-derivation-role] :where(.zpres-block-code, .zpres-block-math) {
+  padding: var(--spacing-slide-2) var(--spacing-slide-4);
+}
+
+.zpres-theme-prism .zpres-slide[data-slide-variant="dense"] :where(.zpres-block-paragraph, .zpres-block-list) {
+  font-size: var(--text-slide-technical);
+  line-height: var(--text-slide-technical--line-height);
+}
+
+/* Explicit slide colors also apply to the content surface and secondary ink.
+   Explicit surface/muted parameters remain authoritative through inline vars. */
+.zpres-theme-prism .zpres-slide[data-theme-param-background] {
+  --zpres-color-surface: var(--zpres-color-background);
+}
+.zpres-theme-prism .zpres-slide[data-theme-param-text] {
+  --zpres-color-muted: var(--zpres-color-text);
+}
+.zpres-theme-prism .zpres-slide[data-theme-param-text] .zpres-slide-footer-number {
+  color: var(--zpres-color-text);
+}

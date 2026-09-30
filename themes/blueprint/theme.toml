@@ -1,0 +1,55 @@
+[theme]
+name = "blueprint"
+version = "0.1.0"
+api_version = 1
+modules = ["scientific-data"]
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+feature_hooks = ["detail-slides", "footer", "speaker-notes"]
+
+[style]
+family = "architectural-drafting"
+
+[parameters.background]
+type = "color"
+default = "#dceaf4"
+
+[parameters.surface]
+type = "color"
+default = "#edf7ff"
+
+[parameters.text]
+type = "color"
+default = "#092f67"
+
+[parameters.muted]
+type = "color"
+default = "#385777"
+
+[parameters.accent]
+type = "color"
+default = "#164dba"
+
+[parameters.accent_alt]
+type = "color"
+default = "#624997"
+
+[parameters.rule]
+type = "color"
+default = "#a6c3da"
+
+[parameters.font_heading]
+type = "font"
+default = '"DIN Alternate", "Arial Narrow", Arial, sans-serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Helvetica Neue", Arial, sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = 'Menlo, Consolas, monospace'

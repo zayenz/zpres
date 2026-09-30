@@ -1,0 +1,55 @@
+[theme]
+name = "tidal"
+version = "0.1.0"
+api_version = 1
+modules = ["scientific-data"]
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+feature_hooks = ["detail-slides", "footer", "speaker-notes"]
+
+[style]
+family = "ocean-contours"
+
+[parameters.background]
+type = "color"
+default = "#031c27"
+
+[parameters.surface]
+type = "color"
+default = "#062c38"
+
+[parameters.text]
+type = "color"
+default = "#effbf8"
+
+[parameters.muted]
+type = "color"
+default = "#bdd8dc"
+
+[parameters.accent]
+type = "color"
+default = "#86efda"
+
+[parameters.accent_alt]
+type = "color"
+default = "#ffd49a"
+
+[parameters.rule]
+type = "color"
+default = "#406774"
+
+[parameters.font_heading]
+type = "font"
+default = '"Avenir Next", "Segoe UI", sans-serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Avenir Next", "Segoe UI", sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = 'Menlo, Consolas, monospace'

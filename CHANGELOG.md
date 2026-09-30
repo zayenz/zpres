@@ -10,6 +10,6 @@
   HTML and speaker-note text without requiring a browser.
 - Render math, code, tables, figures, galleries, charts, diagrams, media, and
   semantic Layouts.
-- Ship seven embedded Themes using the single Theme API 1 contract.
+- Ship twelve embedded Themes using the single Theme API 1 contract.
 - Publish HTML generations and raster page sets through owned atomic output
   boundaries on macOS and Linux.

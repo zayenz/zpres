@@ -1,0 +1,55 @@
+[theme]
+name = "prism"
+version = "0.1.0"
+api_version = 1
+modules = ["scientific-data"]
+fonts = []
+assets = []
+stylesheet = "theme.css.tmpl"
+print_stylesheet = "print.css.tmpl"
+output_targets = ["html", "pdf"]
+slide_variants = ["claim", "figure", "comparison", "derivation", "section-title", "dense"]
+feature_hooks = ["detail-slides", "footer", "speaker-notes"]
+
+[style]
+family = "geometric-planes"
+
+[parameters.background]
+type = "color"
+default = "#e5dff4"
+
+[parameters.surface]
+type = "color"
+default = "#f5f0ff"
+
+[parameters.text]
+type = "color"
+default = "#281039"
+
+[parameters.muted]
+type = "color"
+default = "#624b75"
+
+[parameters.accent]
+type = "color"
+default = "#642ac4"
+
+[parameters.accent_alt]
+type = "color"
+default = "#a12d64"
+
+[parameters.rule]
+type = "color"
+default = "#c7b7de"
+
+[parameters.font_heading]
+type = "font"
+default = 'Futura, "Century Gothic", "Avenir Next", sans-serif'
+
+[parameters.font_body]
+type = "font"
+default = '"Avenir Next", "Segoe UI", sans-serif'
+
+[parameters.font_mono]
+type = "font"
+default = 'Menlo, Consolas, monospace'
