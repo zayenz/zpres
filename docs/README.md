@@ -39,3 +39,6 @@ The [HTML publication](html-publication.md) and
 [raster publication](raster-publication.md) guides describe output ownership,
 rebuilds, and failure behavior. Read them when integrating zpres with another
 tool or managing repeated exports.
+
+For maintainers, [releasing zpres](releasing.md) covers version tags and
+automatic crates.io publication.
