@@ -5,6 +5,24 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 use tempfile::tempdir;
 
+#[test]
+fn serve_rejects_speaker_port_when_speaker_view_is_disabled() {
+    let mut command = Command::cargo_bin("zpres").unwrap();
+    command
+        .args([
+            "serve",
+            "talk.zp.md",
+            "--no-speaker",
+            "--speaker-port",
+            "3001",
+        ])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains(
+            "the argument '--no-speaker' cannot be used with '--speaker-port <SPEAKER_PORT>'",
+        ));
+}
+
 fn write_theme_manifest(root: &std::path::Path, name: &str) {
     let theme_dir = root.join(name);
     fs::create_dir_all(&theme_dir).unwrap();

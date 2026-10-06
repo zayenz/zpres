@@ -10,13 +10,13 @@ use crate::theme::RenderedTheme;
 
 use super::{
     AUTOSCALE_JS, AssetRenderMode, BackgroundPhase, HtmlError, RenderContext, STATIC_READINESS_JS,
-    SlideNumberContext, StaticExportOptions, background_phase_attr, background_split_attr,
-    copy_local_assets, copy_theme_dependencies, escape_attr, escape_html, pdf_step_state_attr,
-    render_block, render_slide_footer, render_speaker_notes_body, render_speaker_notes_panel,
-    render_v1_background_layer, slide_autoscale_attr, slide_classes_attr,
-    slide_footer_control_attrs, slide_preset_attr, slide_section_classes, slide_theme_attrs,
-    slide_theme_style_attr, slide_theme_style_attr_with_extra, slide_transition_attr,
-    slide_variant_attr, write_file,
+    ScreenRenderPolicy, SlideNumberContext, StaticExportOptions, background_phase_attr,
+    background_split_attr, copy_local_assets, copy_theme_dependencies, escape_attr, escape_html,
+    pdf_step_state_attr, policy_style_attr, render_block, render_slide_footer,
+    render_speaker_notes_body, render_speaker_notes_panel, render_v1_background_layer,
+    slide_autoscale_attr, slide_classes_attr, slide_footer_control_attrs, slide_preset_attr,
+    slide_section_classes, slide_theme_attrs, slide_theme_style_attr,
+    slide_theme_style_attr_with_extra, slide_transition_attr, slide_variant_attr, write_file,
 };
 
 pub(super) const FOUNDATION_ASSET_PATH: &str = "assets/zpres-theme-api-v1.css";
@@ -217,18 +217,30 @@ const STAGE_FIT_JS: &str = r#"(function () {
   if (!stage || !viewport) return;
 
   let pendingFrame = null;
-  function fitStage() {
+  function finiteMetric(value, fallback) {
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function fitStage(overrideMetrics) {
     pendingFrame = null;
     const logicalWidth = stage.offsetWidth;
     const logicalHeight = stage.offsetHeight;
     if (!logicalWidth || !logicalHeight) return;
+    const visual = window.visualViewport;
+    const metrics = overrideMetrics && typeof overrideMetrics === "object"
+      ? overrideMetrics
+      : visual;
+    const visibleWidth = Math.max(1, finiteMetric(metrics?.width, viewport.clientWidth));
+    const visibleHeight = Math.max(1, finiteMetric(metrics?.height, viewport.clientHeight));
+    const visibleLeft = finiteMetric(metrics?.offsetLeft, 0);
+    const visibleTop = finiteMetric(metrics?.offsetTop, 0);
     const scale = Math.min(
-      viewport.clientWidth / logicalWidth,
-      viewport.clientHeight / logicalHeight,
+      visibleWidth / logicalWidth,
+      visibleHeight / logicalHeight,
     );
     const boundedScale = Math.max(scale, 0.01);
-    const offsetX = (viewport.clientWidth - logicalWidth * boundedScale) / 2;
-    const offsetY = (viewport.clientHeight - logicalHeight * boundedScale) / 2;
+    const offsetX = visibleLeft + (visibleWidth - logicalWidth * boundedScale) / 2;
+    const offsetY = visibleTop + (visibleHeight - logicalHeight * boundedScale) / 2;
     stage.style.setProperty("--zpres-stage-scale", String(boundedScale));
     stage.style.setProperty("--zpres-stage-x", `${offsetX}px`);
     stage.style.setProperty("--zpres-stage-y", `${offsetY}px`);
@@ -242,10 +254,15 @@ const STAGE_FIT_JS: &str = r#"(function () {
   fitStage();
   window.addEventListener("resize", scheduleStageFit);
   window.visualViewport?.addEventListener("resize", scheduleStageFit);
+  window.visualViewport?.addEventListener("scroll", scheduleStageFit);
   document.fonts?.ready.then(scheduleStageFit);
   window.zpresFitStage = fitStage;
 })();
 "#;
+
+pub(super) fn preview_runtime_js(bridge: &str) -> String {
+    format!("{STAGE_FIT_JS}\n{AUTOSCALE_JS}\n{bridge}")
+}
 
 pub(super) fn populate_html_bundle(
     deck: &Deck,
@@ -261,7 +278,7 @@ pub(super) fn populate_html_bundle(
 
     write_file(
         &output_dir.join("index.html"),
-        render_html(deck, theme, options),
+        render_screen_html(deck, theme, ScreenRenderPolicy::Audience, options),
     )?;
     write_file(&output_dir.join(FOUNDATION_ASSET_PATH), FOUNDATION_CSS)?;
     write_file(&asset_dir.join("theme.css"), &theme.screen_css)?;
@@ -274,9 +291,10 @@ pub(super) fn populate_html_bundle(
     Ok(())
 }
 
-pub(super) fn render_html(
+pub(super) fn render_screen_html(
     deck: &Deck,
     theme: &RenderedTheme,
+    policy: ScreenRenderPolicy,
     options: super::LiveHtmlOptions,
 ) -> String {
     let title = deck
@@ -294,28 +312,45 @@ pub(super) fn render_html(
         FOUNDATION_ASSET_PATH
     ));
     html.push_str("  <link rel=\"stylesheet\" href=\"assets/theme.css\">\n");
+    if policy.is_preview() {
+        html.push_str("  <link rel=\"stylesheet\" href=\"assets/zpres-preview.css\">\n");
+    }
     html.push_str(&format!(
-        "</head>\n<body class=\"{}\" data-zpres-theme-api=\"1\" data-zpres-output-target=\"screen\" data-zpres-palette=\"{}\">\n",
+        "</head>\n<body class=\"{}\" data-zpres-theme-api=\"1\" data-zpres-output-target=\"screen\"{} data-zpres-palette=\"{}\">\n",
         body_classes(theme),
+        if policy.is_preview() {
+            " data-zpres-view-role=\"preview\""
+        } else {
+            ""
+        },
         escape_html(&theme_palette(theme))
     ));
     html.push_str("  <main class=\"reveal zpres-presentation\">\n");
     html.push_str("    <div class=\"slides\">\n");
 
     let plan = PresentationPlan::for_theme_api_v1(deck);
-    for group in plan.groups() {
+    for (group_index, group) in plan.groups().iter().enumerate() {
         match group {
             PresentationGroup::Section(section) => {
+                let group_active = policy
+                    .initial_state()
+                    .is_some_and(|initial| initial.section == group_index);
                 html.push_str(&format!(
-                    "      <section class=\"zpres-section-stack\" data-section-index=\"{}\">\n",
+                    "      <section class=\"zpres-section-stack{}\" data-section-index=\"{}\">\n",
+                    if group_active { " is-active" } else { "" },
                     section.section.index
                 ));
-                for planned in &section.slides {
+                for (detail_index, planned) in section.slides.iter().enumerate() {
                     html.push_str(&render_screen_slide(
                         *planned,
                         theme,
                         deck,
                         plan.logical_slide_count(),
+                        policy,
+                        group_active
+                            && policy
+                                .initial_state()
+                                .is_some_and(|initial| initial.detail == detail_index),
                         options,
                     ));
                 }
@@ -328,31 +363,40 @@ pub(super) fn render_html(
                 background
                     .image
                     .expect("a planned Splash always has its Deck background"),
-                deck.deck_root(),
+                policy.asset_mode(deck.deck_root()),
                 *section_index,
+                policy
+                    .initial_state()
+                    .is_some_and(|initial| initial.section == group_index),
             )),
         }
     }
 
     html.push_str("    </div>\n");
     html.push_str("  </main>\n");
-    if options.include_speaker_notes {
-        html.push_str(&render_speaker_notes_panel());
+    if !policy.is_preview() {
+        if options.include_speaker_notes {
+            html.push_str(&render_speaker_notes_panel());
+        }
+        html.push_str(&super::render_diagnostics(deck));
+        html.push_str("  <script>\n");
+        html.push_str(STAGE_FIT_JS);
+        html.push_str(AUTOSCALE_JS);
+        html.push_str(DEBUG_OVERLAY_JS);
+        html.push_str("  </script>\n");
     }
-    html.push_str(&super::render_diagnostics(deck));
-    html.push_str("  <script>\n");
-    html.push_str(STAGE_FIT_JS);
-    html.push_str(AUTOSCALE_JS);
-    html.push_str(DEBUG_OVERLAY_JS);
-    html.push_str("  </script>\n");
     html.push_str("  <script src=\"assets/reveal.js\"></script>\n");
-    html.push_str("  <script>\n");
-    html.push_str(
+    if policy.is_preview() {
+        html.push_str("  <script src=\"assets/zpres-preview-v1.js\"></script>\n");
+    } else {
+        html.push_str("  <script>\n");
+        html.push_str(
         "  const zpresVisualReviewParams = new URLSearchParams(window.location.search);\n  if (zpresVisualReviewParams.get(\"zpres-visual-review\") === \"1\") {\n    document.body?.setAttribute(\"data-zpres-ready\", \"pending\");\n    document.body?.setAttribute(\"data-zpres-ready-target\", \"screen\");\n",
     );
-    html.push_str(STATIC_READINESS_JS);
-    html.push_str("  }\n");
-    html.push_str("  </script>\n");
+        html.push_str(STATIC_READINESS_JS);
+        html.push_str("  }\n");
+        html.push_str("  </script>\n");
+    }
     html.push_str("</body>\n</html>\n");
     html
 }
@@ -471,6 +515,8 @@ fn render_screen_slide(
     theme: &RenderedTheme,
     deck: &Deck,
     logical_slide_count: usize,
+    policy: ScreenRenderPolicy,
+    initially_active: bool,
     options: super::LiveHtmlOptions,
 ) -> String {
     let slide = planned.slide;
@@ -480,7 +526,14 @@ fn render_screen_slide(
     let mut html = String::new();
     html.push_str(&format!(
         "        <section class=\"{}\" data-section-index=\"{}\" data-slide-id=\"{}\" data-slide-role=\"{}\"{}{}{}{}{}{}{}{}{}{}>\n",
-        slide_section_classes(slide, "zpres-slide"),
+        slide_section_classes(
+            slide,
+            if initially_active {
+                "zpres-slide is-active"
+            } else {
+                "zpres-slide"
+            },
+        ),
         planned.section_index,
         escape_attr(&slide.id),
         role,
@@ -490,10 +543,13 @@ fn render_screen_slide(
         slide_theme_attrs(slide),
         slide_footer_control_attrs(slide),
         slide_autoscale_attr(slide, deck),
-        slide_transition_attr(slide, deck),
+        if policy.is_preview() { String::new() } else { slide_transition_attr(slide, deck) },
         background_phase_attr(background_phase),
         background_split_attr(background_image),
-        slide_style_attr(slide, theme, background_image)
+        policy_style_attr(
+            slide_style_attr(slide, theme, background_image),
+            policy.asset_mode(deck.deck_root()),
+        )
     ));
     if let (
         Some(background_image),
@@ -502,9 +558,7 @@ fn render_screen_slide(
     {
         html.push_str(&render_v1_background_layer(
             background_image,
-            AssetRenderMode::Bundle {
-                deck_root: deck.deck_root(),
-            },
+            policy.asset_mode(deck.deck_root()),
             phase,
         ));
     }
@@ -512,9 +566,7 @@ fn render_screen_slide(
         slide,
         deck,
         theme,
-        AssetRenderMode::Bundle {
-            deck_root: deck.deck_root(),
-        },
+        policy.asset_mode(deck.deck_root()),
         planned.section_title,
         SlideNumberContext {
             current: planned.logical_slide_number,
@@ -644,7 +696,9 @@ fn render_slide_frame(
     let step_count = slide_screen_step_count(slide);
     if step_count > 0 {
         let (current, live) = match asset_mode {
-            AssetRenderMode::Bundle { .. } => (0, " aria-live=\"polite\""),
+            AssetRenderMode::Bundle { .. } | AssetRenderMode::Preview { .. } => {
+                (0, " aria-live=\"polite\"")
+            }
             AssetRenderMode::Print {
                 step_state: PdfStepState::Final,
                 ..
@@ -758,21 +812,24 @@ fn speaker_notes(slide: &Slide) -> Option<String> {
 
 fn render_background_splash_section(
     background_image: &crate::deck::DeckBackgroundImage,
-    deck_root: Option<&Path>,
+    asset_mode: AssetRenderMode<'_>,
     section_index: usize,
+    initially_active: bool,
 ) -> String {
     let mut html = format!(
-        "      <section class=\"zpres-section-stack zpres-background-splash-stack\" data-section-index=\"{}\" data-generated-section=\"background-image\">\n",
+        "      <section class=\"zpres-section-stack zpres-background-splash-stack{}\" data-section-index=\"{}\" data-generated-section=\"background-image\">\n",
+        if initially_active { " is-active" } else { "" },
         section_index
     );
     html.push_str(&format!(
-        "        <section class=\"zpres-slide zpres-background-splash-slide\" data-section-index=\"{}\" data-slide-id=\"background-image-splash\" data-slide-role=\"generated\" data-generated-slide=\"background-image\"{}>\n",
+        "        <section class=\"zpres-slide zpres-background-splash-slide{}\" data-section-index=\"{}\" data-slide-id=\"background-image-splash\" data-slide-role=\"generated\" data-generated-slide=\"background-image\"{}>\n",
+        if initially_active { " is-active" } else { "" },
         section_index,
         background_phase_attr(Some(BackgroundPhase::Splash))
     ));
     html.push_str(&render_v1_background_layer(
         background_image,
-        AssetRenderMode::Bundle { deck_root },
+        asset_mode,
         BackgroundPhase::Splash,
     ));
     html.push_str("        </section>\n");

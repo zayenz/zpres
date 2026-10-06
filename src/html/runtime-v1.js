@@ -1,5 +1,6 @@
 (function () {
   const state = { section: 0, detail: 0, step: 0 };
+  const previewMode = new URLSearchParams(window.location.search).get("zpres-preview") === "1";
   const stacks = Array.from(document.querySelectorAll(".zpres-section-stack"));
   const position = document.getElementById("debug-position");
   const speakerNotesPanel = document.getElementById("zpres-speaker-notes-panel");
@@ -338,6 +339,13 @@
   }
 
   function move(deltaSection, deltaDetail) {
+    if (typeof window.zpresLiveControl === "function") {
+      const command = deltaSection > 0 ? "advance"
+        : deltaSection < 0 ? "retreat"
+        : deltaDetail > 0 ? "detail-next" : "detail-previous";
+      window.zpresLiveControl(command).catch(rememberNavigationError);
+      return;
+    }
     if (deltaSection !== 0) {
       const nextSection = state.section + deltaSection;
       if (nextSection < 0 || nextSection >= stacks.length) {
@@ -356,6 +364,10 @@
   }
 
   function nextStepOrSection() {
+    if (typeof window.zpresLiveControl === "function") {
+      window.zpresLiveControl("advance").catch(rememberNavigationError);
+      return;
+    }
     if (state.step < currentStepCount()) {
       requestNavigation({ section: state.section, detail: state.detail, step: state.step + 1 });
     } else {
@@ -364,6 +376,10 @@
   }
 
   function previousStepOrSection() {
+    if (typeof window.zpresLiveControl === "function") {
+      window.zpresLiveControl("retreat").catch(rememberNavigationError);
+      return;
+    }
     if (state.step > 0) {
       requestNavigation({ section: state.section, detail: state.detail, step: state.step - 1 });
     } else {
@@ -371,7 +387,63 @@
     }
   }
 
+  let touchGesture = null;
+  function isInteractiveGestureTarget(target) {
+    return target instanceof Element && Boolean(target.closest(
+      "a,button,input,select,textarea,summary,audio[controls],video[controls],[contenteditable='true'],.zpres-speaker-notes-panel,.debug-diagnostics"
+    ));
+  }
+
+  function visualTouchBounds() {
+    const visual = window.visualViewport;
+    return {
+      left: Number.isFinite(visual?.offsetLeft) ? visual.offsetLeft : 0,
+      width: Number.isFinite(visual?.width) ? visual.width : window.innerWidth,
+    };
+  }
+
+  document.addEventListener("pointerdown", (event) => {
+    if (previewMode || !event.isPrimary || !["touch", "pen"].includes(event.pointerType)) return;
+    if (isInteractiveGestureTarget(event.target)) return;
+    touchGesture = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      startedAt: Date.now(),
+    };
+  }, { passive: true });
+
+  document.addEventListener("pointercancel", (event) => {
+    if (touchGesture?.pointerId === event.pointerId) touchGesture = null;
+  }, { passive: true });
+
+  document.addEventListener("pointerup", (event) => {
+    if (!touchGesture || touchGesture.pointerId !== event.pointerId) return;
+    const gesture = touchGesture;
+    touchGesture = null;
+    if (previewMode || isInteractiveGestureTarget(event.target)) return;
+    const deltaX = event.clientX - gesture.x;
+    const deltaY = event.clientY - gesture.y;
+    const distance = Math.hypot(deltaX, deltaY);
+    const elapsed = Date.now() - gesture.startedAt;
+    if (elapsed > 800) return;
+    if (distance >= 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      if (deltaX < 0) nextStepOrSection();
+      else previousStepOrSection();
+      return;
+    }
+    if (distance >= 48 && Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
+      move(0, deltaY < 0 ? 1 : -1);
+      return;
+    }
+    if (distance > 18) return;
+    const visual = visualTouchBounds();
+    if (event.clientX < visual.left + visual.width * 0.3) previousStepOrSection();
+    else nextStepOrSection();
+  }, { passive: true });
+
   document.addEventListener("keydown", (event) => {
+    if (previewMode) return;
     if (isTypingTarget(event.target)) return;
     let handled = true;
     if (event.key === "n" || event.key === "N") {
@@ -412,6 +484,7 @@
   });
 
   document.addEventListener("ended", (event) => {
+    if (previewMode) return;
     const media = event.target;
     if (!(media instanceof HTMLMediaElement)) return;
     const block = media.closest(".zpres-block-media[data-media-autoadvance=\"true\"]");
@@ -425,6 +498,18 @@
       const error = new RangeError("invalid presentation route " + location.hash);
       history.replaceState(null, "", routeHash(state));
       rememberNavigationError(error);
+      return;
+    }
+    if (typeof window.zpresLiveControl === "function") {
+      window.zpresLiveControl("navigate", {
+        generation: window.zpresLiveGeneration,
+        section: requested.section,
+        detail: requested.detail,
+        step: requested.step,
+      }).catch((error) => {
+        history.replaceState(null, "", routeHash(state));
+        rememberNavigationError(error);
+      });
       return;
     }
     navigate(requested).catch((error) => {

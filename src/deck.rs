@@ -1655,6 +1655,7 @@ struct SourceParser<'a> {
     image_corner_radius: Option<String>,
     build_lists: Option<BuildListsMode>,
     footnote_definitions: BTreeMap<String, FootnoteDefinition>,
+    authored_slide_ids: BTreeMap<String, SourceSpan>,
     marpit_defaults: MarpitSlideDefaults,
     diagnostics: Vec<Diagnostic>,
     theme_api_v1_diagnostics: Vec<Diagnostic>,
@@ -1714,6 +1715,7 @@ impl<'a> SourceParser<'a> {
             image_corner_radius,
             build_lists,
             footnote_definitions: BTreeMap::new(),
+            authored_slide_ids: BTreeMap::new(),
             marpit_defaults: MarpitSlideDefaults::default(),
             diagnostics: Vec::new(),
             theme_api_v1_diagnostics: Vec::new(),
@@ -1946,6 +1948,7 @@ impl<'a> SourceParser<'a> {
         let mut blocks = Vec::new();
         let mut title = None;
         let mut preset = None;
+        let mut authored_id = None;
         let mut variant = None;
         let mut classes = self.marpit_defaults.classes.clone();
         let mut theme_params = self.marpit_defaults.theme_params.clone();
@@ -2466,9 +2469,11 @@ impl<'a> SourceParser<'a> {
                     }
                     "slide" | "slide-meta" | "slide-metadata" => {
                         self.apply_slide_metadata_block(
+                            name,
                             rest,
                             &raw_body,
                             line,
+                            &mut authored_id,
                             &mut preset,
                             &mut variant,
                             &mut classes,
@@ -2636,7 +2641,7 @@ impl<'a> SourceParser<'a> {
         self.flush_paragraph(&mut blocks, &mut paragraph);
 
         Slide {
-            id: slide_id(section_index, role, detail_index),
+            id: authored_id.unwrap_or_else(|| slide_id(section_index, role, detail_index)),
             role,
             preset,
             variant,
@@ -3050,9 +3055,11 @@ impl<'a> SourceParser<'a> {
 
     fn apply_slide_metadata_block(
         &mut self,
+        directive_name: &str,
         attributes: &str,
         body: &str,
         line: SourceLine<'_>,
+        authored_id: &mut Option<String>,
         preset: &mut Option<String>,
         variant: &mut Option<SlideVariant>,
         classes: &mut Vec<String>,
@@ -3062,6 +3069,13 @@ impl<'a> SourceParser<'a> {
         autoscale: &mut Option<bool>,
         transition: &mut Option<SlideTransition>,
     ) {
+        let attribute_params = parse_theme_param_tokens(attributes);
+        if attribute_params.contains_key("id") {
+            self.diagnostics.push(Diagnostic::error(
+                self.span_for_line(line),
+                "slide IDs must use an `id:` YAML field inside `::: slide`; the `id=` attribute alias is not supported",
+            ));
+        }
         if let Some(raw_variant) = directive_attribute(attributes, "variant")
             .or_else(|| directive_attribute(attributes, "name"))
         {
@@ -3073,10 +3087,14 @@ impl<'a> SourceParser<'a> {
         for raw_class in parse_slide_metadata_class_attributes(attributes) {
             self.apply_slide_class(&raw_class, line, classes);
         }
-        for (name, value) in parse_theme_param_tokens(attributes) {
+        for (name, value) in attribute_params {
+            if name == "id" {
+                continue;
+            }
             self.apply_slide_theme_param(&name, value, line, theme_params);
         }
 
+        let id_line = yaml_root_mapping_field_line(body, line.number, "id").unwrap_or(line);
         let body = body.trim();
         if body.is_empty() {
             if attributes.trim().is_empty() {
@@ -3114,6 +3132,21 @@ impl<'a> SourceParser<'a> {
                 continue;
             };
             match key.replace('_', "-").as_str() {
+                "id" => {
+                    if directive_name != "slide" {
+                        self.diagnostics.push(Diagnostic::error(
+                            self.span_for_line(id_line),
+                            "slide IDs must use an `id:` YAML field inside `::: slide`",
+                        ));
+                    } else if let Some(raw_id) = value.as_str() {
+                        self.apply_authored_slide_id(raw_id, id_line, authored_id);
+                    } else {
+                        self.diagnostics.push(Diagnostic::error(
+                            self.span_for_line(id_line),
+                            "slide metadata `id` must be a lowercase slug string",
+                        ));
+                    }
+                }
                 "variant" => {
                     if let Some(raw_variant) = scalar_to_string(&value) {
                         self.apply_slide_variant(&raw_variant, line, variant);
@@ -3216,6 +3249,52 @@ impl<'a> SourceParser<'a> {
                 )),
             }
         }
+    }
+
+    fn apply_authored_slide_id(
+        &mut self,
+        raw_id: &str,
+        line: SourceLine<'_>,
+        authored_id: &mut Option<String>,
+    ) {
+        let span = self
+            .span_for_line(line)
+            .expect("Source lines always produce a span");
+        if authored_id.is_some() {
+            self.diagnostics.push(Diagnostic::error(
+                Some(span),
+                "a Slide may declare `id` only once",
+            ));
+            return;
+        }
+        if !is_valid_authored_slide_id(raw_id) {
+            self.diagnostics.push(Diagnostic::error(
+                Some(span),
+                format!(
+                    "invalid slide ID '{raw_id}'; use a lowercase slug starting with a letter, with single hyphens between letters or numbers"
+                ),
+            ));
+            return;
+        }
+        if raw_id == "background-image-splash" || raw_id.starts_with("section-") {
+            self.diagnostics.push(Diagnostic::error(
+                Some(span),
+                format!("slide ID '{raw_id}' is reserved for generated presentation routes"),
+            ));
+            return;
+        }
+        if let Some(first_span) = self.authored_slide_ids.get(raw_id) {
+            self.diagnostics.push(Diagnostic::error(
+                Some(span),
+                format!(
+                    "duplicate slide ID '{raw_id}'; it was first declared on line {}, column {}",
+                    first_span.line, first_span.column
+                ),
+            ));
+            return;
+        }
+        self.authored_slide_ids.insert(raw_id.to_string(), span);
+        *authored_id = Some(raw_id.to_string());
     }
 
     fn apply_marpit_comment_directives(
@@ -7406,7 +7485,31 @@ fn is_safe_css_size(value: &str) -> bool {
     }
     matches!(
         unit,
-        "" | "%" | "px" | "rem" | "em" | "vh" | "vw" | "vmin" | "vmax" | "ch"
+        "" | "%"
+            | "px"
+            | "rem"
+            | "em"
+            | "vh"
+            | "vw"
+            | "vmin"
+            | "vmax"
+            | "svh"
+            | "svw"
+            | "svmin"
+            | "svmax"
+            | "lvh"
+            | "lvw"
+            | "lvmin"
+            | "lvmax"
+            | "dvh"
+            | "dvw"
+            | "dvmin"
+            | "dvmax"
+            | "cqh"
+            | "cqw"
+            | "cqmin"
+            | "cqmax"
+            | "ch"
     )
 }
 
@@ -7415,6 +7518,50 @@ fn slide_id(section_index: usize, role: SlideRole, detail_index: usize) -> Strin
         SlideRole::Main => format!("section-{section_index}-main"),
         SlideRole::Detail => format!("section-{section_index}-detail-{detail_index}"),
     }
+}
+
+fn yaml_root_mapping_field_line<'a>(
+    body: &'a str,
+    directive_line: usize,
+    field: &str,
+) -> Option<SourceLine<'a>> {
+    let candidates = body
+        .lines()
+        .enumerate()
+        .filter_map(|(offset, text)| {
+            let trimmed = text.trim_start();
+            if trimmed.is_empty() || trimmed.starts_with('#') || matches!(trimmed, "---" | "...") {
+                return None;
+            }
+            let (raw_key, _) = trimmed.split_once(':')?;
+            let key = raw_key.trim().trim_matches(['\'', '"']);
+            (!key.is_empty()).then_some((
+                offset,
+                text,
+                text.len().saturating_sub(trimmed.len()),
+                key,
+            ))
+        })
+        .collect::<Vec<_>>();
+    let root_indent = candidates.iter().map(|(_, _, indent, _)| *indent).min()?;
+    candidates
+        .into_iter()
+        .find(|(_, _, indent, key)| *indent == root_indent && *key == field)
+        .map(|(offset, text, _, _)| SourceLine {
+            number: directive_line + offset + 1,
+            text,
+        })
+}
+
+fn is_valid_authored_slide_id(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    !bytes.is_empty()
+        && bytes[0].is_ascii_lowercase()
+        && bytes.last().is_some_and(u8::is_ascii_alphanumeric)
+        && bytes
+            .iter()
+            .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || *byte == b'-')
+        && !value.contains("--")
 }
 
 fn yaml_location(error: &serde_yaml::Error) -> String {
@@ -8679,6 +8826,266 @@ Visible text.
     }
 
     #[test]
+    fn parses_authored_slide_ids_without_changing_legacy_fallbacks() {
+        let source = r#"::: slide
+id: theorem-main
+:::
+
+# Main
+
+--
+
+::: slide
+id: theorem-detail
+:::
+
+# Detail
+
+---
+
+# Legacy
+"#;
+        let deck = parse_source_text(source, Some(PathBuf::from("talk.zp.md"))).unwrap();
+
+        assert!(deck.diagnostics.is_empty(), "{:?}", deck.diagnostics);
+        assert_eq!(deck.sections[0].main_slide.id, "theorem-main");
+        assert_eq!(deck.sections[0].detail_slides[0].id, "theorem-detail");
+        assert_eq!(deck.sections[1].main_slide.id, "section-2-main");
+    }
+
+    #[test]
+    fn diagnoses_invalid_reserved_duplicate_and_alias_slide_ids() {
+        let source = r#"::: slide
+id: stable-slide
+:::
+# First
+
+---
+
+::: slide
+id: stable-slide
+:::
+# Duplicate
+
+---
+
+::: slide
+id: Bad-Slug
+:::
+# Invalid
+
+---
+
+::: slide
+id: section-authored
+:::
+# Reserved positional
+
+---
+
+::: slide
+id: background-image-splash
+:::
+# Reserved splash
+
+---
+
+::: slide id=attribute-alias
+variant: claim
+:::
+# Attribute alias
+
+---
+
+::: slide-meta
+id: metadata-alias
+:::
+# Directive alias
+"#;
+        let deck = parse_source_text(source, Some(PathBuf::from("talk.zp.md"))).unwrap();
+        let fatal = deck
+            .diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.is_fatal())
+            .map(|diagnostic| diagnostic.message.as_str())
+            .collect::<Vec<_>>();
+
+        for expected in [
+            "duplicate slide ID 'stable-slide'",
+            "invalid slide ID 'Bad-Slug'",
+            "slide ID 'section-authored' is reserved",
+            "slide ID 'background-image-splash' is reserved",
+            "the `id=` attribute alias is not supported",
+            "slide IDs must use an `id:` YAML field inside `::: slide`",
+        ] {
+            assert!(
+                fatal.iter().any(|message| message.contains(expected)),
+                "missing {expected:?} in {fatal:?}"
+            );
+        }
+        assert_eq!(deck.sections[0].main_slide.id, "stable-slide");
+        assert_eq!(deck.sections[1].main_slide.id, "section-2-main");
+    }
+
+    #[test]
+    fn slide_id_diagnostics_use_the_exact_yaml_field_location() {
+        let source = r#"::: slide
+  id: stable-slide
+:::
+# First
+
+---
+
+::: slide
+    id: stable-slide
+:::
+# Duplicate
+
+---
+
+::: slide
+  id: Bad-Slug
+:::
+# Invalid
+
+---
+
+::: slide
+    id: section-authored
+:::
+# Reserved
+"#;
+        let deck = parse_source_text(source, Some(PathBuf::from("talk.zp.md"))).unwrap();
+        let diagnostic = |message: &str| {
+            deck.diagnostics
+                .iter()
+                .find(|diagnostic| diagnostic.message.contains(message))
+                .unwrap_or_else(|| {
+                    panic!(
+                        "missing diagnostic containing {message:?} in {:?}",
+                        deck.diagnostics
+                    )
+                })
+        };
+
+        let duplicate = diagnostic("duplicate slide ID 'stable-slide'");
+        assert_eq!(
+            duplicate.span,
+            Some(SourceSpan {
+                source_path: Some(PathBuf::from("talk.zp.md")),
+                line: 9,
+                column: 5,
+            })
+        );
+        assert!(
+            duplicate
+                .message
+                .contains("first declared on line 2, column 3"),
+            "{}",
+            duplicate.message
+        );
+        assert_eq!(
+            diagnostic("invalid slide ID 'Bad-Slug'").span,
+            Some(SourceSpan {
+                source_path: Some(PathBuf::from("talk.zp.md")),
+                line: 16,
+                column: 3,
+            })
+        );
+        assert_eq!(
+            diagnostic("slide ID 'section-authored' is reserved").span,
+            Some(SourceSpan {
+                source_path: Some(PathBuf::from("talk.zp.md")),
+                line: 23,
+                column: 5,
+            })
+        );
+    }
+
+    #[test]
+    fn slide_id_location_accepts_quoted_root_keys_and_ignores_nested_ids() {
+        let source = r#"::: slide
+  "id": Bad-Double
+:::
+# Double quoted
+
+---
+
+::: slide
+    'id': section-quoted
+:::
+# Single quoted
+
+---
+
+::: slide
+theme:
+  id: nested-theme-value
+"id": Bad-Root
+:::
+# Root wins
+"#;
+        let deck = parse_source_text(source, Some(PathBuf::from("quoted.zp.md"))).unwrap();
+        let diagnostic = |message: &str| {
+            deck.diagnostics
+                .iter()
+                .find(|diagnostic| diagnostic.message.contains(message))
+                .unwrap_or_else(|| {
+                    panic!(
+                        "missing diagnostic containing {message:?} in {:?}",
+                        deck.diagnostics
+                    )
+                })
+        };
+
+        assert_eq!(
+            diagnostic("invalid slide ID 'Bad-Double'").span,
+            Some(SourceSpan {
+                source_path: Some(PathBuf::from("quoted.zp.md")),
+                line: 2,
+                column: 3,
+            })
+        );
+        assert_eq!(
+            diagnostic("slide ID 'section-quoted' is reserved").span,
+            Some(SourceSpan {
+                source_path: Some(PathBuf::from("quoted.zp.md")),
+                line: 9,
+                column: 5,
+            })
+        );
+        assert_eq!(
+            diagnostic("invalid slide ID 'Bad-Root'").span,
+            Some(SourceSpan {
+                source_path: Some(PathBuf::from("quoted.zp.md")),
+                line: 18,
+                column: 1,
+            }),
+            "the nested theme id must not supply the Slide id span"
+        );
+    }
+
+    #[test]
+    fn duplicate_root_slide_id_keys_follow_serde_yaml_rejection() {
+        let source = r#"::: slide
+id: first-id
+id: second-id
+:::
+# Duplicate YAML key
+"#;
+        let deck = parse_source_text(source, Some(PathBuf::from("duplicate.zp.md"))).unwrap();
+
+        assert!(deck.diagnostics.iter().any(|diagnostic| {
+            diagnostic.is_fatal()
+                && diagnostic
+                    .message
+                    .contains("slide metadata YAML is invalid")
+                && diagnostic.message.contains("duplicate entry with key")
+        }));
+        assert_eq!(deck.sections[0].main_slide.id, "section-1-main");
+    }
+
+    #[test]
     fn parses_slide_preset_shorthand_and_directive() {
         let source = r#"# Preset one
 
@@ -9392,7 +9799,7 @@ image-corner-radius: calc(100% - 1rem)
             &source_path,
             r#"# Sized figures
 
-::: figure src="assets/plot.svg" alt="Runtime comparison" width="72%" height="48vh" fit="contain" align="center" dim="12" grayscale="20" saturate="85" blur="2" radius="12"
+::: figure src="assets/plot.svg" alt="Runtime comparison" width="72%" height="48cqh" fit="contain" align="center" dim="12" grayscale="20" saturate="85" blur="2" radius="12"
 Centered runtime plot.
 :::
 
@@ -9400,7 +9807,7 @@ Centered runtime plot.
 
 ![fit corner-radius(18) alt="Full slide overview"](assets/overview.svg "Overview")
 
-![Quarto-style image](assets/quarto.png){out-width="64%" out-height="40vh" fig-align="left" fig-alt="Accessible Quarto plot" fig-cap="A Quarto-style image attribute block." pdf-src="assets/quarto-static.svg" fig-fit="contain" fig-radius="0.75rem" fig-dim="9" fig-grayscale="12" fig-saturate="88" fig-blur="1"}
+![Quarto-style image](assets/quarto.png){out-width="64%" out-height="40cqh" fig-align="left" fig-alt="Accessible Quarto plot" fig-cap="A Quarto-style image attribute block." pdf-src="assets/quarto-static.svg" fig-fit="contain" fig-radius="0.75rem" fig-dim="9" fig-grayscale="12" fig-saturate="88" fig-blur="1"}
 "#,
         )
         .unwrap();
@@ -9420,7 +9827,7 @@ Centered runtime plot.
                 && alt == "Runtime comparison"
                 && caption == "Centered runtime plot."
                 && options.width.as_deref() == Some("72%")
-                && options.height.as_deref() == Some("48vh")
+                && options.height.as_deref() == Some("48cqh")
                 && options.fit == Some(FigureFit::Contain)
                 && options.align == Some(FigureAlign::Center)
                 && options.dim == Some(12)
@@ -9484,7 +9891,7 @@ Centered runtime plot.
                 && caption == "A Quarto-style image attribute block."
                 && static_src == "assets/quarto-static.svg"
                 && options.width.as_deref() == Some("64%")
-                && options.height.as_deref() == Some("40vh")
+                && options.height.as_deref() == Some("40cqh")
                 && options.fit == Some(FigureFit::Contain)
                 && options.align == Some(FigureAlign::Start)
                 && options.dim == Some(9)

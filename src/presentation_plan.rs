@@ -64,17 +64,67 @@ pub(crate) enum PlannedPrintPage<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct PlannedScreenState<'a> {
+pub(crate) struct PlannedScreenState {
     pub(crate) section: usize,
     pub(crate) detail: usize,
     pub(crate) step: usize,
     pub(crate) step_count: usize,
-    pub(crate) slide_id: &'a str,
+    pub(crate) slide_id: String,
     pub(crate) role: &'static str,
+    pub(crate) title: Option<String>,
     pub(crate) generated: Option<&'static str>,
 }
 
-impl PlannedScreenState<'_> {
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub(crate) struct ScreenRouteInventory {
+    routes: Vec<PlannedScreenState>,
+}
+
+impl ScreenRouteInventory {
+    pub(crate) fn from_routes(routes: Vec<PlannedScreenState>) -> Self {
+        Self { routes }
+    }
+    pub(crate) fn as_slice(&self) -> &[PlannedScreenState] {
+        &self.routes
+    }
+
+    pub(crate) fn iter(&self) -> impl Iterator<Item = &PlannedScreenState> {
+        self.routes.iter()
+    }
+
+    pub(crate) fn get(&self, index: usize) -> Option<&PlannedScreenState> {
+        self.routes.get(index)
+    }
+
+    pub(crate) fn is_empty(&self) -> bool {
+        self.routes.is_empty()
+    }
+
+    pub(crate) fn len(&self) -> usize {
+        self.routes.len()
+    }
+
+    pub(crate) fn position(
+        &self,
+        predicate: impl FnMut(&PlannedScreenState) -> bool,
+    ) -> Option<usize> {
+        self.routes.iter().position(predicate)
+    }
+
+    pub(crate) fn route_index(&self, section: usize, detail: usize, step: usize) -> Option<usize> {
+        self.routes.iter().position(|route| {
+            route.section == section && route.detail == detail && route.step == step
+        })
+    }
+}
+
+impl From<Vec<PlannedScreenState>> for ScreenRouteInventory {
+    fn from(routes: Vec<PlannedScreenState>) -> Self {
+        Self::from_routes(routes)
+    }
+}
+
+impl PlannedScreenState {
     pub(crate) fn route_hash(&self) -> String {
         let step = if self.step > 0 {
             format!("/{}", self.step)
@@ -141,6 +191,7 @@ impl<'a> PlannedPrintPage<'a> {
 #[derive(Debug)]
 pub(crate) struct PresentationPlan<'a> {
     groups: Vec<PresentationGroup<'a>>,
+    screen_states: ScreenRouteInventory,
     logical_slide_count: usize,
     deck_background: Option<&'a DeckBackgroundImage>,
 }
@@ -193,8 +244,12 @@ impl<'a> PresentationPlan<'a> {
             }
         }
 
+        let screen_states = ScreenRouteInventory {
+            routes: planned_screen_states(&groups),
+        };
         Self {
             groups,
+            screen_states,
             logical_slide_count: logical_slide_number.saturating_sub(1),
             deck_background,
         }
@@ -219,41 +274,15 @@ impl<'a> PresentationPlan<'a> {
     }
 
     pub(crate) fn screen_state_count(&self) -> usize {
-        self.screen_states().len()
+        self.screen_states.len()
     }
 
-    pub(crate) fn screen_states(&self) -> Vec<PlannedScreenState<'a>> {
-        let mut states = Vec::new();
-        for (screen_section, group) in self.groups.iter().enumerate() {
-            match group {
-                PresentationGroup::Section(section) => {
-                    for planned in &section.slides {
-                        let step_count = deck::slide_screen_step_count(planned.slide);
-                        for step in 0..=step_count {
-                            states.push(PlannedScreenState {
-                                section: screen_section,
-                                detail: planned.detail_index.unwrap_or(0),
-                                step,
-                                step_count,
-                                slide_id: &planned.slide.id,
-                                role: slide_role_name(planned.slide),
-                                generated: None,
-                            });
-                        }
-                    }
-                }
-                PresentationGroup::Splash { .. } => states.push(PlannedScreenState {
-                    section: screen_section,
-                    detail: 0,
-                    step: 0,
-                    step_count: 0,
-                    slide_id: "background-image-splash",
-                    role: "generated",
-                    generated: Some("background-image"),
-                }),
-            }
-        }
-        states
+    pub(crate) fn screen_states(&self) -> &[PlannedScreenState] {
+        self.screen_states.as_slice()
+    }
+
+    pub(crate) fn into_screen_routes(self) -> ScreenRouteInventory {
+        self.screen_states
     }
 
     pub(crate) fn print_pages(&self, include_speaker_notes: bool) -> Vec<PlannedPrintPage<'a>> {
@@ -348,6 +377,42 @@ impl<'a> PresentationPlan<'a> {
                 }
             })
     }
+}
+
+fn planned_screen_states(groups: &[PresentationGroup<'_>]) -> Vec<PlannedScreenState> {
+    let mut states = Vec::new();
+    for (screen_section, group) in groups.iter().enumerate() {
+        match group {
+            PresentationGroup::Section(section) => {
+                for planned in &section.slides {
+                    let step_count = deck::slide_screen_step_count(planned.slide);
+                    for step in 0..=step_count {
+                        states.push(PlannedScreenState {
+                            section: screen_section,
+                            detail: planned.detail_index.unwrap_or(0),
+                            step,
+                            step_count,
+                            slide_id: planned.slide.id.clone(),
+                            role: slide_role_name(planned.slide),
+                            title: planned.slide.title.clone(),
+                            generated: None,
+                        });
+                    }
+                }
+            }
+            PresentationGroup::Splash { .. } => states.push(PlannedScreenState {
+                section: screen_section,
+                detail: 0,
+                step: 0,
+                step_count: 0,
+                slide_id: "background-image-splash".to_string(),
+                role: "generated",
+                title: None,
+                generated: Some("background-image"),
+            }),
+        }
+    }
+    states
 }
 
 fn slide_role_name(slide: &Slide) -> &'static str {
@@ -532,6 +597,45 @@ Detail notes.
                 .origin,
             Some(PresentationBackgroundOrigin::Deck)
         );
+    }
+
+    #[test]
+    fn authored_slide_ids_flow_through_screen_and_print_planning() {
+        let deck = parse_source_text(
+            r#"::: slide
+id: stable-main
+:::
+# Main
+
+::: steps
+1. Reveal
+:::
+
+--
+
+::: slide
+id: stable-detail
+:::
+# Detail
+"#,
+            None,
+        )
+        .unwrap();
+        assert!(deck.diagnostics.is_empty(), "{:?}", deck.diagnostics);
+        let plan = PresentationPlan::for_theme_api_v1(&deck);
+
+        assert_eq!(
+            plan.screen_states()
+                .iter()
+                .map(|state| state.slide_id.as_str())
+                .collect::<Vec<_>>(),
+            ["stable-main", "stable-main", "stable-detail"]
+        );
+        assert_eq!(
+            plan.slide_for_id("stable-main").unwrap().slide.id,
+            "stable-main"
+        );
+        assert_eq!(plan.print_pages(false)[0].slide_id(), "stable-main");
     }
 
     #[test]

@@ -1139,7 +1139,7 @@ fn expected_screen_slide_count(deck: &Deck) -> usize {
 }
 
 fn validate_screen_route_order(
-    expected: &[PlannedScreenState<'_>],
+    expected: &[PlannedScreenState],
     actual: &[BrowserScreenRoute],
     failures: &mut Vec<VisualFinding>,
 ) {
@@ -1686,7 +1686,7 @@ fn digest_presentation_plan(plan: &PresentationPlan<'_>) -> String {
         hasher.update((state.detail as u64).to_be_bytes());
         hasher.update((state.step as u64).to_be_bytes());
         hasher.update((state.step_count as u64).to_be_bytes());
-        hash_text(&mut hasher, state.slide_id);
+        hash_text(&mut hasher, &state.slide_id);
         hash_text(&mut hasher, state.role);
         hash_text(&mut hasher, state.generated.unwrap_or(""));
     }

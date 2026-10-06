@@ -19,8 +19,12 @@ mod file_url;
 mod native_fs;
 mod output_ownership;
 mod presentation_plan;
+mod presentation_protocol;
+mod presentation_session;
 mod publication;
 mod raster_publication;
+mod speaker_notes;
+mod speaker_view;
 
 pub mod deck;
 pub mod html;
@@ -123,6 +127,18 @@ struct ServeCommand {
     /// First port to try on 127.0.0.1. Use 0 to let the OS choose a free port.
     #[arg(long, default_value_t = 3000)]
     port: u16,
+
+    /// Port for the separate speaker view. Defaults to the first free port after the presentation.
+    #[arg(long, conflicts_with = "no_speaker")]
+    speaker_port: Option<u16>,
+
+    /// Serve only the presentation view.
+    #[arg(long)]
+    no_speaker: bool,
+
+    /// Open the presentation and speaker views in the system browser.
+    #[arg(long)]
+    open: bool,
 
     /// Debounce delay for rebuilds after filesystem changes.
     #[arg(long, default_value_t = 200)]
@@ -726,6 +742,9 @@ fn run(cli: Cli) -> Result<(), ZpresError> {
                 cli_theme_override: command.config.theme,
                 cli_theme_params,
                 port: command.port,
+                speaker_port: command.speaker_port,
+                speaker_enabled: !command.no_speaker,
+                open: command.open,
                 debounce: std::time::Duration::from_millis(command.debounce_ms),
                 theme_switcher: command.theme_switcher,
             })?;

@@ -26,6 +26,13 @@ by 720 logical field, safe area, reading order, footer lane, fit/letterbox
 behavior, and Output-target geometry. A Theme owns tokens, typography,
 palette, surfaces, and bounded accent treatment.
 
+Source-authored sizes such as figure heights and Layout lengths resolve `vh`,
+`vw`, and their container and mobile variants against the logical field. For
+example, `50vh` becomes `360px` before the browser scales the slide. Theme CSS
+should use fixed logical lengths or slide-container units; `theme check` warns
+about viewport units that can change composition between the presentation and
+presenter previews.
+
 V1 accepts 16:9 and equivalent ratios such as `1920:1080`. It rejects other
 declared aspects before HTML, PDF, PNG, or JPEG publication. Grid, Stack,
 Columns, Overlay, and Aside are typed renderer-owned Layout kinds. Use

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing stable release tag (e.g. v0.1.0)
+        description: Existing stable release tag (e.g. v0.2.0)
         required: true
         type: string
 
@@ -29,7 +29,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
-            echo "Expected a stable release tag such as v0.1.0" >&2
+            echo "Expected a stable release tag such as v0.2.0" >&2
             exit 1
           }
           echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"

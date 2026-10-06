@@ -2869,6 +2869,12 @@ fn theme_css_warnings(manifest: &ThemeManifest, screen_css: &str, print_css: &st
             }
         }
     }
+    for (target, css) in [("screen", screen_css), ("print", print_css)] {
+        let units = viewport_relative_css_units(css);
+        if !units.is_empty() {
+            warnings.push(format!("theme '{}' {target} CSS uses browser viewport-relative units {}; Theme API v1 Slide composition should use fixed logical lengths or Slide-container-relative sizing", manifest.name, units.join(", ")));
+        }
+    }
     if !print_css.contains(".zpres-print-slide") {
         warnings.push(format!(
             "theme '{}' print CSS does not mention semantic selector .zpres-print-slide",
@@ -2876,6 +2882,37 @@ fn theme_css_warnings(manifest: &ThemeManifest, screen_css: &str, print_css: &st
         ));
     }
     warnings
+}
+
+fn viewport_relative_css_units(css: &str) -> Vec<String> {
+    const VIEWPORT_UNITS: [&str; 16] = [
+        "vh", "vw", "vmin", "vmax", "svh", "svw", "svmin", "svmax", "lvh", "lvw", "lvmin", "lvmax",
+        "dvh", "dvw", "dvmin", "dvmax",
+    ];
+    let sanitized = css_without_comments_or_strings(css);
+    let bytes = sanitized.as_bytes();
+    let mut found = BTreeSet::new();
+    let mut index = 0;
+    while index < bytes.len() {
+        if !bytes[index].is_ascii_digit() && bytes[index] != b'.' {
+            index += 1;
+            continue;
+        }
+        while index < bytes.len() && (bytes[index].is_ascii_digit() || bytes[index] == b'.') {
+            index += 1;
+        }
+        let unit_start = index;
+        while index < bytes.len() && bytes[index].is_ascii_alphabetic() {
+            index += 1;
+        }
+        if unit_start < index {
+            let unit = sanitized[unit_start..index].to_ascii_lowercase();
+            if VIEWPORT_UNITS.contains(&unit.as_str()) {
+                found.insert(unit);
+            }
+        }
+    }
+    found.into_iter().collect()
 }
 
 /// Extracts only simple `.zpres-*` class tokens from selector preludes.
@@ -4016,6 +4053,22 @@ fn is_safe_css_size_token(value: &str) -> bool {
             | "vw"
             | "vmin"
             | "vmax"
+            | "svh"
+            | "svw"
+            | "svmin"
+            | "svmax"
+            | "lvh"
+            | "lvw"
+            | "lvmin"
+            | "lvmax"
+            | "dvh"
+            | "dvw"
+            | "dvmin"
+            | "dvmax"
+            | "cqh"
+            | "cqw"
+            | "cqmin"
+            | "cqmax"
             | "ch"
             | "pt"
             | "pc"
@@ -4411,6 +4464,32 @@ api_version = 2
         assert!(
             theme_css_warnings(&manifest, &rendered.screen_css, &rendered.print_css).is_empty()
         );
+    }
+
+    #[test]
+    fn v1_theme_check_warns_about_viewport_relative_slide_lengths() {
+        let temp = tempdir().unwrap();
+        let theme_dir = write_versioned_theme(
+            temp.path(),
+            "viewport-coupled",
+            1,
+            ".zpres-slide-frame { padding: 4vh 3vw; }\n",
+            ".zpres-print-slide { min-height: 80dvh; }\n",
+        );
+        let manifest = load_theme_manifest(&theme_dir.join("theme.toml")).unwrap();
+        let rendered = render_theme(&manifest, &BTreeMap::new()).unwrap();
+
+        let warnings = theme_css_warnings(&manifest, &rendered.screen_css, &rendered.print_css);
+
+        assert!(warnings.iter().any(|warning| {
+            warning.contains("screen CSS uses browser viewport-relative units")
+                && warning.contains("vh")
+                && warning.contains("vw")
+        }));
+        assert!(warnings.iter().any(|warning| {
+            warning.contains("print CSS uses browser viewport-relative units")
+                && warning.contains("dvh")
+        }));
     }
 
     #[test]

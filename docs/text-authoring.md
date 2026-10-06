@@ -24,6 +24,23 @@ schemes remain visible text. Raw HTML is escaped; use an explicit HTML-only
 block when HTML is intended. This is a bounded inline subset: reference-style
 links, inline images, and the full CommonMark grammar are not supported.
 
+## Stable slide IDs
+
+Give a slide an ID when live edits may insert or reorder slides:
+
+```markdown
+::: slide
+id: search-order
+:::
+# Search order changes the work
+```
+
+`serve` preserves the current slide by ID across successful rebuilds and clamps
+its Step when necessary. IDs must be unique, start with a lowercase letter,
+and contain lowercase letters, digits, or single hyphens. They must end with
+a letter or digit. The `section-` prefix and `background-image-splash` are
+reserved. Slides without an authored ID keep their generated IDs.
+
 ## Steps
 
 Use Steps to reveal an explanation in order:

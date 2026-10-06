@@ -16,7 +16,7 @@ zpres init talk.zp.md --title "Search order" --author "Ada"
 zpres serve talk.zp.md
 ```
 
-Open the local URL printed by `serve` and edit `talk.zp.md` in your editor.
+Open the Presentation URL printed by `serve` and edit `talk.zp.md` in your editor.
 The preview reloads successful builds and preserves your presentation position
 where possible. If an edit prevents a rebuild, it keeps the Last good deck
 visible and reports the problem.
@@ -71,6 +71,18 @@ Keep assets beside the Source file, for example `figures/runtime.svg` or
 called the Deck root.
 
 ## Navigate and rehearse
+
+`serve` also prints a Speaker URL for the separate presenter view. It shows the
+current and next slide, speaker notes, navigation controls, and an elapsed timer.
+Open it on your own screen and keep the Presentation view on the projector.
+Navigation in either view updates both. Both URLs listen on the local machine.
+
+```sh
+zpres serve talk.zp.md --open
+zpres serve talk.zp.md --speaker-port 3001
+zpres serve talk.zp.md --no-speaker
+```
+
 
 | Key | Action |
 | --- | --- |

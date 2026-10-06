@@ -71,6 +71,7 @@
   body.zpres-theme-api-v1[data-zpres-output-target="screen"] {
     display: grid;
     place-items: center;
+    overscroll-behavior: none;
   }
   [data-zpres-theme-api="1"] :where(.reveal, .zpres-presentation) {
     display: grid;
@@ -78,6 +79,9 @@
     height: 100vh;
     place-items: center;
     overflow: hidden;
+  }
+  body.zpres-theme-api-v1[data-zpres-output-target="screen"] .zpres-presentation {
+    touch-action: none;
   }
   [data-zpres-theme-api="1"] .slides {
     position: relative;

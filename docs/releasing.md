@@ -26,7 +26,7 @@ No permanent crates.io token or GitHub repository secret is needed.
 Run the workflow on `main`, selecting the existing release tag:
 
 ```sh
-gh workflow run publish-crates.yml --ref main -f tag=v0.1.0
+gh workflow run publish-crates.yml --ref main -f tag=v0.2.0
 ```
 
 An already published version is skipped. A failed package check,

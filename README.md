@@ -9,7 +9,7 @@ A Deck has a main talk path and optional Detail slides for supporting
 material, worked examples, or questions. Themes control its appearance. The
 same Source file supplies the content for live and static output.
 
-The 0.1 series supports macOS and Linux. Chromium or Google Chrome is required
+The 0.2 series supports macOS and Linux. Chromium or Google Chrome is required
 for `zpres check`, visual Theme checks, and PDF or raster export. HTML builds,
 print HTML, and speaker-note text do not require a browser.
 
@@ -38,7 +38,7 @@ zpres searches the usual Chrome and Chromium installation paths. Set
 export ZPRES_CHROMIUM=/path/to/chromium
 ```
 
-Windows and BSD are not supported in 0.1 because HTML and raster publication
+Windows and BSD are not supported in 0.2 because HTML and raster publication
 use native atomic filesystem operations.
 
 ## Start a Deck
@@ -69,6 +69,12 @@ zpres export talk.zp.md --png dist/talk-pages \
   --png-contact-sheet dist/contact-sheet.png
 zpres export talk.zp.md --notes-txt dist/speaker-notes.txt
 ```
+
+`serve` prints separate Presentation and Speaker URLs. The Speaker URL opens
+current and next slide previews, speaker notes, navigation controls, and a timer.
+Both views follow the same live presentation state. Use `--open` to open both,
+`--speaker-port 3001` to choose the speaker port, or `--no-speaker` to serve only
+the presentation. Both URLs listen on the local machine.
 
 HTML builds include speaker notes by default. Use `--exclude-speaker-notes`
 with a fresh output directory when sharing a presentation that should not
@@ -161,10 +167,10 @@ publication guides describe these boundaries.
 ## Compatibility
 
 The command-line interface and Source format are the supported public surfaces
-for 0.1. The Rust library exists to implement the binary and remains
+for 0.2. The Rust library exists to implement the binary and remains
 experimental; its modules may change before 1.0.
 
-Theme API 1 is the sole Theme contract in the first release. Theme APIs and
+Theme API 1 is the sole Theme contract in this release. Theme APIs and
 TOML configuration schemas are versioned separately from zpres.
 
 See the [configuration guide](docs/configuration.md) for supported defaults and precedence.

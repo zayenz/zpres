@@ -373,6 +373,12 @@ impl ChromiumSession {
         self.evaluate(expression)
     }
 
+    #[cfg(test)]
+    pub(crate) fn capture_screenshot_for_test(&mut self) -> Result<Vec<u8>, ChromiumError> {
+        self.require_loaded_document()?;
+        self.capture_screenshot()
+    }
+
     /// Returns every state exposed by the production presentation runtime.
     /// The runtime owns route enumeration so the browser gate follows the same
     /// Section, Detail-slide, generated-slide, and Step semantics as live use.

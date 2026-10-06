@@ -35,7 +35,9 @@ consistent across the two surfaces.
 | `src/theme.rs` | Theme discovery, manifests, parameters, and contract checks |
 | `src/presentation_plan.rs` | Theme API v1 slide and Step order for live and static output |
 | `src/html.rs`, `src/html/theme_api_v1.rs` | HTML, print HTML, and presentation runtime |
-| `src/server.rs` | Live preview, dependency watching, and Last good deck behavior |
+| `src/server.rs` | Presentation and speaker HTTP endpoints, dependency watching, and Last good deck behavior |
+| `src/presentation_session.rs`, `src/presentation_protocol.rs` | Shared live navigation, timer, and HTTP/SSE protocol |
+| `src/speaker_view.rs`, `src/speaker_notes.rs` | Presenter controls, isolated slide previews, and speaker notes |
 | `src/pdf.rs`, `src/chromium.rs` | Static readiness, browser capture, PDF, and page images |
 | `src/visual.rs`, `src/browser_validation.rs` | Browser traversal, measurements, and visual review artifacts |
 | `src/background_validation.rs` | Authored background checks |
@@ -90,5 +92,5 @@ Contact sheets remain separate files. See [raster publication](raster-publicatio
 The publication implementation supports macOS and Linux. Native publication
 operations for other platforms, richer font validation, and all-at-once
 publication of Theme specimen artifacts remain outside the current support
-boundary. The public CLI and Source format are supported in 0.1; the Rust
+boundary. The public CLI and Source format are supported in 0.2; the Rust
 library API is experimental.

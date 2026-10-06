@@ -17,6 +17,9 @@ use crate::deck::{
 };
 use crate::file_url::file_url;
 use crate::publication;
+use crate::speaker_notes::render_speaker_notes_body;
+#[cfg(test)]
+use crate::speaker_notes::render_speaker_notes_markdown_body;
 use crate::theme::{self, RenderedTheme};
 
 mod inline;
@@ -248,7 +251,61 @@ pub fn render_debug_html_with_options(
     theme: &RenderedTheme,
     options: LiveHtmlOptions,
 ) -> String {
-    theme_api_v1::render_html(deck, theme, options)
+    theme_api_v1::render_screen_html(deck, theme, ScreenRenderPolicy::Audience, options)
+}
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct PreviewInitialState {
+    pub section: usize,
+    pub detail: usize,
+    pub step: usize,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum ScreenRenderPolicy {
+    Audience,
+    Preview { initial: PreviewInitialState },
+}
+
+impl ScreenRenderPolicy {
+    fn asset_mode(self, deck_root: Option<&Path>) -> AssetRenderMode<'_> {
+        match self {
+            Self::Audience => AssetRenderMode::Bundle { deck_root },
+            Self::Preview { initial } => AssetRenderMode::Preview {
+                deck_root,
+                initial_step: initial.step,
+            },
+        }
+    }
+
+    fn is_preview(self) -> bool {
+        matches!(self, Self::Preview { .. })
+    }
+
+    pub(super) fn initial_state(self) -> Option<PreviewInitialState> {
+        match self {
+            Self::Audience => None,
+            Self::Preview { initial } => Some(initial),
+        }
+    }
+}
+
+pub(crate) fn render_preview_html(deck: &Deck, theme: &RenderedTheme) -> String {
+    render_preview_html_at(deck, theme, PreviewInitialState::default())
+}
+pub(crate) fn render_preview_html_at(
+    deck: &Deck,
+    theme: &RenderedTheme,
+    initial: PreviewInitialState,
+) -> String {
+    theme_api_v1::render_screen_html(
+        deck,
+        theme,
+        ScreenRenderPolicy::Preview { initial },
+        LiveHtmlOptions {
+            include_speaker_notes: false,
+        },
+    )
 }
 
 /// Renders print HTML for an already prepared Deck.
@@ -501,7 +558,7 @@ fn slide_theme_style_attr_with_extra(
     let params = slide_theme_style_params(slide, theme);
     let mut declarations = theme::theme_param_css_declarations(&theme.manifest, &params)
         .into_iter()
-        .map(|declaration| format!("{}: {};", declaration.name, declaration.value))
+        .map(|declaration| format!("{}: {};", declaration.name, css_size(&declaration.value)))
         .collect::<Vec<_>>();
     declarations.extend(
         extra
@@ -567,6 +624,10 @@ enum AssetRenderMode<'a> {
     Bundle {
         deck_root: Option<&'a Path>,
     },
+    Preview {
+        deck_root: Option<&'a Path>,
+        initial_step: usize,
+    },
     Print {
         deck_root: Option<&'a Path>,
         step_state: PdfStepState,
@@ -620,18 +681,36 @@ impl RenderContext {
 impl<'a> AssetRenderMode<'a> {
     fn deck_root(self) -> Option<&'a Path> {
         match self {
-            AssetRenderMode::Bundle { deck_root } | AssetRenderMode::Print { deck_root, .. } => {
-                deck_root
-            }
+            AssetRenderMode::Bundle { deck_root }
+            | AssetRenderMode::Preview { deck_root, .. }
+            | AssetRenderMode::Print { deck_root, .. } => deck_root,
         }
     }
 
     fn step_state(self) -> Option<PdfStepState> {
         match self {
-            AssetRenderMode::Bundle { .. } => None,
+            AssetRenderMode::Bundle { .. } | AssetRenderMode::Preview { .. } => None,
             AssetRenderMode::Print { step_state, .. } => Some(step_state),
         }
     }
+
+    fn preview_step(self) -> Option<usize> {
+        match self {
+            AssetRenderMode::Preview { initial_step, .. } => Some(initial_step),
+            AssetRenderMode::Bundle { .. } | AssetRenderMode::Print { .. } => None,
+        }
+    }
+}
+
+fn policy_style_attr(style_attr: String, asset_mode: AssetRenderMode<'_>) -> String {
+    if !matches!(asset_mode, AssetRenderMode::Preview { .. }) || style_attr.is_empty() {
+        return style_attr;
+    }
+    let declarations = style_attr
+        .strip_prefix(" style=\"")
+        .and_then(|value| value.strip_suffix('"'))
+        .expect("renderer-owned style attributes have a stable shape");
+    format!(" data-zpres-preview-style=\"{declarations}\"")
 }
 
 fn render_block(
@@ -678,7 +757,7 @@ fn render_block(
             *reveal,
             *reveal_skip_first,
             items,
-            asset_mode.step_state().is_some(),
+            asset_mode,
             context,
         ),
         ContentBlock::Math { display, latex } => format!(
@@ -690,12 +769,7 @@ fn render_block(
             language,
             code,
             reveal,
-        } => render_code_block(
-            language.as_deref(),
-            code,
-            reveal.as_ref(),
-            asset_mode.step_state(),
-        ),
+        } => render_code_block(language.as_deref(), code, reveal.as_ref(), asset_mode),
         ContentBlock::Table {
             headers,
             alignments,
@@ -760,17 +834,19 @@ fn render_block(
             data,
         } => render_chart(spec, data.as_ref(), asset_mode),
         ContentBlock::Steps { pdf_policy, steps } => {
-            render_steps(steps, *pdf_policy, asset_mode.step_state(), context)
+            render_steps(steps, *pdf_policy, asset_mode, context)
         }
         ContentBlock::Layout {
             kind,
             values,
             regions,
         } => render_layout(*kind, values, regions, asset_mode, context),
+        ContentBlock::SpeakerNotes { .. } if matches!(asset_mode, AssetRenderMode::Preview { .. }) => String::new(),
         ContentBlock::SpeakerNotes { markdown } => format!(
             "            <aside class=\"debug-block zpres-block debug-notes zpres-block-speaker-notes zpres-speaker-notes-source\" data-block-type=\"speaker-notes\" hidden><span class=\"debug-block-label zpres-block-label\">speaker notes</span><div class=\"debug-notes-body zpres-speaker-notes-body\">{}</div></aside>\n",
             render_speaker_notes_body(markdown)
         ),
+        ContentBlock::HtmlOnly { .. } if matches!(asset_mode, AssetRenderMode::Preview { .. }) => "            <div class=\"debug-block zpres-block debug-html-only zpres-block-html-only zpres-preview-placeholder\" data-block-type=\"html-only\" data-zpres-preview-inert=\"true\"><span class=\"debug-block-label zpres-block-label\">html-only</span><div class=\"debug-html-frame zpres-html-frame\" role=\"img\" aria-label=\"HTML-only content is inert in speaker preview\">HTML-only content unavailable in preview</div></div>\n".to_string(),
         ContentBlock::HtmlOnly { html } => format!(
             "            <div class=\"debug-block zpres-block debug-html-only zpres-block-html-only\" data-block-type=\"html-only\"><span class=\"debug-block-label zpres-block-label\">html-only</span><div class=\"debug-html-frame zpres-html-frame\">{}</div></div>\n",
             html
@@ -869,7 +945,7 @@ fn render_list(
     reveal: bool,
     reveal_skip_first: bool,
     items: &[ListItem],
-    is_static_print: bool,
+    asset_mode: AssetRenderMode<'_>,
     context: &RenderContext,
 ) -> String {
     let tag = if ordered { "ol" } else { "ul" };
@@ -887,15 +963,24 @@ fn render_list(
             Some(index)
         };
         let fragment_attrs = if reveal && let Some(fragment_index) = fragment_index {
-            let fragment_class = if is_static_print {
-                ""
-            } else {
-                " class=\"fragment\""
+            let step = fragment_index + 1;
+            let (fragment_class, state_attr) = match asset_mode {
+                AssetRenderMode::Print { .. } => ("", ""),
+                AssetRenderMode::Preview { initial_step, .. } if step <= initial_step => (
+                    " class=\"fragment is-visible\"",
+                    if step == initial_step {
+                        " data-step-state=\"active\""
+                    } else {
+                        " data-step-state=\"complete\""
+                    },
+                ),
+                AssetRenderMode::Bundle { .. } => (" class=\"fragment\"", ""),
+                AssetRenderMode::Preview { .. } => {
+                    (" class=\"fragment\"", " data-step-state=\"future\"")
+                }
             };
             format!(
-                "{fragment_class} data-step-index=\"{}\" data-fragment-index=\"{}\"",
-                fragment_index + 1,
-                fragment_index + 1,
+                "{fragment_class} data-step-index=\"{step}\" data-fragment-index=\"{step}\"{state_attr}",
             )
         } else {
             String::new()
@@ -969,7 +1054,7 @@ fn render_figure(
             render_paragraph(caption, &inline_math_segments(caption), context)
         )
     });
-    let style_attr = figure_style_attr(options);
+    let style_attr = policy_style_attr(figure_style_attr(options), asset_mode);
     let fit_attr = options.fit.map_or_else(String::new, |fit| {
         format!(" data-figure-fit=\"{}\"", figure_fit_name(fit))
     });
@@ -1002,7 +1087,10 @@ fn render_gallery(
 ) -> String {
     let resolved_columns = columns.unwrap_or_else(|| gallery_auto_columns(items.len()));
     let columns_attr = format!(" data-gallery-columns=\"{resolved_columns}\"");
-    let style_attr = format!(" style=\"--zpres-gallery-columns: {resolved_columns};\"");
+    let style_attr = policy_style_attr(
+        format!(" style=\"--zpres-gallery-columns: {resolved_columns};\""),
+        asset_mode,
+    );
     let mut html = format!(
         "            <figure class=\"debug-block zpres-block debug-gallery zpres-block-gallery\" data-block-type=\"gallery\" data-zpres-content-role=\"evidence\" data-gallery-count=\"{}\"{}{}><span class=\"debug-block-label zpres-block-label\">gallery</span><div class=\"zpres-gallery-items\">\n",
         items.len(),
@@ -1028,7 +1116,7 @@ fn render_gallery(
             });
         let treatment_attr =
             figure_has_treatment(&item.options).then_some(" data-figure-treatment=\"true\"");
-        let style_attr = figure_style_attr(&item.options);
+        let style_attr = policy_style_attr(figure_style_attr(&item.options), asset_mode);
         let caption_html = item.caption.as_ref().map_or_else(String::new, |caption| {
             format!(
                 "<figcaption data-zpres-type-role=\"micro\">{}</figcaption>",
@@ -1062,7 +1150,9 @@ fn gallery_auto_columns(count: usize) -> u8 {
 
 fn image_loading_attr(asset_mode: AssetRenderMode<'_>) -> &'static str {
     match asset_mode {
-        AssetRenderMode::Bundle { .. } => " loading=\"lazy\" decoding=\"async\"",
+        AssetRenderMode::Bundle { .. } | AssetRenderMode::Preview { .. } => {
+            " loading=\"lazy\" decoding=\"async\""
+        }
         AssetRenderMode::Print { .. } => "",
     }
 }
@@ -1161,7 +1251,44 @@ fn figure_align_css(align: FigureAlign) -> &'static str {
 }
 
 fn css_size(value: &str) -> String {
-    value.trim().to_string()
+    let value = value.trim();
+    slide_relative_size_to_logical_px(value).unwrap_or_else(|| value.to_string())
+}
+
+fn slide_relative_size_to_logical_px(value: &str) -> Option<String> {
+    const LOGICAL_WIDTH: f64 = 1280.0;
+    const LOGICAL_HEIGHT: f64 = 720.0;
+    const UNIT_SCALES: [(&str, f64); 20] = [
+        ("dvmin", LOGICAL_HEIGHT),
+        ("svmin", LOGICAL_HEIGHT),
+        ("lvmin", LOGICAL_HEIGHT),
+        ("dvmax", LOGICAL_WIDTH),
+        ("svmax", LOGICAL_WIDTH),
+        ("lvmax", LOGICAL_WIDTH),
+        ("cqmin", LOGICAL_HEIGHT),
+        ("cqmax", LOGICAL_WIDTH),
+        ("dvh", LOGICAL_HEIGHT),
+        ("svh", LOGICAL_HEIGHT),
+        ("lvh", LOGICAL_HEIGHT),
+        ("dvw", LOGICAL_WIDTH),
+        ("svw", LOGICAL_WIDTH),
+        ("lvw", LOGICAL_WIDTH),
+        ("cqh", LOGICAL_HEIGHT),
+        ("cqw", LOGICAL_WIDTH),
+        ("vmin", LOGICAL_HEIGHT),
+        ("vmax", LOGICAL_WIDTH),
+        ("vh", LOGICAL_HEIGHT),
+        ("vw", LOGICAL_WIDTH),
+    ];
+    UNIT_SCALES.iter().find_map(|(unit, logical_size)| {
+        let number = value.strip_suffix(unit)?.parse::<f64>().ok()?;
+        let pixels = number * logical_size / 100.0;
+        let formatted = format!("{pixels:.4}")
+            .trim_end_matches('0')
+            .trim_end_matches('.')
+            .to_string();
+        Some(format!("{formatted}px"))
+    })
 }
 
 fn css_radius(value: &str) -> String {
@@ -1172,7 +1299,7 @@ fn css_radius(value: &str) -> String {
     {
         format!("{value}px")
     } else {
-        value.to_string()
+        css_size(value)
     }
 }
 
@@ -1199,7 +1326,65 @@ fn render_media(media: MediaRender<'_>) -> String {
     match media.asset_mode {
         AssetRenderMode::Print { .. } => render_print_media(media),
         AssetRenderMode::Bundle { .. } => render_html_media(media),
+        AssetRenderMode::Preview { .. } => render_preview_media(media),
     }
+}
+
+fn render_preview_media(media: MediaRender<'_>) -> String {
+    let caption_html = media.caption.map_or_else(String::new, |caption| {
+        format!(
+            "<figcaption data-zpres-type-role=\"micro\">{}</figcaption>",
+            render_inline_math(caption, &inline_math_segments(caption))
+        )
+    });
+    let poster = media
+        .poster
+        .filter(|poster| is_local_preview_resource(poster));
+    let body = poster.map_or_else(
+        || {
+            format!(
+                "<div class=\"debug-media-fallback zpres-media-fallback zpres-preview-media-fallback\" role=\"img\" aria-label=\"{}\"><strong>{}</strong><span>{}</span></div>",
+                escape_attr(media.alt),
+                media_kind_name(media.kind),
+                escape_html(media.title.unwrap_or(media.alt))
+            )
+        },
+        |poster| {
+            format!(
+                "<img src=\"{}\" alt=\"{}\" loading=\"lazy\" decoding=\"async\">",
+                escape_attr(&render_asset_src(poster, media.asset_mode)),
+                escape_attr(media.alt)
+            )
+        },
+    );
+    let fit_attr = media.options.fit.map_or_else(String::new, |fit| {
+        format!(" data-media-fit=\"{}\"", figure_fit_name(fit))
+    });
+    let align_attr = media.options.align.map_or_else(String::new, |align| {
+        format!(" data-media-align=\"{}\"", figure_align_name(align))
+    });
+    let hidden_attr = media
+        .visual_hidden
+        .then_some(" data-media-hidden=\"true\"")
+        .unwrap_or_default();
+    format!(
+        "            <figure class=\"debug-block zpres-block debug-media zpres-block-media zpres-preview-placeholder\" data-block-type=\"media\" data-zpres-content-role=\"evidence\" data-media-kind=\"{}\" data-zpres-preview-inert=\"true\"{}{}{}{}><span class=\"debug-block-label zpres-block-label\">{} media</span>{}{}</figure>\n",
+        media_kind_name(media.kind),
+        fit_attr,
+        align_attr,
+        hidden_attr,
+        policy_style_attr(media_style_attr(media.options), media.asset_mode,),
+        media_kind_name(media.kind),
+        body,
+        caption_html
+    )
+}
+
+fn is_local_preview_resource(value: &str) -> bool {
+    !value.starts_with("//")
+        && !value.contains("://")
+        && !value.starts_with("data:")
+        && !value.starts_with("javascript:")
 }
 
 fn render_html_media(media: MediaRender<'_>) -> String {
@@ -2494,7 +2679,7 @@ fn render_chart(
 fn render_steps(
     steps: &[Step],
     pdf_policy: StepPdfPolicy,
-    print_state: Option<PdfStepState>,
+    asset_mode: AssetRenderMode<'_>,
     context: &RenderContext,
 ) -> String {
     let policy = step_pdf_policy_name(pdf_policy);
@@ -2503,32 +2688,68 @@ fn render_steps(
         steps.len()
     );
     for step in steps {
-        let (classes, visible, state) = match print_state {
-            Some(PdfStepState::Final) => ("debug-step zpres-step is-visible", true, "complete"),
-            Some(PdfStepState::UpTo { step: max_step }) if step.index <= max_step => {
+        let print_state = asset_mode.step_state();
+        let (classes, visible, state, state_attribute) = match asset_mode {
+            AssetRenderMode::Preview { initial_step, .. } if step.index <= initial_step => {
+                let state = if step.index == initial_step {
+                    "active"
+                } else {
+                    "complete"
+                };
+                (
+                    "debug-step zpres-step fragment is-visible",
+                    true,
+                    state,
+                    "data-step-state",
+                )
+            }
+            AssetRenderMode::Preview { .. } => (
+                "debug-step zpres-step fragment",
+                false,
+                "future",
+                "data-step-state",
+            ),
+            _ if print_state == Some(PdfStepState::Final) => (
+                "debug-step zpres-step is-visible",
+                true,
+                "complete",
+                "data-zpres-print-step-state",
+            ),
+            _ if matches!(print_state, Some(PdfStepState::UpTo { step: max_step }) if step.index <= max_step) =>
+            {
+                let max_step = match print_state {
+                    Some(PdfStepState::UpTo { step }) => step,
+                    _ => unreachable!(),
+                };
                 let state = if step.index == max_step {
                     "active"
                 } else {
                     "complete"
                 };
-                ("debug-step zpres-step is-visible", true, state)
+                (
+                    "debug-step zpres-step is-visible",
+                    true,
+                    state,
+                    "data-zpres-print-step-state",
+                )
             }
-            Some(PdfStepState::UpTo { .. }) => (
+            _ if print_state.is_some() => (
                 "debug-step zpres-step zpres-print-step-hidden",
                 false,
                 "future",
+                "data-zpres-print-step-state",
             ),
-            None => ("debug-step zpres-step fragment", false, "future"),
+            _ => (
+                "debug-step zpres-step fragment",
+                false,
+                "future",
+                "data-step-state",
+            ),
         };
-        let hidden_attr = if visible || print_state.is_none() {
+        let hidden_attr = if visible || !matches!(asset_mode, AssetRenderMode::Print { .. }) {
             ""
         } else {
             " aria-hidden=\"true\""
-        };
-        let state_attribute = if print_state.is_some() {
-            "data-zpres-print-step-state"
-        } else {
-            "data-step-state"
         };
         html.push_str(&format!(
             "<li class=\"{classes}\" data-step-index=\"{}\" data-fragment-index=\"{}\" {state_attribute}=\"{state}\"{}>{}</li>",
@@ -2553,7 +2774,7 @@ fn render_code_block(
     language: Option<&str>,
     code: &str,
     reveal: Option<&CodeReveal>,
-    print_state: Option<PdfStepState>,
+    asset_mode: AssetRenderMode<'_>,
 ) -> String {
     let language_label = language.map_or_else(String::new, |language| {
         format!(": {}", escape_html(language))
@@ -2566,7 +2787,7 @@ fn render_code_block(
         "            <div class=\"debug-block zpres-block debug-code zpres-block-code\" data-block-type=\"code\" data-zpres-type-role=\"technical\" data-zpres-content-role=\"technical\" data-code-line-numbers=\"{line_number_policy}\"{}><span class=\"debug-block-label zpres-block-label\">code{}</span><pre><code>{}</code></pre></div>\n",
         reveal_attrs,
         language_label,
-        render_code_lines(code, language, reveal, print_state)
+        render_code_lines(code, language, reveal, asset_mode)
     )
 }
 
@@ -2574,20 +2795,41 @@ fn render_code_lines(
     code: &str,
     language: Option<&str>,
     reveal: Option<&CodeReveal>,
-    print_state: Option<PdfStepState>,
+    asset_mode: AssetRenderMode<'_>,
 ) -> String {
     code.split('\n')
         .enumerate()
         .map(|(offset, line)| {
             let line_number = offset + 1;
             let step_index = reveal_step_for_line(reveal, line_number);
-            let (classes, hidden) = match (step_index, print_state) {
-                (Some(_), None) => ("debug-code-line zpres-code-line fragment", false),
-                (Some(step), Some(PdfStepState::UpTo { step: max_step })) if step > max_step => (
+            let print_state = asset_mode.step_state();
+            let (classes, hidden, state_attr) =
+                match (step_index, asset_mode.preview_step(), print_state) {
+                (Some(step), Some(initial_step), _) if step <= initial_step => (
+                    "debug-code-line zpres-code-line fragment is-visible",
+                    false,
+                    if step == initial_step {
+                        " data-step-state=\"active\""
+                    } else {
+                        " data-step-state=\"complete\""
+                    },
+                ),
+                (Some(_), Some(_), _) => (
+                    "debug-code-line zpres-code-line fragment",
+                    false,
+                    " data-step-state=\"future\"",
+                ),
+                (Some(_), None, None) => (
+                    "debug-code-line zpres-code-line fragment",
+                    false,
+                    "",
+                ),
+                (Some(step), None, Some(PdfStepState::UpTo { step: max_step })) if step > max_step => (
                     "debug-code-line zpres-code-line zpres-print-step-hidden",
                     true,
+                    "",
                 ),
-                _ => ("debug-code-line zpres-code-line is-visible", false),
+                _ => ("debug-code-line zpres-code-line is-visible", false, ""),
             };
             let step_attrs = step_index.map_or_else(String::new, |step| {
                 format!(" data-step-index=\"{step}\" data-fragment-index=\"{step}\"")
@@ -2598,7 +2840,7 @@ fn render_code_lines(
                 ""
             };
             format!(
-                "<span class=\"{classes}\" data-line=\"{line_number}\"{step_attrs}{hidden_attrs}><span class=\"debug-code-line-no zpres-code-line-number\">{line_number}</span><span class=\"debug-code-line-text zpres-code-line-text\">{}</span></span>",
+                "<span class=\"{classes}\" data-line=\"{line_number}\"{step_attrs}{state_attr}{hidden_attrs}><span class=\"debug-code-line-no zpres-code-line-number\">{line_number}</span><span class=\"debug-code-line-text zpres-code-line-text\">{}</span></span>",
                 highlight_code(line, language)
             )
         })
@@ -2662,11 +2904,12 @@ fn render_layout(
             step_pdf_policy_name(policy)
         )
     });
+    let layout_style_attr =
+        policy_style_attr(format!(" style=\"{}\"", escape_attr(&style)), asset_mode);
     let mut html = format!(
-        "            <div class=\"debug-block zpres-block debug-layout zpres-block-layout\" data-block-type=\"layout\" data-layout-kind=\"{kind_name}\" data-layout-widths=\"{}\" data-layout-tracks=\"{}\"{safety_attributes}{derivation_attributes}><span class=\"debug-block-label zpres-block-label\">layout: {kind_name}</span><div class=\"debug-layout-regions zpres-layout-regions\" style=\"{}\">",
+        "            <div class=\"debug-block zpres-block debug-layout zpres-block-layout\" data-block-type=\"layout\" data-layout-kind=\"{kind_name}\" data-layout-widths=\"{}\" data-layout-tracks=\"{}\"{safety_attributes}{derivation_attributes}><span class=\"debug-block-label zpres-block-label\">layout: {kind_name}</span><div class=\"debug-layout-regions zpres-layout-regions\"{layout_style_attr}>",
         escape_attr(&widths),
-        escape_attr(&tracks),
-        escape_attr(&style)
+        escape_attr(&tracks)
     );
     for (index, region) in regions.iter().enumerate() {
         let mut region_classes = "debug-layout-region zpres-layout-region".to_string();
@@ -2715,28 +2958,44 @@ fn render_layout(
             region_attributes.push_str(&format!(
                 " data-step-index=\"{step}\" data-fragment-index=\"{step}\""
             ));
-            match asset_mode.step_state() {
-                None => {
-                    region_classes.push_str(" fragment");
-                    region_attributes.push_str(" data-step-state=\"future\"");
-                }
-                Some(PdfStepState::Final) => {
-                    region_classes.push_str(" is-visible");
-                    region_attributes.push_str(" data-step-state=\"complete\"");
-                }
-                Some(PdfStepState::UpTo { step: max_step }) if step <= max_step => {
-                    region_classes.push_str(" is-visible");
-                    let state = if step == max_step {
+            match asset_mode {
+                AssetRenderMode::Preview { initial_step, .. } if step <= initial_step => {
+                    region_classes.push_str(" fragment is-visible");
+                    let state = if step == initial_step {
                         "active"
                     } else {
                         "complete"
                     };
                     region_attributes.push_str(&format!(" data-step-state=\"{state}\""));
                 }
-                Some(PdfStepState::UpTo { .. }) => {
-                    region_classes.push_str(" zpres-print-step-hidden");
-                    region_attributes.push_str(" data-step-state=\"future\" aria-hidden=\"true\"");
+                AssetRenderMode::Preview { .. } => {
+                    region_classes.push_str(" fragment");
+                    region_attributes.push_str(" data-step-state=\"future\"");
                 }
+                _ => match asset_mode.step_state() {
+                    None => {
+                        region_classes.push_str(" fragment");
+                        region_attributes.push_str(" data-step-state=\"future\"");
+                    }
+                    Some(PdfStepState::Final) => {
+                        region_classes.push_str(" is-visible");
+                        region_attributes.push_str(" data-step-state=\"complete\"");
+                    }
+                    Some(PdfStepState::UpTo { step: max_step }) if step <= max_step => {
+                        region_classes.push_str(" is-visible");
+                        let state = if step == max_step {
+                            "active"
+                        } else {
+                            "complete"
+                        };
+                        region_attributes.push_str(&format!(" data-step-state=\"{state}\""));
+                    }
+                    Some(PdfStepState::UpTo { .. }) => {
+                        region_classes.push_str(" zpres-print-step-hidden");
+                        region_attributes
+                            .push_str(" data-step-state=\"future\" aria-hidden=\"true\"");
+                    }
+                },
             }
         }
         if let Some(placement) = region.grid_placement.as_ref() {
@@ -2764,7 +3023,10 @@ fn render_layout(
             region_style.push_str("grid-area:1/1;z-index:0;");
         }
         if !region_style.is_empty() {
-            region_attributes.push_str(&format!(" style=\"{}\"", escape_attr(&region_style)));
+            region_attributes.push_str(&policy_style_attr(
+                format!(" style=\"{}\"", escape_attr(&region_style)),
+                asset_mode,
+            ));
         }
         html.push_str(&format!(
             "<section class=\"{}\" data-region-index=\"{}\"{}>",
@@ -3264,7 +3526,7 @@ fn scale(value: f64, domain_min: f64, domain_max: f64, range_min: f64, range_max
 
 fn render_asset_src(src: &str, asset_mode: AssetRenderMode<'_>) -> String {
     match asset_mode {
-        AssetRenderMode::Bundle { .. } => src.to_string(),
+        AssetRenderMode::Bundle { .. } | AssetRenderMode::Preview { .. } => src.to_string(),
         AssetRenderMode::Print { deck_root, .. } => {
             if looks_remote_or_fragment(src) {
                 return src.to_string();
@@ -3324,13 +3586,19 @@ fn render_background_layer_markup(
                     )
                 });
         return format!(
-            "          <figure class=\"zpres-background-semantic\" data-zpres-background-intent=\"{}\"><img src=\"{}\" alt=\"{}\">{}</figure>\n          <div class=\"zpres-slide-background\"{} aria-hidden=\"true\" style=\"{}\"></div>\n",
+            "          <figure class=\"zpres-background-semantic\" data-zpres-background-intent=\"{}\"><img src=\"{}\" alt=\"{}\">{}</figure>\n          <div class=\"zpres-slide-background\"{} aria-hidden=\"true\"{}></div>\n",
             background_intent_name(background_image.intent),
             escape_attr(&src),
             escape_attr(&background_image.alt),
             description,
             source_attr.as_deref().unwrap_or_default(),
-            escape_attr(&background_image_style(background_image, &src))
+            policy_style_attr(
+                format!(
+                    " style=\"{}\"",
+                    escape_attr(&background_image_style(background_image, &src))
+                ),
+                asset_mode,
+            )
         );
     }
     let aria = if phase == BackgroundPhase::Splash && !background_image.alt.is_empty() {
@@ -3342,10 +3610,16 @@ fn render_background_layer_markup(
         " aria-hidden=\"true\"".to_string()
     };
     format!(
-        "          <div class=\"zpres-slide-background\"{}{} style=\"{}\"></div>\n",
+        "          <div class=\"zpres-slide-background\"{}{}{}></div>\n",
         source_attr.as_deref().unwrap_or_default(),
         aria,
-        escape_attr(&background_image_style(background_image, &src))
+        policy_style_attr(
+            format!(
+                " style=\"{}\"",
+                escape_attr(&background_image_style(background_image, &src))
+            ),
+            asset_mode,
+        )
     )
 }
 
@@ -3607,6 +3881,117 @@ pub fn core_runtime_asset(
     }
 }
 
+pub(crate) fn preview_runtime_asset(path: &str) -> Option<(&'static str, String)> {
+    match path {
+        "assets/zpres-preview.css" => Some(("text/css; charset=utf-8", PREVIEW_CSS.to_string())),
+        "assets/zpres-preview-v1.js" => Some((
+            "text/javascript; charset=utf-8",
+            theme_api_v1::preview_runtime_js(PREVIEW_BRIDGE_JS),
+        )),
+        _ => None,
+    }
+}
+
+const PREVIEW_CSS: &str = r#"
+html, body { width: 100%; height: 100%; overflow: hidden !important; background: #030712; }
+body[data-zpres-view-role="preview"] { user-select: none; }
+body[data-zpres-view-role="preview"] *,
+body[data-zpres-view-role="preview"] *::before,
+body[data-zpres-view-role="preview"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+body[data-zpres-view-role="preview"] a,
+body[data-zpres-view-role="preview"] button,
+body[data-zpres-view-role="preview"] input,
+body[data-zpres-view-role="preview"] select,
+body[data-zpres-view-role="preview"] textarea { pointer-events: none !important; }
+.zpres-preview-placeholder { min-width: 0; min-height: 0; }
+.zpres-preview-media-fallback { width: 100%; height: 100%; display: grid; place-content: center; text-align: center; }
+"#;
+
+const PREVIEW_BRIDGE_JS: &str = r#"
+(function () {
+  "use strict";
+  const params = new URLSearchParams(location.search);
+  const one = (name) => {
+    const values = params.getAll(name);
+    return values.length === 1 ? values[0] : null;
+  };
+  const epochText = one("zpres-preview-epoch");
+  const role = one("zpres-preview-role");
+  const parentOrigin = one("zpres-parent-origin");
+  const epoch = Number(epochText);
+  if (!Number.isSafeInteger(epoch) || epoch < 1
+      || !["current", "next"].includes(role) || !parentOrigin) return;
+  let nonce = null;
+
+  const styled = [...document.querySelectorAll("[data-zpres-preview-style]")];
+  if (styled.length && "adoptedStyleSheets" in document && typeof CSSStyleSheet === "function") {
+    const sheet = new CSSStyleSheet();
+    const rules = styled.map((element, index) => {
+      const id = String(index + 1);
+      element.dataset.zpresPreviewStyleId = id;
+      return `[data-zpres-preview-style-id="${id}"]{${element.dataset.zpresPreviewStyle}}`;
+    }).join("\n");
+    sheet.replaceSync(rules);
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+  }
+
+  const envelope = (type, extra) => Object.assign({
+    type, protocol_version: 1, nonce, epoch, role,
+  }, extra || {});
+  const send = (type, extra) => parent.postMessage(envelope(type, extra), parentOrigin);
+  const painted = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  let initialized = false;
+  const evidence = () => {
+    const active = document.querySelector(".zpres-slide.is-active");
+    const inactive = document.querySelector(".zpres-slide:not(.is-active)");
+    const fragments = [...(active?.querySelectorAll("[data-step-index]") || [])];
+    const activeRect = active?.getBoundingClientRect();
+    return {
+      active_slide_id: active?.dataset.slideId || "",
+      active_display: active ? getComputedStyle(active).display : "",
+      active_top: activeRect?.top ?? null,
+      inactive_display: inactive ? getComputedStyle(inactive).display : "",
+      current_step: Number(active?.dataset.currentStep || 0),
+      visible_steps: fragments.filter(element => element.classList.contains("is-visible")).length,
+      media_elements: document.querySelectorAll("audio,video,source").length,
+      nested_contexts: document.querySelectorAll("iframe,object,embed").length,
+      inert_placeholders: document.querySelectorAll("[data-zpres-preview-inert='true']").length,
+      font_status: document.fonts?.status || "unsupported",
+      stylesheet_count: document.styleSheets.length,
+      slide_color: active ? getComputedStyle(active).color : "",
+    };
+  };
+  window.addEventListener("message", function (event) {
+    const data = event.data;
+    if (event.source !== parent || event.origin !== parentOrigin || !data
+        || data.protocol_version !== 1 || data.epoch !== epoch
+        || data.role !== role) return;
+    if (data.type === "zpres-preview-init" && nonce === null
+        && typeof data.nonce === "string" && /^[0-9a-f]{32}$/.test(data.nonce)) {
+      nonce = data.nonce;
+      initialized = true;
+      send("zpres-preview-ack", { acknowledged: "init" });
+      return;
+    }
+    if (data.nonce !== nonce || data.type !== "zpres-preview-route" || !initialized) return;
+    Promise.resolve(window.zpresPresentation?.ready)
+      .then(() => window.zpresPresentation?.navigate(data.route))
+      .then(async (route) => { await painted(); return route; })
+      .then((route) => send("zpres-preview-ack", { acknowledged: "route", route, evidence:evidence() }))
+      .catch((error) => send("zpres-preview-ack", {
+        acknowledged: "route", error: error?.name || "Error",
+      }));
+  });
+  Promise.resolve(window.zpresPresentation?.ready).then(() => parent.postMessage({
+    type:"zpres-preview-ready", protocol_version:1, epoch, role,
+  }, parentOrigin));
+})();
+"#;
+
 fn render_diagnostic_location(diagnostic: &crate::deck::Diagnostic) -> String {
     match &diagnostic.span {
         Some(span) => {
@@ -3715,45 +4100,6 @@ fn looks_remote_or_fragment(value: &str) -> bool {
 
 fn escape_multiline(value: &str) -> String {
     escape_html(value).replace('\n', "<br>")
-}
-
-fn render_speaker_notes_body(markdown: &str) -> String {
-    format!("<p>{}</p>", render_speaker_note_lines(markdown))
-}
-
-fn render_speaker_note_lines(markdown: &str) -> String {
-    let mut rendered = String::new();
-    let mut next_click = 1usize;
-    for (line_index, line) in markdown.lines().enumerate() {
-        if line_index > 0 {
-            rendered.push_str("<br>");
-        }
-        if let Some((click, body)) = parse_speaker_note_click_marker(line.trim_start()) {
-            let click_index = click.unwrap_or(next_click);
-            next_click = next_click.max(click_index + 1);
-            rendered.push_str(&format!(
-                "<span class=\"zpres-speaker-note-click\" data-note-click-index=\"{}\">{}</span>",
-                click_index,
-                escape_html(body)
-            ));
-        } else {
-            rendered.push_str(&escape_html(line));
-        }
-    }
-    rendered
-}
-
-fn parse_speaker_note_click_marker(line: &str) -> Option<(Option<usize>, &str)> {
-    let rest = line.strip_prefix("[click")?;
-    let (click, after_marker) = if let Some(after_marker) = rest.strip_prefix(']') {
-        (None, after_marker)
-    } else {
-        let after_colon = rest.strip_prefix(':')?;
-        let (raw_click, after_marker) = after_colon.split_once(']')?;
-        let click = raw_click.trim().parse::<usize>().ok()?;
-        (Some(click), after_marker)
-    };
-    Some((click, after_marker.trim_start()))
 }
 
 fn escape_attr(value: &str) -> String {
@@ -5003,6 +5349,255 @@ output_targets = ["html", "pdf"]
             );
             assert_eq!(canvas, slide);
             assert_eq!(observation.document_scroll.unwrap().maximum(), 0.0);
+        }
+    }
+
+    #[test]
+    fn theme_api_v1_stage_fits_the_mobile_visual_viewport() {
+        let temp = tempdir().unwrap();
+        let theme = write_v1_reference_theme(&temp.path().join("theme"));
+        let deck = v1_reference_deck(&temp.path().join("talk.zp.md"));
+        let bundle = temp.path().join("bundle");
+        write_debug_html_bundle(&deck, &theme, &bundle).unwrap();
+        let url = format!(
+            "{}?zpres-visual-review=1",
+            file_url(&bundle.join("index.html"))
+        );
+        let mut browser = match ChromiumSession::launch(ChromiumSessionOptions::default()) {
+            Ok(browser) => browser,
+            Err(ChromiumError::MissingChromium { .. }) => {
+                eprintln!("skipping mobile visual-viewport test: Chrome/Chromium was not found");
+                return;
+            }
+            Err(error) => panic!("failed to launch Chromium for mobile viewport test: {error}"),
+        };
+
+        browser
+            .load_screen_document(
+                &url,
+                PngViewport {
+                    width: 844,
+                    height: 390,
+                },
+            )
+            .unwrap();
+        assert!(
+            browser
+                .await_static_readiness(STATIC_READINESS_TIMEOUT)
+                .unwrap()
+                .ready
+        );
+        let geometry = browser
+            .evaluate_for_test(
+                r#"(() => {
+                  window.zpresFitStage({
+                    width: 844,
+                    height: 190,
+                    offsetLeft: 0,
+                    offsetTop: 100,
+                  });
+                  const slide = document.querySelector('.zpres-slide.is-active');
+                  const bounds = slide.getBoundingClientRect();
+                  return {
+                    left: bounds.left,
+                    top: bounds.top,
+                    right: bounds.right,
+                    bottom: bounds.bottom,
+                    width: bounds.width,
+                    height: bounds.height,
+                  };
+                })()"#,
+            )
+            .unwrap();
+
+        let top = geometry["top"].as_f64().unwrap();
+        let bottom = geometry["bottom"].as_f64().unwrap();
+        let height = geometry["height"].as_f64().unwrap();
+        assert!(
+            top >= 99.75 && bottom <= 290.25,
+            "Slide escaped the simulated visible viewport: {geometry}"
+        );
+        assert!(
+            (height - 190.0).abs() <= 0.25,
+            "Slide did not use the available visual-viewport height: {geometry}"
+        );
+    }
+
+    #[test]
+    fn theme_api_v1_touch_tap_advances_the_audience_deck() {
+        let temp = tempdir().unwrap();
+        let theme = write_v1_reference_theme(&temp.path().join("theme"));
+        let source_path = temp.path().join("talk.zp.md");
+        let deck = parse_source_text(
+            "---\ntitle: Touch navigation\naspect: \"16:9\"\n---\n\n# First\n\nOne\n\n---\n\n# Second\n\nTwo\n",
+            Some(source_path),
+        )
+        .unwrap();
+        let bundle = temp.path().join("bundle");
+        write_debug_html_bundle(&deck, &theme, &bundle).unwrap();
+        let url = file_url(&bundle.join("index.html"));
+        let mut browser = match ChromiumSession::launch(ChromiumSessionOptions::default()) {
+            Ok(browser) => browser,
+            Err(ChromiumError::MissingChromium { .. }) => {
+                eprintln!("skipping touch-navigation test: Chrome/Chromium was not found");
+                return;
+            }
+            Err(error) => panic!("failed to launch Chromium for touch-navigation test: {error}"),
+        };
+
+        browser
+            .load_screen_document(
+                &url,
+                PngViewport {
+                    width: 390,
+                    height: 844,
+                },
+            )
+            .unwrap();
+        let route = browser
+            .evaluate_for_test(
+                r#"(async () => {
+                  await window.zpresPresentation.ready;
+                  const surface = document.querySelector('.zpres-presentation');
+                  const init = {
+                    bubbles: true,
+                    pointerId: 7,
+                    pointerType: 'touch',
+                    isPrimary: true,
+                    clientX: 330,
+                    clientY: 400,
+                  };
+                  const media = document.createElement('video');
+                  media.controls = true;
+                  surface.appendChild(media);
+                  media.dispatchEvent(new PointerEvent('pointerdown', init));
+                  media.dispatchEvent(new PointerEvent('pointerup', init));
+                  await new Promise(resolve => setTimeout(resolve, 350));
+                  const afterMedia = window.zpresPresentation.current();
+                  media.remove();
+                  surface.dispatchEvent(new PointerEvent('pointerdown', init));
+                  surface.dispatchEvent(new PointerEvent('pointerup', init));
+                  await new Promise(resolve => setTimeout(resolve, 350));
+                  return { afterMedia, afterSurface: window.zpresPresentation.current() };
+                })()"#,
+            )
+            .unwrap();
+
+        assert_eq!(
+            route["afterMedia"]["section"], 0,
+            "a touch tap on media controls should preserve the current slide: {route}"
+        );
+        assert_eq!(
+            route["afterSurface"]["section"], 1,
+            "a primary touch tap on the audience surface should advance: {route}"
+        );
+    }
+
+    #[test]
+    fn theme_api_v1_slide_relative_figure_height_is_invariant_across_viewports() {
+        let temp = tempdir().unwrap();
+        let theme = write_v1_reference_theme(&temp.path().join("theme"));
+        let source_path = temp.path().join("talk.zp.md");
+        fs::write(
+            temp.path().join("figure.svg"),
+            r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"><rect width="16" height="9" fill="#176b5b"/></svg>"##,
+        )
+        .unwrap();
+        let deck = parse_source_text(
+            r#"---
+title: "Invariant figure"
+aspect: "16:9"
+---
+
+# One logical composition
+
+::: figure src="figure.svg" alt="A sizing probe" width="100%" height="64vh" fit="contain"
+:::
+"#,
+            Some(source_path),
+        )
+        .unwrap();
+        let bundle = temp.path().join("bundle");
+        write_debug_html_bundle(&deck, &theme, &bundle).unwrap();
+        let url = format!(
+            "{}?zpres-visual-review=1",
+            file_url(&bundle.join("index.html"))
+        );
+        let mut browser = match ChromiumSession::launch(ChromiumSessionOptions::default()) {
+            Ok(browser) => browser,
+            Err(ChromiumError::MissingChromium { .. }) => {
+                eprintln!("skipping v2 composition-invariance test: Chrome/Chromium was not found");
+                return;
+            }
+            Err(error) => panic!("failed to launch Chromium for v2 composition test: {error}"),
+        };
+
+        let mut logical_heights = Vec::new();
+        for viewport in [
+            PngViewport {
+                width: 1280,
+                height: 720,
+            },
+            PngViewport {
+                width: 640,
+                height: 360,
+            },
+        ] {
+            browser.load_screen_document(&url, viewport).unwrap();
+            let readiness = browser
+                .await_static_readiness(STATIC_READINESS_TIMEOUT)
+                .unwrap();
+            assert!(
+                readiness.ready,
+                "v2 composition readiness failed: {readiness:?}"
+            );
+            let observation = browser
+                .evaluate_for_test(
+                    r#"(() => {
+                      const stage = document.querySelector('.slides');
+                      const figure = document.querySelector('.zpres-block-figure');
+                      const probe = document.createElement('div');
+                      probe.style.cssText = 'position:absolute;height:var(--zpres-figure-height);width:1px';
+                      figure.append(probe);
+                      const painted = probe.getBoundingClientRect();
+                      return {
+                        logicalHeight: probe.offsetHeight,
+                        logicalStageHeight: stage.offsetHeight,
+                        paintedHeight: painted.height,
+                      };
+                    })()"#,
+                )
+                .unwrap();
+            assert_eq!(observation["logicalStageHeight"], 720);
+            logical_heights.push(observation["logicalHeight"].as_f64().unwrap());
+        }
+
+        assert!(
+            (logical_heights[0] - logical_heights[1]).abs() <= 0.5,
+            "Slide-local figure geometry changed with the browser viewport: {logical_heights:?}"
+        );
+        assert!(
+            (logical_heights[0] - 460.8).abs() <= 1.0,
+            "64% of the logical Slide height should be about 461px: {logical_heights:?}"
+        );
+    }
+
+    #[test]
+    fn theme_api_v1_normalizes_slide_relative_units() {
+        for (input, expected) in [
+            ("64vh", "460.8px"),
+            ("64cqh", "460.8px"),
+            ("50vw", "640px"),
+            ("50cqw", "640px"),
+            ("10vmin", "72px"),
+            ("10cqmax", "128px"),
+            ("25dvh", "180px"),
+        ] {
+            assert_eq!(
+                css_size(input),
+                expected,
+                "unexpected logical Slide conversion for {input}"
+            );
         }
     }
 
@@ -6572,10 +7167,79 @@ Remote demo fallback.
     }
 
     #[test]
+    fn preview_mode_structurally_inerts_media_html_notes_and_motion() {
+        let source = r##"---
+transition: fade
+---
+
+# Preview safety
+
+Literal autoplay text and data-autoplay="kept" remain ordinary prose.
+
+::: video src="https://media.example/clip.mp4" poster="assets/poster.png" title="Demo clip" width="62%" autoplay=true controls=true autoadvance=true
+Preview-safe poster.
+:::
+
+::: iframe src="https://frame.example/embed" title="Remote frame"
+Remote frame fallback.
+:::
+
+::: html
+<object data="https://object.example/payload"><embed src="https://embed.example/payload"></object>
+:::
+
+::: notes
+Private speaker note.
+:::
+"##;
+        let deck = parse_source_text(source, Some(PathBuf::from("preview.zp.md"))).unwrap();
+        let theme = rendered_theme(&deck);
+        let audience = render_debug_html(&deck, &theme);
+        let preview = render_preview_html(&deck, &theme);
+
+        assert!(audience.contains("<video src=\"https://media.example/clip.mp4\""));
+        assert!(audience.contains("<iframe src=\"https://frame.example/embed\""));
+        assert!(audience.contains("<object data=\"https://object.example/payload\""));
+        assert!(audience.contains("data-transition=\"fade\""));
+        assert!(audience.contains("Private speaker note"));
+
+        assert!(preview.contains("data-zpres-output-target=\"screen\""));
+        assert!(preview.contains("data-zpres-view-role=\"preview\""));
+        assert!(preview.contains("Literal autoplay text"));
+        assert!(preview.contains("data-autoplay=&quot;kept&quot;"));
+        assert_eq!(
+            preview.matches("data-zpres-preview-inert=\"true\"").count(),
+            3
+        );
+        assert!(preview.contains("assets/poster.png"));
+        for forbidden in [
+            "media.example",
+            "frame.example",
+            "object.example",
+            "embed.example",
+            "<video",
+            "<audio",
+            "<iframe",
+            "<object",
+            "<embed",
+            "data-media-autoadvance",
+            "data-transition=",
+            "Private speaker note",
+            "debug-topbar",
+            "debug-diagnostics",
+            "zpres-speaker-notes-panel",
+            "<script>",
+        ] {
+            assert!(!preview.contains(forbidden), "preview retained {forbidden}");
+        }
+        assert!(preview.contains("assets/zpres-preview-v1.js"));
+    }
+
+    #[test]
     fn renders_figure_options_as_theme_contract_attributes() {
         let source = r#"# Figure
 
-::: figure src="assets/phase-space.svg" alt="Phase-space sketch" width="68%" height="45vh" fit="cover" align="center" dim="18" grayscale="35" saturate="72" blur="2" radius="14"
+::: figure src="assets/phase-space.svg" alt="Phase-space sketch" width="68%" height="45cqh" fit="cover" align="center" dim="18" grayscale="35" saturate="72" blur="2" radius="14"
 Synthetic phase-space sketch.
 :::
 "#;
@@ -6597,7 +7261,7 @@ Synthetic phase-space sketch.
         assert!(html.contains("data-figure-radius=\"14\""));
         assert!(html.contains("data-figure-treatment=\"true\""));
         assert!(html.contains("--zpres-figure-width: 68%;"));
-        assert!(html.contains("--zpres-figure-height: 45vh;"));
+        assert!(html.contains("--zpres-figure-height: 324px;"));
         assert!(html.contains("--zpres-figure-fit: cover;"));
         assert!(html.contains("--zpres-figure-align: center;"));
         assert!(html.contains("--zpres-figure-dim: 0.18;"));
@@ -7043,6 +7707,15 @@ Opening setup.
         assert!(html.contains("data-note-click-index=\"1\">Mention the first reveal.</span>"));
         assert!(html.contains("data-note-click-index=\"3\">Mention the skipped reveal.</span>"));
         assert!(!html.contains("[click] Mention the first reveal."));
+        let markdown_notes = render_speaker_notes_markdown_body(
+            "Remember to **pause** before the `result` and see [backup](notes/backup.html).",
+        );
+        assert!(markdown_notes.contains("<strong>pause</strong>"));
+        assert!(markdown_notes.contains("<code>result</code>"));
+        assert!(markdown_notes.contains("<a href=\"notes/backup.html\">backup</a>"));
+        assert!(
+            !render_speaker_notes_markdown_body("[unsafe](javascript:alert(1))").contains("href=")
+        );
         assert!(REVEAL_JS.contains("toggleSpeakerNotes"));
         assert!(REVEAL_JS.contains("applySpeakerNoteClickMarkers"));
         assert!(REVEAL_JS.contains("currentSlide()?.querySelectorAll(\".zpres-block-speaker-notes .zpres-speaker-notes-body\")"));
