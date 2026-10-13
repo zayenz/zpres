@@ -1,4 +1,9 @@
-# zpres
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/zpres-logo-light.svg">
+    <img src="assets/zpres-logo.svg" alt="zpres" width="360">
+  </picture>
+</h1>
 
 zpres builds presentations from Markdown-based `.zp.md` Source files.
 Write slide content, images, and speaker notes together, preview the talk in a
