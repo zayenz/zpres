@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" role="img" aria-labelledby="title">
+  <title id="title">zpres</title>
+  <rect x="20" y="38" width="110" height="92" rx="6" fill="#4cbb17"/>
+  <rect x="42" y="18" width="110" height="92" rx="6" fill="#25362e"/>
+  <path d="M65 42h63L68 85h62" fill="none" stroke="#4cbb17" stroke-width="10" stroke-linejoin="miter"/>
+  <text x="184" y="116" fill="#25362e" font-family="Menlo,Consolas,'Liberation Mono',monospace" font-size="106" font-weight="600" letter-spacing="-4"><tspan fill="#4cbb17">z</tspan>pres</text>
+</svg>
